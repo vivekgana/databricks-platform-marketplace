@@ -1,0 +1,326 @@
+{
+  "name": "databricks-engineering",
+  "version": "1.0.0",
+  "description": "Comprehensive Databricks data engineering toolkit. Includes 15 commands for pipeline development, 18 specialized agents for code review, 8 skills for architecture patterns, and 3 MCP servers for Databricks integration. Build production-grade data products with medallion architecture, Delta Live Tables, data quality validation, and Delta Sharing.",
+  "author": {
+    "name": "Your Company Data Platform Team",
+    "email": "data-platform@yourcompany.com",
+    "url": "https://github.com/yourcompany"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourcompany/databricks-platform-marketplace"
+  },
+  "license": "MIT",
+  "keywords": [
+    "databricks",
+    "pyspark",
+    "delta-lake",
+    "data-engineering",
+    "pipeline",
+    "mlops"
+  ],
+  "commands": [
+    {
+      "name": "plan-pipeline",
+      "description": "Plan data pipeline with medallion architecture, data quality, and cost estimation",
+      "path": "./commands/plan-pipeline.md",
+      "category": "planning"
+    },
+    {
+      "name": "work-pipeline",
+      "description": "Execute pipeline implementation with Bronze/Silver/Gold layers and testing",
+      "path": "./commands/work-pipeline.md",
+      "category": "development"
+    },
+    {
+      "name": "review-pipeline",
+      "description": "Multi-agent code review with 12+ specialized reviewers",
+      "path": "./commands/review-pipeline.md",
+      "category": "quality"
+    },
+    {
+      "name": "optimize-costs",
+      "description": "Analyze and optimize Databricks cluster and storage costs",
+      "path": "./commands/optimize-costs.md",
+      "category": "optimization"
+    },
+    {
+      "name": "test-data-quality",
+      "description": "Generate and run comprehensive data quality tests",
+      "path": "./commands/test-data-quality.md",
+      "category": "testing"
+    },
+    {
+      "name": "deploy-workflow",
+      "description": "Deploy pipeline to Databricks workspace with monitoring",
+      "path": "./commands/deploy-workflow.md",
+      "category": "deployment"
+    },
+    {
+      "name": "create-data-product",
+      "description": "Design data product with contracts, SLAs, and governance",
+      "path": "./commands/create-data-product.md",
+      "category": "data-products"
+    },
+    {
+      "name": "publish-data-product",
+      "description": "Publish data product to Unity Catalog with documentation",
+      "path": "./commands/publish-data-product.md",
+      "category": "data-products"
+    },
+    {
+      "name": "configure-delta-share",
+      "description": "Set up Delta Sharing with external consumers",
+      "path": "./commands/configure-delta-share.md",
+      "category": "sharing"
+    },
+    {
+      "name": "manage-consumers",
+      "description": "Manage data product consumers and access patterns",
+      "path": "./commands/manage-consumers.md",
+      "category": "sharing"
+    },
+    {
+      "name": "monitor-data-product",
+      "description": "Set up monitoring, alerts, and SLA tracking",
+      "path": "./commands/monitor-data-product.md",
+      "category": "observability"
+    },
+    {
+      "name": "deploy-bundle",
+      "description": "Deploy using Databricks Asset Bundles with multi-environment support",
+      "path": "./commands/deploy-bundle.md",
+      "category": "deployment"
+    },
+    {
+      "name": "validate-deployment",
+      "description": "Pre-deployment validation with cost estimation",
+      "path": "./commands/validate-deployment.md",
+      "category": "deployment"
+    },
+    {
+      "name": "generate-dlt-pipeline",
+      "description": "Generate Delta Live Tables pipeline from specification",
+      "path": "./commands/generate-dlt-pipeline.md",
+      "category": "code-generation"
+    },
+    {
+      "name": "scaffold-project",
+      "description": "Scaffold new data engineering project with best practices",
+      "path": "./commands/scaffold-project.md",
+      "category": "scaffolding"
+    }
+  ],
+  "agents": [
+    {
+      "name": "pyspark-optimizer",
+      "description": "PySpark performance optimization and best practices",
+      "path": "./agents/pyspark-optimizer.md",
+      "category": "performance"
+    },
+    {
+      "name": "delta-lake-expert",
+      "description": "Delta Lake operations, optimization, and time travel",
+      "path": "./agents/delta-lake-expert.md",
+      "category": "storage"
+    },
+    {
+      "name": "data-quality-sentinel",
+      "description": "Data validation, quality checks, and monitoring",
+      "path": "./agents/data-quality-sentinel.md",
+      "category": "quality"
+    },
+    {
+      "name": "pipeline-architect",
+      "description": "Medallion architecture and pipeline design patterns",
+      "path": "./agents/pipeline-architect.md",
+      "category": "architecture"
+    },
+    {
+      "name": "unity-catalog-expert",
+      "description": "Unity Catalog governance, permissions, and lineage",
+      "path": "./agents/unity-catalog-expert.md",
+      "category": "governance"
+    },
+    {
+      "name": "security-guardian",
+      "description": "Security best practices, PII handling, and compliance",
+      "path": "./agents/security-guardian.md",
+      "category": "security"
+    },
+    {
+      "name": "cost-analyzer",
+      "description": "Cost optimization for compute and storage",
+      "path": "./agents/cost-analyzer.md",
+      "category": "optimization"
+    },
+    {
+      "name": "streaming-specialist",
+      "description": "Structured Streaming and real-time processing",
+      "path": "./agents/streaming-specialist.md",
+      "category": "streaming"
+    },
+    {
+      "name": "data-product-architect",
+      "description": "Data product design, contracts, and SLAs",
+      "path": "./agents/data-product-architect.md",
+      "category": "data-products"
+    },
+    {
+      "name": "delta-sharing-expert",
+      "description": "Delta Sharing configuration and consumer management",
+      "path": "./agents/delta-sharing-expert.md",
+      "category": "sharing"
+    },
+    {
+      "name": "data-contract-validator",
+      "description": "Data contract compliance and validation",
+      "path": "./agents/data-contract-validator.md",
+      "category": "contracts"
+    },
+    {
+      "name": "sla-guardian",
+      "description": "SLA monitoring, alerting, and reporting",
+      "path": "./agents/sla-guardian.md",
+      "category": "observability"
+    },
+    {
+      "name": "bundle-validator",
+      "description": "Databricks Asset Bundle validation and best practices",
+      "path": "./agents/bundle-validator.md",
+      "category": "deployment"
+    },
+    {
+      "name": "deployment-strategist",
+      "description": "Multi-environment deployment and rollback strategies",
+      "path": "./agents/deployment-strategist.md",
+      "category": "deployment"
+    },
+    {
+      "name": "notebook-reviewer",
+      "description": "Databricks notebook code quality and standards",
+      "path": "./agents/notebook-reviewer.md",
+      "category": "code-review"
+    },
+    {
+      "name": "workflow-orchestrator",
+      "description": "Job scheduling, dependencies, and orchestration",
+      "path": "./agents/workflow-orchestrator.md",
+      "category": "orchestration"
+    },
+    {
+      "name": "pytest-databricks",
+      "description": "Testing patterns for PySpark and Databricks",
+      "path": "./agents/pytest-databricks.md",
+      "category": "testing"
+    },
+    {
+      "name": "mlflow-reviewer",
+      "description": "MLflow experiment tracking and model registry",
+      "path": "./agents/mlflow-reviewer.md",
+      "category": "mlops"
+    }
+  ],
+  "skills": [
+    {
+      "name": "medallion-architecture",
+      "description": "Bronze/Silver/Gold layer design patterns and templates",
+      "path": "./skills/medallion-architecture",
+      "category": "architecture"
+    },
+    {
+      "name": "delta-live-tables",
+      "description": "Delta Live Tables pipeline patterns and examples",
+      "path": "./skills/delta-live-tables",
+      "category": "streaming"
+    },
+    {
+      "name": "data-quality",
+      "description": "Great Expectations and custom validation patterns",
+      "path": "./skills/data-quality",
+      "category": "quality"
+    },
+    {
+      "name": "testing-patterns",
+      "description": "pytest fixtures and integration testing for Spark",
+      "path": "./skills/testing-patterns",
+      "category": "testing"
+    },
+    {
+      "name": "data-products",
+      "description": "Data product design, contracts, and governance",
+      "path": "./skills/data-products",
+      "category": "data-products"
+    },
+    {
+      "name": "delta-sharing",
+      "description": "Delta Sharing setup, monitoring, and consumer management",
+      "path": "./skills/delta-sharing",
+      "category": "sharing"
+    },
+    {
+      "name": "databricks-asset-bundles",
+      "description": "Modern deployment with DAB and multi-environment configs",
+      "path": "./skills/databricks-asset-bundles",
+      "category": "deployment"
+    },
+    {
+      "name": "cicd-workflows",
+      "description": "GitHub Actions and CI/CD patterns for Databricks",
+      "path": "./skills/cicd-workflows",
+      "category": "devops"
+    }
+  ],
+  "mcp_servers": [
+    {
+      "name": "databricks-workspace",
+      "description": "Databricks Workspace API integration",
+      "config_path": "./mcp-servers/databricks-workspace.json",
+      "type": "http",
+      "url": "${DATABRICKS_HOST}/api/2.0/mcp"
+    },
+    {
+      "name": "unity-catalog",
+      "description": "Unity Catalog metadata and lineage",
+      "config_path": "./mcp-servers/unity-catalog.json",
+      "type": "http",
+      "url": "${DATABRICKS_HOST}/api/2.1/unity-catalog/mcp"
+    },
+    {
+      "name": "spark-profiler",
+      "description": "Spark query performance analysis",
+      "config_path": "./mcp-servers/spark-profiler.json",
+      "type": "stdio",
+      "command": "python",
+      "args": ["./mcp-servers/spark-profiler.py"]
+    }
+  ],
+  "templates": [
+    {
+      "name": "bronze-silver-gold",
+      "description": "Complete medallion architecture project scaffold",
+      "path": "./templates/bronze-silver-gold"
+    },
+    {
+      "name": "delta-live-tables",
+      "description": "DLT pipeline with quality checks",
+      "path": "./templates/delta-live-tables"
+    },
+    {
+      "name": "data-product",
+      "description": "Data product with contracts and SLAs",
+      "path": "./templates/data-product"
+    },
+    {
+      "name": "mlflow-project",
+      "description": "MLOps project with feature store",
+      "path": "./templates/mlflow-project"
+    }
+  ],
+  "configuration": {
+    "schema": "./config-schema.json",
+    "default_config": "./.databricks-plugin-config.yaml",
+    "env_prefix": "DATABRICKS_"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "name": "databricks-platform",
+  "version": "1.0.0",
+  "owner": {
+    "name": "Your Company Data Platform Team",
+    "url": "https://github.com/yourcompany/databricks-platform-marketplace",
+    "email": "data-platform@yourcompany.com",
+    "logo_url": "https://yourcompany.com/assets/databricks-logo.png"
+  },
+  "metadata": {
+    "display_name": "Databricks Data Platform Suite",
+    "description": "Enterprise data engineering, MLOps, and governance tools for Databricks. Build production-grade data products with Delta Lake, Unity Catalog, and Delta Sharing. 25+ specialized agents, 20+ commands, comprehensive testing and deployment automation.",
+    "long_description": "A comprehensive suite of Claude Code plugins for building, deploying, and governing data platforms on Databricks. Features include medallion architecture pipelines, Delta Live Tables, MLflow integration, data product management, Delta Sharing, and complete CI/CD with Databricks Asset Bundles.",
+    "category": "data-engineering",
+    "tags": [
+      "databricks",
+      "data-engineering",
+      "mlops",
+      "delta-lake",
+      "unity-catalog",
+      "delta-sharing",
+      "data-products",
+      "pyspark",
+      "pipeline-automation",
+      "data-quality"
+    ],
+    "homepage": "https://yourcompany.com/databricks-platform-marketplace",
+    "documentation": "https://docs.yourcompany.com/databricks-plugins",
+    "support_url": "https://support.yourcompany.com/databricks-plugins",
+    "repository": "https://github.com/yourcompany/databricks-platform-marketplace",
+    "license": "MIT",
+    "keywords": [
+      "data engineering",
+      "databricks",
+      "spark",
+      "delta lake",
+      "mlops",
+      "data quality",
+      "governance"
+    ]
+  },
+  "requirements": {
+    "claude_version": ">=3.5",
+    "python_version": ">=3.10",
+    "dependencies": {
+      "databricks-sdk": ">=0.20.0",
+      "delta-spark": ">=3.0.0",
+      "mlflow": ">=2.10.0",
+      "great-expectations": ">=0.18.0",
+      "pyspark": ">=3.5.0"
+    },
+    "system_packages": [
+      "git",
+      "docker"
+    ]
+  },
+  "plugins": [
+    {
+      "name": "databricks-engineering",
+      "path": "./plugins/databricks-engineering",
+      "featured": true,
+      "required": true
+    },
+    {
+      "name": "databricks-mlops",
+      "path": "./plugins/databricks-mlops",
+      "featured": true,
+      "required": false
+    },
+    {
+      "name": "databricks-governance",
+      "path": "./plugins/databricks-governance",
+      "featured": false,
+      "required": false
+    }
+  ],
+  "installation": {
+    "quick_start": "npx claude-plugins install @yourcompany/databricks-platform/databricks-engineering",
+    "manual_install": [
+      "/plugin marketplace add https://github.com/yourcompany/databricks-platform-marketplace",
+      "/plugin install databricks-engineering"
+    ]
+  },
+  "configuration": {
+    "required_env_vars": [
+      "DATABRICKS_HOST",
+      "DATABRICKS_TOKEN"
+    ],
+    "optional_env_vars": [
+      "DATABRICKS_WAREHOUSE_ID",
+      "DATABRICKS_CLUSTER_ID"
+    ],
+    "config_file": ".databricks-plugin-config.yaml"
+  },
+  "changelog_url": "https://github.com/yourcompany/databricks-platform-marketplace/blob/main/CHANGELOG.md",
+  "pricing": {
+    "model": "free",
+    "commercial_license_available": true,
+    "enterprise_support": "https://yourcompany.com/enterprise-support"
+  },
+  "social": {
+    "twitter": "@yourcompany_data",
+    "linkedin": "https://linkedin.com/company/yourcompany",
+    "slack_community": "https://yourcompany.slack.com/data-platform"
+  }
+}

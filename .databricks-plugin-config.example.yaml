@@ -1,0 +1,151 @@
+# Databricks Plugin Configuration Template
+# Copy this file to .databricks-plugin-config.yaml and fill in your values
+
+databricks:
+  # Workspace connection (required)
+  host: "${DATABRICKS_HOST}"  # e.g., https://your-workspace.cloud.databricks.com
+  token: "${DATABRICKS_TOKEN}"  # Personal access token or service principal token
+  
+  # Optional: specific warehouse/cluster for SQL operations
+  warehouse_id: "${DATABRICKS_WAREHOUSE_ID}"  # SQL Warehouse ID
+  cluster_id: "${DATABRICKS_CLUSTER_ID}"  # All-purpose cluster ID
+  
+  # Unity Catalog defaults
+  default_catalog: "dev_catalog"  # Default catalog for development
+  default_schema: "default"  # Default schema
+  
+  # Git integration for versioning (optional)
+  git:
+    enabled: true
+    repository: "https://github.com/yourcompany/data-pipelines"
+    branch: "main"
+    sync_on_deploy: true
+  
+  # Deployment settings
+  deployment:
+    default_environment: "dev"
+    require_approval_for_prod: true
+    auto_optimize_tables: true
+    enable_change_data_feed: true
+    
+  # Data product defaults
+  data_products:
+    default_retention_years: 3
+    default_sla_availability: 99.5
+    default_refresh_schedule: "0 2 * * *"  # Daily at 2 AM UTC
+    enable_versioning: true
+    enable_lineage_tracking: true
+    
+  # Delta Sharing defaults
+  delta_sharing:
+    default_token_expiration_days: 90
+    default_rate_limit_per_day: 1000
+    enable_audit_logging: true
+    enable_usage_analytics: true
+    alert_on_rate_limit: true
+    
+  # Monitoring & Alerting
+  monitoring:
+    slack_webhook: "${SLACK_WEBHOOK_URL}"
+    pagerduty_key: "${PAGERDUTY_INTEGRATION_KEY}"
+    dashboard_url: "https://dashboards.yourcompany.com"
+    enable_sla_monitoring: true
+    enable_cost_monitoring: true
+    alert_thresholds:
+      sla_breach: "critical"
+      quality_failure: "high"
+      cost_overrun: "medium"
+    
+  # Cost management
+  cost_management:
+    enable_cost_alerts: true
+    alert_threshold_usd: 1000  # Daily threshold
+    monthly_budget_usd: 50000
+    enable_auto_shutdown: true  # Auto-shutdown idle clusters
+    idle_timeout_minutes: 30
+    prefer_spot_instances: true
+
+# Plugin behavior
+plugins:
+  databricks_engineering:
+    # Code formatting
+    auto_format_code: true
+    format_on_save: true
+    line_length: 100
+    
+    # Testing
+    run_tests_on_save: false
+    test_coverage_threshold: 80
+    enable_integration_tests: false  # Requires credentials
+    
+    # Documentation
+    generate_documentation: true
+    auto_update_readme: true
+    include_examples: true
+    
+    # Quality checks
+    enable_quality_gates: true
+    quality_gate_strictness: "medium"  # low, medium, high
+    fail_on_quality_issues: true
+    
+  databricks_mlops:
+    # MLflow settings
+    auto_track_experiments: true
+    enable_autologging: true
+    default_experiment_location: "/Shared/Experiments"
+    artifact_location: "dbfs:/mlflow/artifacts"
+    
+    # Model registry
+    default_model_stage: "staging"
+    require_approval_for_production: true
+    enable_model_versioning: true
+    
+  databricks_governance:
+    # Compliance
+    enforce_tagging: true
+    required_tags:
+      - owner
+      - cost_center
+      - environment
+      - sensitivity
+    
+    # Access control
+    require_lineage: true
+    enable_access_audit: true
+    audit_retention_days: 365
+    
+    # PII handling
+    auto_detect_pii: true
+    mask_pii_in_logs: true
+    require_pii_tagging: true
+
+# Advanced settings
+advanced:
+  # Performance
+  enable_adaptive_query_execution: true
+  enable_dynamic_partition_pruning: true
+  default_shuffle_partitions: 200
+  
+  # Optimization
+  auto_optimize_on_write: true
+  auto_vacuum_enabled: false  # Manual vacuum recommended
+  z_order_columns: []  # Specify per table
+  
+  # Security
+  encrypt_data_at_rest: true
+  encrypt_data_in_transit: true
+  enable_network_isolation: false
+  
+  # Logging
+  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  log_to_file: true
+  log_file_path: "logs/databricks-plugin.log"
+  log_rotation: "daily"
+  log_retention_days: 7
+
+# Feature flags (enable experimental features)
+features:
+  enable_ai_query_optimization: false
+  enable_auto_scaling_recommendations: true
+  enable_predictive_cost_analysis: false
+  enable_data_mesh_patterns: false

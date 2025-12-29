@@ -1,0 +1,67 @@
+[tool.pytest.ini_options]
+# Pytest configuration for Databricks Platform Marketplace
+
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+# Test output
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+    "--disable-warnings",
+    "-ra",
+]
+
+# Coverage options
+[tool.coverage.run]
+source = ["plugins", "examples"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/env/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+
+# Markers for test categorization
+markers = [
+    "unit: Unit tests (fast, no external dependencies)",
+    "integration: Integration tests (requires Databricks credentials)",
+    "slow: Slow-running tests",
+    "databricks: Tests requiring Databricks workspace",
+    "delta_sharing: Tests requiring Delta Sharing enabled",
+    "smoke: Quick smoke tests for basic functionality",
+]
+
+# Timeout for tests
+timeout = 300
+timeout_method = "thread"
+
+# Parallel execution
+[tool.pytest.xdist]
+# Use auto to detect number of CPUs
+# Uncomment to enable parallel execution:
+# addopts = "-n auto"
+
+# Test fixtures
+[tool.pytest.fixture]
+# Fixture scope warnings
+scope = "function"

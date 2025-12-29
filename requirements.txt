@@ -1,0 +1,27 @@
+# Core dependencies for Databricks Platform Marketplace
+
+# Databricks SDK
+databricks-sdk>=0.20.0
+
+# PySpark and Delta Lake
+pyspark>=3.5.0
+delta-spark>=3.0.0
+
+# MLflow for MLOps
+mlflow>=2.10.0
+
+# Data Quality
+great-expectations>=0.18.0
+
+# Utilities
+pyyaml>=6.0
+jinja2>=3.1.2
+click>=8.1.0
+requests>=2.31.0
+
+# Configuration management
+python-dotenv>=1.0.0
+
+# Data validation
+pydantic>=2.5.0
+jsonschema>=4.20.0

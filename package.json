@@ -1,0 +1,62 @@
+{
+  "name": "@yourcompany/databricks-platform-marketplace",
+  "version": "1.0.0",
+  "description": "Enterprise Databricks data platform plugins for Claude Code",
+  "main": ".claude-plugin/marketplace.json",
+  "keywords": [
+    "claude-plugin",
+    "databricks",
+    "data-engineering",
+    "mlops",
+    "delta-lake",
+    "unity-catalog",
+    "pyspark"
+  ],
+  "scripts": {
+    "validate": "node scripts/validate-plugins.js",
+    "test": "pytest tests/ -v",
+    "test:unit": "pytest tests/unit/ -v",
+    "test:integration": "pytest tests/integration/ -v",
+    "lint": "pylint plugins/ tests/ examples/",
+    "format": "black plugins/ tests/ examples/",
+    "build": "node scripts/build-marketplace.js",
+    "publish-marketplace": "npm publish --access public",
+    "docs": "mkdocs build",
+    "docs:serve": "mkdocs serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourcompany/databricks-platform-marketplace.git"
+  },
+  "author": "Your Company Data Platform Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourcompany/databricks-platform-marketplace/issues"
+  },
+  "homepage": "https://github.com/yourcompany/databricks-platform-marketplace#readme",
+  "dependencies": {
+    "databricks-sdk": "^0.20.0",
+    "ajv": "^8.12.0"
+  },
+  "devDependencies": {
+    "pytest": "^7.4.0",
+    "pytest-cov": "^4.1.0",
+    "pytest-mock": "^3.11.1",
+    "black": "^23.7.0",
+    "pylint": "^2.17.5",
+    "mkdocs": "^1.5.0",
+    "mkdocs-material": "^9.2.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "claude-plugin": {
+    "marketplace": true,
+    "manifest": ".claude-plugin/marketplace.json"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
