@@ -1,0 +1,19 @@
+# Delta Live Tables Pipeline Dependencies
+
+# Core dependencies
+pyspark==3.5.0
+delta-spark==3.0.0
+
+# Data quality
+great-expectations==0.18.8
+
+# Testing
+pytest==7.4.3
+pytest-spark==0.6.0
+chispa==0.9.4
+
+# Utilities
+pyyaml==6.0.1
+
+# Databricks
+databricks-sdk==0.18.0

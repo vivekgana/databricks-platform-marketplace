@@ -1,0 +1,203 @@
+{
+  "name": "databricks-governance",
+  "version": "1.0.0",
+  "description": "Comprehensive data governance toolkit for Databricks Unity Catalog. Includes 10 commands for compliance and security, 8 specialized agents for governance, 4 skills for regulatory patterns, and 2 MCP servers for governance automation. Implement GDPR, HIPAA, SOC2 compliance with automated auditing, data classification, PII detection, access control, and lineage tracking.",
+  "author": {
+    "name": "Your Company Data Platform Team",
+    "email": "data-platform@yourcompany.com",
+    "url": "https://github.com/yourcompany"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourcompany/databricks-platform-marketplace"
+  },
+  "license": "MIT",
+  "keywords": [
+    "databricks",
+    "governance",
+    "compliance",
+    "unity-catalog",
+    "data-security",
+    "gdpr",
+    "hipaa",
+    "soc2",
+    "pii-detection",
+    "access-control"
+  ],
+  "commands": [
+    {
+      "name": "audit-permissions",
+      "description": "Audit Unity Catalog permissions across catalogs, schemas, tables, and functions",
+      "path": "./commands/audit-permissions.md",
+      "category": "auditing"
+    },
+    {
+      "name": "setup-data-classification",
+      "description": "Configure data classification tags and metadata standards",
+      "path": "./commands/setup-data-classification.md",
+      "category": "classification"
+    },
+    {
+      "name": "enforce-data-lineage",
+      "description": "Track and enforce data lineage with impact analysis",
+      "path": "./commands/enforce-data-lineage.md",
+      "category": "lineage"
+    },
+    {
+      "name": "configure-access-control",
+      "description": "Set up RBAC and ABAC policies with least privilege",
+      "path": "./commands/configure-access-control.md",
+      "category": "access-control"
+    },
+    {
+      "name": "scan-pii-data",
+      "description": "Scan Unity Catalog for PII and sensitive data with remediation",
+      "path": "./commands/scan-pii-data.md",
+      "category": "privacy"
+    },
+    {
+      "name": "generate-compliance-report",
+      "description": "Generate compliance reports for GDPR, HIPAA, SOC2, CCPA",
+      "path": "./commands/generate-compliance-report.md",
+      "category": "compliance"
+    },
+    {
+      "name": "setup-data-masking",
+      "description": "Configure column-level masking, encryption, and row filters",
+      "path": "./commands/setup-data-masking.md",
+      "category": "privacy"
+    },
+    {
+      "name": "manage-data-retention",
+      "description": "Configure retention policies and data lifecycle management",
+      "path": "./commands/manage-data-retention.md",
+      "category": "lifecycle"
+    },
+    {
+      "name": "audit-data-access",
+      "description": "Analyze audit logs for data access patterns and anomalies",
+      "path": "./commands/audit-data-access.md",
+      "category": "auditing"
+    },
+    {
+      "name": "configure-encryption",
+      "description": "Set up encryption at rest and in transit with key management",
+      "path": "./commands/configure-encryption.md",
+      "category": "security"
+    }
+  ],
+  "agents": [
+    {
+      "name": "compliance-auditor",
+      "description": "Expert in compliance standards (GDPR, HIPAA, SOC2, CCPA) and audit processes",
+      "path": "./agents/compliance-auditor.md",
+      "category": "compliance"
+    },
+    {
+      "name": "data-privacy-guardian",
+      "description": "Specialist in data privacy regulations, PII protection, and consent management",
+      "path": "./agents/data-privacy-guardian.md",
+      "category": "privacy"
+    },
+    {
+      "name": "access-control-specialist",
+      "description": "Expert in IAM, RBAC, ABAC, and least privilege access patterns",
+      "path": "./agents/access-control-specialist.md",
+      "category": "access-control"
+    },
+    {
+      "name": "data-classification-expert",
+      "description": "Specialist in data classification, tagging, and metadata standards",
+      "path": "./agents/data-classification-expert.md",
+      "category": "classification"
+    },
+    {
+      "name": "lineage-tracker",
+      "description": "Expert in data lineage, impact analysis, and dependency tracking",
+      "path": "./agents/lineage-tracker.md",
+      "category": "lineage"
+    },
+    {
+      "name": "encryption-specialist",
+      "description": "Expert in encryption strategies, key management, and secure data handling",
+      "path": "./agents/encryption-specialist.md",
+      "category": "security"
+    },
+    {
+      "name": "audit-log-analyzer",
+      "description": "Specialist in analyzing audit logs, detecting anomalies, and forensics",
+      "path": "./agents/audit-log-analyzer.md",
+      "category": "auditing"
+    },
+    {
+      "name": "policy-enforcer",
+      "description": "Expert in policy creation, enforcement, and governance automation",
+      "path": "./agents/policy-enforcer.md",
+      "category": "governance"
+    }
+  ],
+  "skills": [
+    {
+      "name": "unity-catalog-governance",
+      "description": "Unity Catalog governance patterns, permissions, and security models",
+      "path": "./skills/unity-catalog-governance",
+      "category": "governance"
+    },
+    {
+      "name": "data-classification",
+      "description": "Data classification strategies, tagging frameworks, and metadata management",
+      "path": "./skills/data-classification",
+      "category": "classification"
+    },
+    {
+      "name": "compliance-automation",
+      "description": "Automated compliance checks, reporting, and regulatory frameworks",
+      "path": "./skills/compliance-automation",
+      "category": "compliance"
+    },
+    {
+      "name": "access-management",
+      "description": "RBAC/ABAC implementation patterns and access control best practices",
+      "path": "./skills/access-management",
+      "category": "access-control"
+    }
+  ],
+  "mcp_servers": [
+    {
+      "name": "governance-api",
+      "description": "Unity Catalog governance API integration for permissions and policies",
+      "config_path": "./mcp-servers/governance-api.json",
+      "type": "http",
+      "url": "${DATABRICKS_HOST}/api/2.1/unity-catalog/governance"
+    },
+    {
+      "name": "audit-logs",
+      "description": "Audit log query and analysis for compliance and security",
+      "config_path": "./mcp-servers/audit-logs.json",
+      "type": "http",
+      "url": "${DATABRICKS_HOST}/api/2.0/audit-logs"
+    }
+  ],
+  "templates": [
+    {
+      "name": "governance-framework",
+      "description": "Complete governance framework with policies and procedures",
+      "path": "./templates/governance-framework"
+    },
+    {
+      "name": "compliance-report",
+      "description": "Compliance report templates for GDPR, HIPAA, SOC2",
+      "path": "./templates/compliance-report"
+    },
+    {
+      "name": "access-control-matrix",
+      "description": "RACI matrix and access control documentation",
+      "path": "./templates/access-control-matrix"
+    }
+  ],
+  "configuration": {
+    "schema": "./config-schema.json",
+    "default_config": "./.databricks-governance-config.yaml",
+    "env_prefix": "DATABRICKS_GOVERNANCE_"
+  }
+}

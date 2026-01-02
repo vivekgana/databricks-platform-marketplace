@@ -1,0 +1,74 @@
+# Databricks Asset Bundle for Data Product
+
+bundle:
+  name: data-product
+
+variables:
+  catalog:
+    description: Target catalog
+    default: products
+
+  schema:
+    description: Target schema
+    default: customer
+
+targets:
+  dev:
+    mode: development
+    workspace:
+      host: ${DATABRICKS_HOST}
+
+    resources:
+      jobs:
+        data_product_pipeline:
+          name: "[DEV] Customer 360 Data Product"
+          tasks:
+            - task_key: build_product
+              python_wheel_task:
+                package_name: "data_product"
+                entry_point: "build"
+              new_cluster:
+                spark_version: 13.3.x-scala2.12
+                node_type_id: i3.xlarge
+                num_workers: 2
+
+  prod:
+    mode: production
+    workspace:
+      host: ${DATABRICKS_HOST}
+
+    resources:
+      jobs:
+        data_product_pipeline:
+          name: "[PROD] Customer 360 Data Product"
+          schedule:
+            quartz_cron_expression: "0 * * * * ?"
+            timezone_id: "UTC"
+          tasks:
+            - task_key: build_product
+              python_wheel_task:
+                package_name: "data_product"
+                entry_point: "build"
+              job_cluster_key: shared_cluster
+            - task_key: validate_quality
+              depends_on:
+                - task_key: build_product
+              python_wheel_task:
+                package_name: "data_product"
+                entry_point: "validate"
+              job_cluster_key: shared_cluster
+            - task_key: check_sla
+              depends_on:
+                - task_key: validate_quality
+              python_wheel_task:
+                package_name: "data_product"
+                entry_point: "monitor"
+              job_cluster_key: shared_cluster
+          job_clusters:
+            - job_cluster_key: shared_cluster
+              new_cluster:
+                spark_version: 13.3.x-scala2.12
+                node_type_id: i3.2xlarge
+                autoscale:
+                  min_workers: 2
+                  max_workers: 8

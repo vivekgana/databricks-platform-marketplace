@@ -1,0 +1,435 @@
+{
+  "name": "audit-logs",
+  "version": "1.0.0",
+  "description": "Databricks audit log query and analysis for compliance monitoring, anomaly detection, and forensic investigations.",
+  "type": "http",
+  "baseUrl": "${DATABRICKS_HOST}/api/2.0",
+  "authentication": {
+    "type": "bearer",
+    "token": "${DATABRICKS_TOKEN}"
+  },
+  "endpoints": [
+    {
+      "name": "query_audit_logs",
+      "description": "Query system audit logs",
+      "method": "GET",
+      "path": "/audit-logs",
+      "parameters": {
+        "start_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date (YYYY-MM-DD)"
+        },
+        "end_date": {
+          "type": "string",
+          "format": "date",
+          "description": "End date (YYYY-MM-DD)"
+        },
+        "service_name": {
+          "type": "string",
+          "enum": ["unityCatalog", "workspace", "sql", "clusters", "jobs"],
+          "description": "Filter by service"
+        },
+        "action_name": {
+          "type": "string",
+          "description": "Filter by action (e.g., GET_TABLE, GRANT, READ_TABLE)"
+        },
+        "user_identity": {
+          "type": "string",
+          "description": "Filter by user email"
+        }
+      }
+    },
+    {
+      "name": "get_table_access_logs",
+      "description": "Get access logs for specific table",
+      "method": "GET",
+      "path": "/audit-logs/table-access",
+      "parameters": {
+        "table_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full table name (catalog.schema.table)"
+        },
+        "days": {
+          "type": "integer",
+          "default": 30,
+          "description": "Number of days to query"
+        }
+      }
+    },
+    {
+      "name": "get_user_activity",
+      "description": "Get all activity for a specific user",
+      "method": "GET",
+      "path": "/audit-logs/user-activity",
+      "parameters": {
+        "user_email": {
+          "type": "string",
+          "required": true
+        },
+        "start_date": {
+          "type": "string",
+          "required": true
+        },
+        "end_date": {
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "get_failed_access_attempts",
+      "description": "Get failed access attempts (ACCESS_DENIED events)",
+      "method": "GET",
+      "path": "/audit-logs/failed-access",
+      "parameters": {
+        "days": {
+          "type": "integer",
+          "default": 7
+        },
+        "resource_type": {
+          "type": "string",
+          "enum": ["table", "volume", "function", "catalog", "schema"]
+        }
+      }
+    },
+    {
+      "name": "get_privilege_changes",
+      "description": "Get history of privilege grants and revokes",
+      "method": "GET",
+      "path": "/audit-logs/privilege-changes",
+      "parameters": {
+        "catalog_name": {
+          "type": "string"
+        },
+        "days": {
+          "type": "integer",
+          "default": 30
+        }
+      }
+    },
+    {
+      "name": "get_pii_access_logs",
+      "description": "Get access logs for PII-tagged tables",
+      "method": "GET",
+      "path": "/audit-logs/pii-access",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "days": {
+          "type": "integer",
+          "default": 90,
+          "description": "GDPR requires 90 days of PII access logs"
+        }
+      }
+    },
+    {
+      "name": "get_data_deletion_logs",
+      "description": "Get logs of data deletion operations",
+      "method": "GET",
+      "path": "/audit-logs/deletions",
+      "parameters": {
+        "catalog_name": {
+          "type": "string"
+        },
+        "days": {
+          "type": "integer",
+          "default": 365,
+          "description": "Compliance requires 1+ year retention of deletion logs"
+        }
+      }
+    },
+    {
+      "name": "get_export_operations",
+      "description": "Get logs of data export operations",
+      "method": "GET",
+      "path": "/audit-logs/exports",
+      "parameters": {
+        "days": {
+          "type": "integer",
+          "default": 30
+        },
+        "user_email": {
+          "type": "string",
+          "description": "Filter by user"
+        }
+      }
+    }
+  ],
+  "tools": [
+    {
+      "name": "analyze_access_patterns",
+      "description": "Analyze data access patterns for a time period",
+      "implementation": "custom",
+      "handler": "analyze_access_patterns_handler",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "days": {
+          "type": "integer",
+          "default": 30
+        },
+        "group_by": {
+          "type": "string",
+          "enum": ["user", "table", "hour", "day"],
+          "default": "user"
+        }
+      }
+    },
+    {
+      "name": "detect_anomalies",
+      "description": "Detect anomalous access patterns using statistical analysis",
+      "implementation": "custom",
+      "handler": "detect_anomalies_handler",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "sensitivity": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "default": "medium",
+          "description": "Anomaly detection sensitivity"
+        },
+        "anomaly_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["volume", "timing", "pattern", "new_access"]
+          },
+          "default": ["volume", "timing", "pattern"]
+        }
+      }
+    },
+    {
+      "name": "build_user_timeline",
+      "description": "Build complete activity timeline for user",
+      "implementation": "custom",
+      "handler": "build_user_timeline_handler",
+      "parameters": {
+        "user_email": {
+          "type": "string",
+          "required": true
+        },
+        "date": {
+          "type": "string",
+          "required": true,
+          "format": "date"
+        },
+        "include_context": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include contextual information (IP, location, device)"
+        }
+      }
+    },
+    {
+      "name": "investigate_breach",
+      "description": "Investigate potential data breach or security incident",
+      "implementation": "custom",
+      "handler": "investigate_breach_handler",
+      "parameters": {
+        "incident_id": {
+          "type": "string",
+          "required": true
+        },
+        "start_time": {
+          "type": "string",
+          "required": true,
+          "format": "datetime"
+        },
+        "affected_resources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of potentially affected tables"
+        }
+      }
+    },
+    {
+      "name": "generate_access_report",
+      "description": "Generate comprehensive access report for compliance",
+      "implementation": "custom",
+      "handler": "generate_access_report_handler",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "report_type": {
+          "type": "string",
+          "enum": ["gdpr", "hipaa", "soc2", "general"],
+          "required": true
+        },
+        "period_days": {
+          "type": "integer",
+          "default": 90
+        }
+      }
+    },
+    {
+      "name": "find_after_hours_access",
+      "description": "Identify access outside business hours",
+      "implementation": "custom",
+      "handler": "find_after_hours_access_handler",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "business_hours": {
+          "type": "object",
+          "properties": {
+            "start_hour": {
+              "type": "integer",
+              "default": 8
+            },
+            "end_hour": {
+              "type": "integer",
+              "default": 18
+            }
+          }
+        },
+        "days": {
+          "type": "integer",
+          "default": 30
+        }
+      }
+    },
+    {
+      "name": "track_pii_access_chain",
+      "description": "Track complete access chain for PII data (who accessed, when, from where)",
+      "implementation": "custom",
+      "handler": "track_pii_access_handler",
+      "parameters": {
+        "subject_id": {
+          "type": "string",
+          "required": true,
+          "description": "Data subject identifier (e.g., customer_id)"
+        },
+        "days": {
+          "type": "integer",
+          "default": 90
+        }
+      }
+    },
+    {
+      "name": "verify_deletion_compliance",
+      "description": "Verify GDPR deletion request was completed across all systems",
+      "implementation": "custom",
+      "handler": "verify_deletion_handler",
+      "parameters": {
+        "deletion_request_id": {
+          "type": "string",
+          "required": true
+        },
+        "subject_id": {
+          "type": "string",
+          "required": true
+        },
+        "expected_tables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tables that should have deletions"
+        }
+      }
+    },
+    {
+      "name": "monitor_excessive_access",
+      "description": "Monitor for users accessing excessive amounts of data",
+      "implementation": "custom",
+      "handler": "monitor_excessive_access_handler",
+      "parameters": {
+        "threshold_rows": {
+          "type": "integer",
+          "default": 1000000,
+          "description": "Alert if user accesses more than this many rows"
+        },
+        "threshold_tables": {
+          "type": "integer",
+          "default": 50,
+          "description": "Alert if user accesses more than this many tables"
+        },
+        "time_window_hours": {
+          "type": "integer",
+          "default": 24
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "retries": 3,
+    "timeout": 60000,
+    "rate_limit": {
+      "requests_per_minute": 60
+    },
+    "cache": {
+      "enabled": true,
+      "ttl": 300
+    },
+    "audit_retention": {
+      "minimum_days": 90,
+      "recommended_days": 365,
+      "compliance_requirements": {
+        "gdpr": 90,
+        "hipaa": 2190,
+        "soc2": 365
+      }
+    }
+  },
+  "examples": [
+    {
+      "name": "Analyze access patterns for last 30 days",
+      "tool": "analyze_access_patterns",
+      "parameters": {
+        "catalog_name": "production",
+        "days": 30,
+        "group_by": "user"
+      }
+    },
+    {
+      "name": "Detect access anomalies",
+      "tool": "detect_anomalies",
+      "parameters": {
+        "catalog_name": "production",
+        "sensitivity": "high",
+        "anomaly_types": ["volume", "timing", "new_access"]
+      }
+    },
+    {
+      "name": "Investigate potential breach",
+      "tool": "investigate_breach",
+      "parameters": {
+        "incident_id": "INC-2026-001",
+        "start_time": "2026-01-02T14:00:00Z",
+        "affected_resources": ["production.customers.profiles", "production.customers.pii_data"]
+      }
+    },
+    {
+      "name": "Generate GDPR access report",
+      "tool": "generate_access_report",
+      "parameters": {
+        "catalog_name": "production",
+        "report_type": "gdpr",
+        "period_days": 90
+      }
+    },
+    {
+      "name": "Track PII access for data subject",
+      "tool": "track_pii_access_chain",
+      "parameters": {
+        "subject_id": "CUST-12345",
+        "days": 90
+      }
+    }
+  ]
+}

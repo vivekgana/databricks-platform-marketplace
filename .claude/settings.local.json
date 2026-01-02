@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh pr create --repo vivekgana/databricks-platform-marketplace --base main --head first_commit --title \"Initial Project Setup - Databricks Platform Marketplace v1.0.0\" --body \"$(cat <<''EOF''\n## Summary\nInitial project setup for Databricks Platform Marketplace. This PR adds the foundational files and setup instructions for the project.\n\n**Branch**: first_commit → main\n\n## Changes\nAdded the following files:\n- FINAL_PUSH_INSTRUCTIONS.md (190 lines)\n- PUSH.sh (5 lines)\n- PUSH_NOW.md (133 lines)\n- README_FIRST.txt (74 lines)\n\nTotal: 402 lines added across 4 files\n\n## Purpose\nThis PR establishes the initial project structure and documentation for the Databricks Platform Marketplace, including:\n- Project setup instructions\n- Push and deployment scripts\n- Initial documentation\n\n## Test Results\nNo tests required for documentation and setup files.\n\n## Code Review\n- All files are documentation and scripts\n- No code quality issues identified\n- Files follow markdown and shell script conventions\n\n## Security Review\n- No security vulnerabilities in documentation files\n- Shell scripts reviewed for safe execution patterns\n\n🤖 Generated with Claude Code\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(gh auth login --web)",
+      "Bash(gh auth status)",
+      "Bash(git fetch origin main)",
+      "Bash(git push -u origin main)",
+      "Bash(time /t)",
+      "Bash(powershell -Command \"Get-Date -Format ''yyyy-MM-dd HH:mm:ss''\")",
+      "Bash(powershell -Command \"Get-ChildItem -Path ''c:\\Users\\gekambaram\\source\\personal\\databricks_platform_marketplace\\databricks-platform-marketplace\\databricks-platform-marketplace\\plugins\\databricks-mlops'' -Recurse -File | Select-Object FullName | Format-Table -AutoSize\")",
+      "Bash(powershell -Command \"Get-ChildItem -Path ''c:\\Users\\gekambaram\\source\\personal\\databricks_platform_marketplace\\databricks-platform-marketplace\\databricks-platform-marketplace\\plugins\\databricks-mlops'' -Recurse | Measure-Object -Property Length -Sum | Select-Object Count, @{Name=''Size(MB)'';Expression={[math]::Round($_Sum/1MB,2)}}\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

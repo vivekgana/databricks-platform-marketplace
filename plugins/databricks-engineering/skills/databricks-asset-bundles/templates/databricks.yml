@@ -1,0 +1,40 @@
+# Databricks Asset Bundle Configuration
+bundle:
+  name: data-pipeline-bundle
+
+workspace:
+  host: https://your-workspace.databricks.com
+
+resources:
+  jobs:
+    daily_pipeline:
+      name: Daily Data Pipeline
+      tasks:
+        - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ./notebooks/bronze_ingestion
+            source: WORKSPACE
+          new_cluster:
+            num_workers: 2
+            spark_version: 13.3.x-scala2.12
+            node_type_id: i3.xlarge
+
+  pipelines:
+    dlt_pipeline:
+      name: DLT Pipeline
+      target: production_catalog
+      libraries:
+        - notebook:
+            path: ./pipelines/bronze_layer
+        - notebook:
+            path: ./pipelines/silver_layer
+
+targets:
+  dev:
+    mode: development
+    workspace:
+      root_path: /Workspace/dev/${bundle.name}
+  prod:
+    mode: production
+    workspace:
+      root_path: /Workspace/prod/${bundle.name}

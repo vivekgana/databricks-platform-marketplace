@@ -1,0 +1,46 @@
+# Delta Live Tables Pipeline Configuration
+
+name: "dlt-medallion-pipeline"
+storage: "/mnt/dlt/storage"
+target: "main.default"
+
+configuration:
+  # Enable auto-optimization
+  pipelines.enableAutoOptimization: true
+
+  # Enable schema evolution
+  pipelines.autoSchemaEvolution: true
+
+  # Enable change data capture
+  pipelines.enableChangeDataCapture: true
+
+  # Custom parameters
+  source.events.path: "/mnt/source/events/"
+  source.users.path: "/mnt/source/users/"
+
+libraries:
+  - file:
+      path: "./dlt_pipeline.py"
+
+clusters:
+  - label: "default"
+    autoscale:
+      min_workers: 1
+      max_workers: 5
+      mode: "ENHANCED"
+    custom_tags:
+      environment: "production"
+      team: "data-engineering"
+
+development: false
+continuous: true
+
+email_notifications:
+  on_success:
+    - data-team@company.com
+  on_failure:
+    - data-team@company.com
+    - oncall@company.com
+
+photon: true
+channel: "CURRENT"

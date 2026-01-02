@@ -1,0 +1,14 @@
+# Development Environment Configuration
+workspace:
+  host: https://dev-workspace.databricks.com
+
+variables:
+  catalog_name: dev_catalog
+  storage_path: /mnt/dev/data
+  cluster_size: small
+
+resources:
+  jobs:
+    daily_pipeline:
+      max_concurrent_runs: 1
+      timeout_seconds: 3600

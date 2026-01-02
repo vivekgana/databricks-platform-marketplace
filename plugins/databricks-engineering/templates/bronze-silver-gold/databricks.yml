@@ -1,0 +1,165 @@
+# Databricks Asset Bundle Configuration
+# Bronze-Silver-Gold Medallion Architecture
+
+bundle:
+  name: medallion-pipeline
+
+variables:
+  catalog:
+    description: Unity Catalog name
+    default: dev_catalog
+
+  schema:
+    description: Schema name
+    default: medallion
+
+  bronze_path:
+    description: Bronze layer storage path
+    default: /mnt/data/bronze
+
+  silver_path:
+    description: Silver layer storage path
+    default: /mnt/data/silver
+
+  gold_path:
+    description: Gold layer storage path
+    default: /mnt/data/gold
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: ${DATABRICKS_HOST}
+
+    variables:
+      catalog: dev_catalog
+      schema: dev_medallion
+
+    resources:
+      jobs:
+        bronze_ingestion_job:
+          name: "[DEV] Bronze Layer Ingestion"
+          tasks:
+            - task_key: ingest_raw_data
+              notebook_task:
+                notebook_path: ./src/bronze/ingest_raw_data.py
+              new_cluster:
+                spark_version: 13.3.x-scala2.12
+                node_type_id: i3.xlarge
+                num_workers: 2
+                spark_conf:
+                  spark.databricks.delta.preview.enabled: "true"
+
+        silver_transformation_job:
+          name: "[DEV] Silver Layer Transformation"
+          tasks:
+            - task_key: transform_to_silver
+              notebook_task:
+                notebook_path: ./src/silver/transform_data.py
+              new_cluster:
+                spark_version: 13.3.x-scala2.12
+                node_type_id: i3.xlarge
+                num_workers: 2
+
+        gold_aggregation_job:
+          name: "[DEV] Gold Layer Aggregation"
+          tasks:
+            - task_key: create_aggregates
+              notebook_task:
+                notebook_path: ./src/gold/aggregate_metrics.py
+              new_cluster:
+                spark_version: 13.3.x-scala2.12
+                node_type_id: i3.xlarge
+                num_workers: 2
+
+  prod:
+    mode: production
+    workspace:
+      host: ${DATABRICKS_HOST}
+
+    variables:
+      catalog: prod_catalog
+      schema: prod_medallion
+
+    resources:
+      jobs:
+        bronze_ingestion_job:
+          name: "[PROD] Bronze Layer Ingestion"
+          schedule:
+            quartz_cron_expression: "0 0 * * * ?"
+            timezone_id: "UTC"
+
+          email_notifications:
+            on_failure:
+              - data-engineering@company.com
+
+          tasks:
+            - task_key: ingest_raw_data
+              notebook_task:
+                notebook_path: ./src/bronze/ingest_raw_data.py
+              job_cluster_key: shared_cluster
+
+          job_clusters:
+            - job_cluster_key: shared_cluster
+              new_cluster:
+                spark_version: 13.3.x-scala2.12
+                node_type_id: i3.2xlarge
+                num_workers: 4
+                autoscale:
+                  min_workers: 2
+                  max_workers: 8
+
+        silver_transformation_job:
+          name: "[PROD] Silver Layer Transformation"
+          schedule:
+            quartz_cron_expression: "0 1 * * * ?"
+            timezone_id: "UTC"
+
+          email_notifications:
+            on_failure:
+              - data-engineering@company.com
+
+          tasks:
+            - task_key: transform_to_silver
+              depends_on:
+                - task_key: ingest_raw_data
+              notebook_task:
+                notebook_path: ./src/silver/transform_data.py
+              job_cluster_key: shared_cluster
+
+          job_clusters:
+            - job_cluster_key: shared_cluster
+              new_cluster:
+                spark_version: 13.3.x-scala2.12
+                node_type_id: i3.2xlarge
+                autoscale:
+                  min_workers: 2
+                  max_workers: 8
+
+        gold_aggregation_job:
+          name: "[PROD] Gold Layer Aggregation"
+          schedule:
+            quartz_cron_expression: "0 2 * * * ?"
+            timezone_id: "UTC"
+
+          email_notifications:
+            on_failure:
+              - data-engineering@company.com
+
+          tasks:
+            - task_key: create_aggregates
+              depends_on:
+                - task_key: transform_to_silver
+              notebook_task:
+                notebook_path: ./src/gold/aggregate_metrics.py
+              job_cluster_key: shared_cluster
+
+          job_clusters:
+            - job_cluster_key: shared_cluster
+              new_cluster:
+                spark_version: 13.3.x-scala2.12
+                node_type_id: i3.2xlarge
+                autoscale:
+                  min_workers: 2
+                  max_workers: 8

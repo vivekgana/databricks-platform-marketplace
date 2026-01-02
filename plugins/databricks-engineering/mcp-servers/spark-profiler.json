@@ -1,0 +1,140 @@
+{
+  "name": "spark-profiler",
+  "version": "1.0.0",
+  "description": "Spark query performance analysis and optimization recommendations via MCP",
+  "type": "stdio",
+  "command": "python",
+  "args": ["./mcp-servers/spark-profiler.py"],
+  "env": {
+    "PYTHONUNBUFFERED": "1"
+  },
+  "tools": [
+    {
+      "name": "analyze_plan",
+      "description": "Analyze Spark execution plan and provide optimization suggestions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "plan_text": {
+            "type": "string",
+            "description": "Spark execution plan text from df.explain()"
+          }
+        },
+        "required": ["plan_text"]
+      }
+    },
+    {
+      "name": "analyze_metrics",
+      "description": "Analyze query execution metrics and identify bottlenecks",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "metrics": {
+            "type": "object",
+            "description": "Query execution metrics",
+            "properties": {
+              "query_id": {"type": "string"},
+              "duration_ms": {"type": "integer"},
+              "stages": {"type": "integer"},
+              "tasks": {"type": "integer"},
+              "shuffle_read_bytes": {"type": "integer"},
+              "shuffle_write_bytes": {"type": "integer"},
+              "input_bytes": {"type": "integer"},
+              "output_bytes": {"type": "integer"},
+              "peak_memory_bytes": {"type": "integer"},
+              "spilled_bytes": {"type": "integer"}
+            },
+            "required": ["query_id", "duration_ms"]
+          }
+        },
+        "required": ["metrics"]
+      }
+    },
+    {
+      "name": "estimate_cost",
+      "description": "Estimate cost of query execution in DBUs and USD",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "metrics": {
+            "type": "object",
+            "description": "Query execution metrics"
+          },
+          "dbu_cost_per_hour": {
+            "type": "number",
+            "description": "Cost per DBU hour in USD",
+            "default": 0.15
+          }
+        },
+        "required": ["metrics"]
+      }
+    },
+    {
+      "name": "get_optimization_tips",
+      "description": "Get general Spark optimization tips by category",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": ["performance", "cost", "reliability", "all"],
+            "default": "all",
+            "description": "Category of optimization tips"
+          }
+        }
+      }
+    }
+  ],
+  "examples": [
+    {
+      "name": "Analyze query plan",
+      "tool": "analyze_plan",
+      "input": {
+        "plan_text": "== Physical Plan ==\n*(2) Project [id#0, name#1]\n+- *(2) BroadcastHashJoin [id#0], [customer_id#5], Inner, BuildRight\n   :- *(2) FileScan parquet [id#0, name#1]\n   +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, bigint, false] as bigint)))\n      +- *(1) FileScan parquet [customer_id#5]"
+      }
+    },
+    {
+      "name": "Analyze execution metrics",
+      "tool": "analyze_metrics",
+      "input": {
+        "metrics": {
+          "query_id": "query_123",
+          "duration_ms": 45000,
+          "stages": 5,
+          "tasks": 200,
+          "shuffle_read_bytes": 524288000,
+          "shuffle_write_bytes": 262144000,
+          "input_bytes": 1073741824,
+          "output_bytes": 536870912,
+          "peak_memory_bytes": 2147483648,
+          "spilled_bytes": 104857600
+        }
+      }
+    },
+    {
+      "name": "Estimate query cost",
+      "tool": "estimate_cost",
+      "input": {
+        "metrics": {
+          "query_id": "query_123",
+          "duration_ms": 3600000,
+          "input_bytes": 10737418240,
+          "shuffle_read_bytes": 1073741824
+        },
+        "dbu_cost_per_hour": 0.22
+      }
+    },
+    {
+      "name": "Get performance tips",
+      "tool": "get_optimization_tips",
+      "input": {
+        "category": "performance"
+      }
+    }
+  ],
+  "configuration": {
+    "restart_on_error": true,
+    "timeout_seconds": 30,
+    "log_file": "spark-profiler-mcp.log"
+  }
+}

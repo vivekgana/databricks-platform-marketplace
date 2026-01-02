@@ -1,0 +1,194 @@
+{
+  "contract_version": "1.0",
+  "product_name": "customer_360",
+  "schema_version": "1.0.0",
+  "description": "Data contract for Customer 360 data product",
+  "owner": "data-platform-team",
+  "last_updated": "2026-01-01",
+
+  "schema": {
+    "fields": [
+      {
+        "name": "customer_id",
+        "type": "string",
+        "required": true,
+        "nullable": false,
+        "unique": true,
+        "description": "Unique customer identifier",
+        "examples": ["CUST-12345", "CUST-67890"]
+      },
+      {
+        "name": "email",
+        "type": "string",
+        "required": true,
+        "nullable": false,
+        "description": "Customer email address",
+        "format": "email",
+        "pii": true
+      },
+      {
+        "name": "first_name",
+        "type": "string",
+        "required": true,
+        "nullable": false,
+        "description": "Customer first name",
+        "pii": true
+      },
+      {
+        "name": "last_name",
+        "type": "string",
+        "required": true,
+        "nullable": false,
+        "description": "Customer last name",
+        "pii": true
+      },
+      {
+        "name": "phone_number",
+        "type": "string",
+        "required": false,
+        "nullable": true,
+        "description": "Customer phone number",
+        "format": "phone",
+        "pii": true
+      },
+      {
+        "name": "country",
+        "type": "string",
+        "required": true,
+        "nullable": false,
+        "description": "Customer country code",
+        "allowed_values": ["US", "UK", "CA", "AU", "DE", "FR"]
+      },
+      {
+        "name": "signup_date",
+        "type": "date",
+        "required": true,
+        "nullable": false,
+        "description": "Date customer signed up",
+        "format": "YYYY-MM-DD"
+      },
+      {
+        "name": "lifetime_value",
+        "type": "decimal(18,2)",
+        "required": true,
+        "nullable": false,
+        "description": "Total customer lifetime value",
+        "constraints": {
+          "min": 0,
+          "max": 1000000
+        }
+      },
+      {
+        "name": "total_orders",
+        "type": "integer",
+        "required": true,
+        "nullable": false,
+        "description": "Total number of orders",
+        "constraints": {
+          "min": 0
+        }
+      },
+      {
+        "name": "last_order_date",
+        "type": "date",
+        "required": false,
+        "nullable": true,
+        "description": "Date of last order"
+      },
+      {
+        "name": "customer_segment",
+        "type": "string",
+        "required": true,
+        "nullable": false,
+        "description": "Customer value segment",
+        "allowed_values": ["Enterprise", "Mid-Market", "SMB", "Starter"]
+      },
+      {
+        "name": "is_active",
+        "type": "boolean",
+        "required": true,
+        "nullable": false,
+        "description": "Whether customer is currently active"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp",
+        "required": true,
+        "nullable": false,
+        "description": "Record creation timestamp"
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp",
+        "required": true,
+        "nullable": false,
+        "description": "Record last update timestamp"
+      }
+    ]
+  },
+
+  "guarantees": {
+    "primary_key": ["customer_id"],
+    "not_null": ["customer_id", "email", "first_name", "last_name", "country", "signup_date", "lifetime_value"],
+    "unique": ["customer_id", "email"],
+    "value_constraints": {
+      "lifetime_value": {
+        "min": 0,
+        "max": 1000000
+      },
+      "total_orders": {
+        "min": 0
+      },
+      "country": {
+        "allowed_values": ["US", "UK", "CA", "AU", "DE", "FR"]
+      }
+    },
+    "referential_integrity": [],
+    "date_ranges": {
+      "signup_date": {
+        "min": "2015-01-01",
+        "max": "current_date"
+      },
+      "last_order_date": {
+        "min": "signup_date"
+      }
+    }
+  },
+
+  "quality_rules": {
+    "completeness": {
+      "threshold": 0.98,
+      "description": "98% of records must have all required fields"
+    },
+    "accuracy": {
+      "threshold": 0.95,
+      "description": "95% of records must pass all validation rules"
+    },
+    "consistency": {
+      "threshold": 1.0,
+      "description": "100% consistency in cross-field validations"
+    },
+    "timeliness": {
+      "threshold": 3600,
+      "unit": "seconds",
+      "description": "Data must be refreshed within 1 hour"
+    }
+  },
+
+  "breaking_changes": {
+    "removed_fields": [],
+    "renamed_fields": [],
+    "type_changes": [],
+    "constraint_changes": []
+  },
+
+  "change_log": [
+    {
+      "version": "1.0.0",
+      "date": "2026-01-01",
+      "author": "data-platform-team",
+      "changes": "Initial contract version",
+      "breaking": false
+    }
+  ]
+}

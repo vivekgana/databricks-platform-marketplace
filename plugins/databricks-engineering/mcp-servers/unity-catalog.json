@@ -1,0 +1,430 @@
+{
+  "name": "unity-catalog",
+  "version": "1.0.0",
+  "description": "Unity Catalog metadata and lineage integration for MCP. Provides access to catalogs, schemas, tables, views, functions, and data lineage.",
+  "type": "http",
+  "baseUrl": "${DATABRICKS_HOST}/api/2.1/unity-catalog",
+  "authentication": {
+    "type": "bearer",
+    "token": "${DATABRICKS_TOKEN}"
+  },
+  "endpoints": [
+    {
+      "name": "list_catalogs",
+      "description": "List all catalogs in Unity Catalog",
+      "method": "GET",
+      "path": "/catalogs",
+      "parameters": {
+        "max_results": {
+          "type": "integer",
+          "description": "Maximum number of catalogs to return",
+          "default": 100
+        }
+      }
+    },
+    {
+      "name": "get_catalog",
+      "description": "Get details of a specific catalog",
+      "method": "GET",
+      "path": "/catalogs/{name}",
+      "parameters": {
+        "name": {
+          "type": "string",
+          "required": true,
+          "description": "Name of the catalog"
+        }
+      }
+    },
+    {
+      "name": "list_schemas",
+      "description": "List all schemas in a catalog",
+      "method": "GET",
+      "path": "/schemas",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true,
+          "description": "Name of the parent catalog"
+        },
+        "max_results": {
+          "type": "integer",
+          "default": 100
+        }
+      }
+    },
+    {
+      "name": "get_schema",
+      "description": "Get details of a specific schema",
+      "method": "GET",
+      "path": "/schemas/{full_name}",
+      "parameters": {
+        "full_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full name of schema (catalog.schema)"
+        }
+      }
+    },
+    {
+      "name": "list_tables",
+      "description": "List all tables in a schema",
+      "method": "GET",
+      "path": "/tables",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true,
+          "description": "Name of the parent catalog"
+        },
+        "schema_name": {
+          "type": "string",
+          "required": true,
+          "description": "Name of the parent schema"
+        },
+        "max_results": {
+          "type": "integer",
+          "default": 100
+        },
+        "include_delta_metadata": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include Delta table metadata"
+        }
+      }
+    },
+    {
+      "name": "get_table",
+      "description": "Get details of a specific table",
+      "method": "GET",
+      "path": "/tables/{full_name}",
+      "parameters": {
+        "full_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full name of table (catalog.schema.table)"
+        },
+        "include_delta_metadata": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    {
+      "name": "list_columns",
+      "description": "List columns of a table",
+      "method": "GET",
+      "path": "/tables/{full_name}/columns",
+      "parameters": {
+        "full_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full name of table"
+        }
+      }
+    },
+    {
+      "name": "get_table_lineage",
+      "description": "Get lineage information for a table",
+      "method": "GET",
+      "path": "/lineage/tables/{table_name}",
+      "parameters": {
+        "table_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full name of table (catalog.schema.table)"
+        },
+        "include_entity_lineage": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include upstream and downstream entities"
+        }
+      }
+    },
+    {
+      "name": "get_column_lineage",
+      "description": "Get column-level lineage",
+      "method": "GET",
+      "path": "/lineage/columns",
+      "parameters": {
+        "table_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full table name"
+        },
+        "column_name": {
+          "type": "string",
+          "required": true,
+          "description": "Column name"
+        }
+      }
+    },
+    {
+      "name": "list_functions",
+      "description": "List all functions in a schema",
+      "method": "GET",
+      "path": "/functions",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "schema_name": {
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "get_function",
+      "description": "Get details of a specific function",
+      "method": "GET",
+      "path": "/functions/{full_name}",
+      "parameters": {
+        "full_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full name of function (catalog.schema.function)"
+        }
+      }
+    },
+    {
+      "name": "list_volumes",
+      "description": "List all volumes in a schema",
+      "method": "GET",
+      "path": "/volumes",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "schema_name": {
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "get_volume",
+      "description": "Get details of a volume",
+      "method": "GET",
+      "path": "/volumes/{full_name}",
+      "parameters": {
+        "full_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full name of volume (catalog.schema.volume)"
+        }
+      }
+    },
+    {
+      "name": "list_shares",
+      "description": "List Delta Sharing shares",
+      "method": "GET",
+      "path": "/shares"
+    },
+    {
+      "name": "get_share",
+      "description": "Get details of a Delta Share",
+      "method": "GET",
+      "path": "/shares/{name}",
+      "parameters": {
+        "name": {
+          "type": "string",
+          "required": true,
+          "description": "Share name"
+        }
+      }
+    },
+    {
+      "name": "list_recipients",
+      "description": "List Delta Sharing recipients",
+      "method": "GET",
+      "path": "/recipients"
+    },
+    {
+      "name": "get_effective_permissions",
+      "description": "Get effective permissions on a securable object",
+      "method": "GET",
+      "path": "/permissions/{securable_type}/{full_name}",
+      "parameters": {
+        "securable_type": {
+          "type": "string",
+          "required": true,
+          "enum": ["catalog", "schema", "table", "volume", "function"],
+          "description": "Type of securable object"
+        },
+        "full_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full name of the object"
+        }
+      }
+    },
+    {
+      "name": "get_grants",
+      "description": "Get grants on a securable object",
+      "method": "GET",
+      "path": "/grants/{securable_type}/{full_name}",
+      "parameters": {
+        "securable_type": {
+          "type": "string",
+          "required": true,
+          "enum": ["catalog", "schema", "table", "volume", "function"]
+        },
+        "full_name": {
+          "type": "string",
+          "required": true
+        }
+      }
+    }
+  ],
+  "tools": [
+    {
+      "name": "search_tables",
+      "description": "Search for tables by name pattern or metadata",
+      "implementation": "custom",
+      "handler": "search_tables_handler",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "Search query"
+        },
+        "catalog": {
+          "type": "string",
+          "description": "Filter by catalog"
+        },
+        "schema": {
+          "type": "string",
+          "description": "Filter by schema"
+        },
+        "table_type": {
+          "type": "string",
+          "enum": ["MANAGED", "EXTERNAL", "VIEW"],
+          "description": "Filter by table type"
+        }
+      }
+    },
+    {
+      "name": "build_lineage_graph",
+      "description": "Build complete lineage graph for a table including all upstream and downstream dependencies",
+      "implementation": "custom",
+      "handler": "build_lineage_graph_handler",
+      "parameters": {
+        "table_name": {
+          "type": "string",
+          "required": true
+        },
+        "depth": {
+          "type": "integer",
+          "default": 3,
+          "description": "How many levels deep to traverse"
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["upstream", "downstream", "both"],
+          "default": "both"
+        }
+      }
+    },
+    {
+      "name": "analyze_permissions",
+      "description": "Analyze permissions across catalogs and identify access patterns",
+      "implementation": "custom",
+      "handler": "analyze_permissions_handler",
+      "parameters": {
+        "principal": {
+          "type": "string",
+          "description": "User or group to analyze"
+        },
+        "catalog": {
+          "type": "string",
+          "description": "Catalog to analyze"
+        }
+      }
+    },
+    {
+      "name": "find_pii_columns",
+      "description": "Identify columns that may contain PII based on name patterns and metadata",
+      "implementation": "custom",
+      "handler": "find_pii_columns_handler",
+      "parameters": {
+        "catalog": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "string"
+        },
+        "include_patterns": {
+          "type": "array",
+          "description": "Column name patterns to flag (e.g., ['email', 'ssn', 'phone'])"
+        }
+      }
+    },
+    {
+      "name": "generate_data_dictionary",
+      "description": "Generate comprehensive data dictionary for a catalog or schema",
+      "implementation": "custom",
+      "handler": "generate_data_dictionary_handler",
+      "parameters": {
+        "catalog": {
+          "type": "string",
+          "required": true
+        },
+        "schema": {
+          "type": "string",
+          "description": "Optional schema filter"
+        },
+        "format": {
+          "type": "string",
+          "enum": ["markdown", "html", "json"],
+          "default": "markdown"
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "retries": 3,
+    "timeout": 30000,
+    "rate_limit": {
+      "requests_per_minute": 60
+    },
+    "cache": {
+      "enabled": true,
+      "ttl": 600
+    }
+  },
+  "examples": [
+    {
+      "name": "List all tables in a schema",
+      "tool": "list_tables",
+      "parameters": {
+        "catalog_name": "production",
+        "schema_name": "sales"
+      }
+    },
+    {
+      "name": "Get table lineage",
+      "tool": "get_table_lineage",
+      "parameters": {
+        "table_name": "production.sales.customer_360"
+      }
+    },
+    {
+      "name": "Search for customer tables",
+      "tool": "search_tables",
+      "parameters": {
+        "query": "customer",
+        "catalog": "production"
+      }
+    },
+    {
+      "name": "Build lineage graph",
+      "tool": "build_lineage_graph",
+      "parameters": {
+        "table_name": "production.gold.sales_metrics",
+        "depth": 5,
+        "direction": "upstream"
+      }
+    }
+  ]
+}

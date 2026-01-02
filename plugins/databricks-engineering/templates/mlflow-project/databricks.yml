@@ -1,0 +1,80 @@
+# Databricks Asset Bundle for MLflow Project
+
+bundle:
+  name: mlflow-project
+
+targets:
+  dev:
+    mode: development
+    workspace:
+      host: ${DATABRICKS_HOST}
+
+    resources:
+      jobs:
+        ml_pipeline:
+          name: "[DEV] ML Training Pipeline"
+          tasks:
+            - task_key: feature_engineering
+              python_wheel_task:
+                package_name: "ml_project"
+                entry_point: "feature_engineering"
+              new_cluster:
+                spark_version: 13.3.x-cpu-ml-scala2.12
+                node_type_id: i3.xlarge
+                num_workers: 2
+
+            - task_key: model_training
+              depends_on:
+                - task_key: feature_engineering
+              python_wheel_task:
+                package_name: "ml_project"
+                entry_point: "train"
+              new_cluster:
+                spark_version: 13.3.x-cpu-ml-scala2.12
+                node_type_id: i3.xlarge
+                num_workers: 2
+
+  prod:
+    mode: production
+    workspace:
+      host: ${DATABRICKS_HOST}
+
+    resources:
+      jobs:
+        ml_pipeline:
+          name: "[PROD] ML Training Pipeline"
+          schedule:
+            quartz_cron_expression: "0 0 * * * ?"
+            timezone_id: "UTC"
+
+          tasks:
+            - task_key: feature_engineering
+              python_wheel_task:
+                package_name: "ml_project"
+                entry_point: "feature_engineering"
+              job_cluster_key: ml_cluster
+
+            - task_key: model_training
+              depends_on:
+                - task_key: feature_engineering
+              python_wheel_task:
+                package_name: "ml_project"
+                entry_point: "train"
+              job_cluster_key: ml_cluster
+
+            - task_key: model_validation
+              depends_on:
+                - task_key: model_training
+              python_wheel_task:
+                package_name: "ml_project"
+                entry_point: "validate"
+              job_cluster_key: ml_cluster
+
+          job_clusters:
+            - job_cluster_key: ml_cluster
+              new_cluster:
+                spark_version: 13.3.x-cpu-ml-scala2.12
+                node_type_id: i3.2xlarge
+                autoscale:
+                  min_workers: 2
+                  max_workers: 8

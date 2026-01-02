@@ -1,0 +1,72 @@
+# Databricks Asset Bundle for DLT Pipeline
+
+bundle:
+  name: dlt-pipeline
+
+variables:
+  catalog:
+    description: Target catalog
+    default: main
+
+  schema:
+    description: Target schema
+    default: default
+
+  storage_path:
+    description: DLT storage path
+    default: /mnt/dlt/storage
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: ${DATABRICKS_HOST}
+
+    resources:
+      pipelines:
+        dlt_medallion:
+          name: "[DEV] DLT Medallion Pipeline"
+          storage: "/mnt/dlt/dev/storage"
+          target: "dev_catalog.dev_schema"
+          configuration:
+            pipelines.enableAutoOptimization: "true"
+          libraries:
+            - file:
+                path: ./dlt_pipeline.py
+          clusters:
+            - label: "default"
+              autoscale:
+                min_workers: 1
+                max_workers: 3
+          development: true
+          continuous: false
+
+  prod:
+    mode: production
+    workspace:
+      host: ${DATABRICKS_HOST}
+
+    resources:
+      pipelines:
+        dlt_medallion:
+          name: "[PROD] DLT Medallion Pipeline"
+          storage: "/mnt/dlt/prod/storage"
+          target: "prod_catalog.prod_schema"
+          configuration:
+            pipelines.enableAutoOptimization: "true"
+            pipelines.enableChangeDataCapture: "true"
+          libraries:
+            - file:
+                path: ./dlt_pipeline.py
+          clusters:
+            - label: "default"
+              autoscale:
+                min_workers: 2
+                max_workers: 10
+          development: false
+          continuous: true
+          photon: true
+          email_notifications:
+            on_failure:
+              - data-engineering@company.com

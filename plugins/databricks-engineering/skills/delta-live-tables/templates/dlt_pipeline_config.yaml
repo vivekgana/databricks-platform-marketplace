@@ -1,0 +1,335 @@
+# Delta Live Tables Pipeline Configuration Template
+# Author: Databricks Platform Team
+# Last Updated: 2026-01-01 19:57:49
+#
+# This YAML file defines a complete DLT pipeline configuration
+# Use this template with Databricks Asset Bundles or API deployment
+
+# Pipeline Identification
+name: "sales_analytics_pipeline"
+target: "production_sales_db"
+storage: "/mnt/dlt/sales_analytics"
+
+# Pipeline Mode
+# - continuous: true for real-time processing
+# - continuous: false for triggered/scheduled processing
+continuous: false
+
+# Development Mode
+# - Set to true for faster iteration during development
+# - Development mode skips optimizations and retries
+development: false
+
+# Photo Repair (Schema Evolution)
+# - Automatically handle schema changes
+photo_repair: true
+
+# Edition
+# - advanced: Full feature set
+# - core: Basic features
+# - pro: Professional features
+edition: "advanced"
+
+# Cluster Configuration
+clusters:
+  - label: "default"
+    # Worker Configuration
+    num_workers: 4
+    node_type_id: "i3.xlarge"  # AWS
+    # node_type_id: "Standard_DS3_v2"  # Azure
+    # node_type_id: "n1-standard-4"  # GCP
+
+    # Driver Configuration (optional - defaults to worker type)
+    driver_node_type_id: "i3.xlarge"
+
+    # Autoscaling Configuration
+    autoscale:
+      min_workers: 2
+      max_workers: 10
+      mode: "ENHANCED"  # LEGACY or ENHANCED
+
+    # Spark Configuration
+    spark_conf:
+      # Delta Lake Settings
+      "spark.databricks.delta.preview.enabled": "true"
+      "spark.databricks.delta.properties.defaults.enableChangeDataFeed": "true"
+      "spark.databricks.delta.optimizeWrite.enabled": "true"
+      "spark.databricks.delta.autoCompact.enabled": "true"
+
+      # Memory Configuration
+      "spark.driver.memory": "8g"
+      "spark.executor.memory": "8g"
+      "spark.executor.cores": "4"
+
+      # Shuffle Configuration
+      "spark.sql.shuffle.partitions": "200"
+      "spark.sql.adaptive.enabled": "true"
+
+      # DLT-Specific Settings
+      "pipelines.applyChangesPreviewEnabled": "true"
+
+    # Custom Tags
+    custom_tags:
+      Environment: "production"
+      Team: "data-engineering"
+      CostCenter: "analytics"
+      Project: "sales-analytics"
+
+    # AWS-Specific Settings (if using AWS)
+    aws_attributes:
+      instance_profile_arn: "arn:aws:iam::123456789:instance-profile/databricks-s3-access"
+      availability: "SPOT_WITH_FALLBACK"
+      zone_id: "us-west-2a"
+      spot_bid_price_percent: 100
+      ebs_volume_type: "GENERAL_PURPOSE_SSD"
+      ebs_volume_count: 1
+      ebs_volume_size: 100
+
+    # Azure-Specific Settings (if using Azure)
+    # azure_attributes:
+    #   availability: "SPOT_WITH_FALLBACK_AZURE"
+    #   first_on_demand: 1
+    #   spot_bid_max_price: -1
+
+    # Init Scripts (optional)
+    init_scripts:
+      - dbfs:
+          destination: "dbfs:/databricks/init_scripts/install_dependencies.sh"
+
+# Libraries - Notebooks containing DLT definitions
+libraries:
+  # Bronze Layer
+  - notebook:
+      path: "/Workspace/pipelines/bronze/ingest_sales"
+  - notebook:
+      path: "/Workspace/pipelines/bronze/ingest_customers"
+  - notebook:
+      path: "/Workspace/pipelines/bronze/ingest_products"
+
+  # Silver Layer
+  - notebook:
+      path: "/Workspace/pipelines/silver/validate_sales"
+  - notebook:
+      path: "/Workspace/pipelines/silver/validate_customers"
+  - notebook:
+      path: "/Workspace/pipelines/silver/enrich_transactions"
+
+  # Gold Layer
+  - notebook:
+      path: "/Workspace/pipelines/gold/daily_aggregates"
+  - notebook:
+      path: "/Workspace/pipelines/gold/customer_ltv"
+  - notebook:
+      path: "/Workspace/pipelines/gold/product_performance"
+
+  # Python libraries (optional)
+  # - pypi:
+  #     package: "great-expectations==0.15.50"
+  # - pypi:
+  #     package: "pandas==1.5.3"
+
+  # JAR libraries (optional)
+  # - jar: "dbfs:/mnt/jars/custom-udf-1.0.jar"
+
+# Pipeline Configuration Parameters
+# These can be accessed in notebooks via spark.conf.get()
+configuration:
+  # Source Paths
+  sales_source_path: "/mnt/landing/sales"
+  customers_source_path: "/mnt/landing/customers"
+  products_source_path: "/mnt/landing/products"
+
+  # Checkpoint Paths
+  bronze_checkpoint: "/mnt/checkpoints/sales_pipeline/bronze"
+  silver_checkpoint: "/mnt/checkpoints/sales_pipeline/silver"
+  gold_checkpoint: "/mnt/checkpoints/sales_pipeline/gold"
+
+  # Schema Locations
+  bronze_schema_location: "/mnt/schemas/bronze"
+  silver_schema_location: "/mnt/schemas/silver"
+
+  # Processing Parameters
+  batch_size: "1000"
+  watermark_delay: "10 minutes"
+  processing_time: "1 minute"
+
+  # Environment Settings
+  environment: "production"
+  log_level: "INFO"
+
+  # Data Quality Thresholds
+  max_error_rate: "0.05"
+  min_quality_score: "0.8"
+
+  # Business Parameters
+  default_currency: "USD"
+  fiscal_year_start: "01-01"
+
+# Data Quality and Expectations
+# Global expectations applied to all tables
+expectations:
+  # Fail pipeline if these are violated
+  fail_on_violation: false
+
+  # Report violations but continue
+  warn_on_violation: true
+
+  # Drop records that violate
+  drop_on_violation: true
+
+# Notifications
+notifications:
+  # Email Notifications
+  - email_recipients:
+      - "data-engineering@company.com"
+      - "analytics-team@company.com"
+    on_start: false
+    on_success: false
+    on_failure: true
+
+  # Webhook Notifications (Slack, PagerDuty, etc.)
+  # - webhook:
+  #     url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+  #     on_start: false
+  #     on_success: false
+  #     on_failure: true
+
+# Update Schedule
+# Use cron expressions for scheduled updates
+schedule:
+  quartz_cron_expression: "0 0 * * * ?"  # Every hour
+  timezone_id: "America/Los_Angeles"
+  # pause_status: "PAUSED"  # Uncomment to pause scheduled runs
+
+# Permissions
+permissions:
+  - user_name: "data.engineering@company.com"
+    permission_level: "IS_OWNER"
+  - group_name: "data-analysts"
+    permission_level: "CAN_VIEW"
+  - group_name: "data-engineers"
+    permission_level: "CAN_MANAGE"
+  - group_name: "executives"
+    permission_level: "CAN_VIEW"
+
+# Advanced Settings
+advanced_settings:
+  # Maximum number of consecutive failures before alerting
+  max_consecutive_failures: 3
+
+  # Timeout settings
+  timeout_seconds: 3600  # 1 hour
+
+  # Retry settings
+  max_retries: 3
+  min_retry_interval_millis: 60000  # 1 minute
+
+  # Resource quotas
+  # max_concurrent_runs: 1
+
+# Catalog and Schema Configuration (Unity Catalog)
+catalog: "production_catalog"
+schema: "sales_analytics"
+
+# Channel (for preview features)
+channel: "CURRENT"  # CURRENT or PREVIEW
+
+# Allow Duplicate Names
+# Set to true if multiple pipelines can write to the same tables
+allow_duplicate_names: false
+
+# Gateway Configuration (for SQL Warehouse integration)
+# gateway_definition:
+#   gateway_storage_catalog: "production_catalog"
+#   gateway_storage_schema: "sales_analytics"
+#   gateway_storage_name: "sales_gateway"
+
+# Budget Policy
+# budget_policy_id: "policy-id-here"
+
+---
+# Example: Development Pipeline Configuration
+# Use this for testing and development
+
+name: "sales_analytics_pipeline_dev"
+target: "dev_sales_db"
+storage: "/mnt/dlt/dev_sales_analytics"
+
+# Enable development mode for faster iteration
+continuous: false
+development: true
+photo_repair: true
+edition: "core"  # Use core edition for dev
+
+clusters:
+  - label: "default"
+    num_workers: 1  # Minimal resources for dev
+    node_type_id: "i3.xlarge"
+
+    spark_conf:
+      "spark.databricks.delta.preview.enabled": "true"
+
+    custom_tags:
+      Environment: "development"
+      Team: "data-engineering"
+
+libraries:
+  - notebook:
+      path: "/Workspace/dev/pipelines/bronze/ingest_sales"
+  - notebook:
+      path: "/Workspace/dev/pipelines/silver/validate_sales"
+  - notebook:
+      path: "/Workspace/dev/pipelines/gold/daily_aggregates"
+
+configuration:
+  sales_source_path: "/mnt/dev/landing/sales"
+  environment: "development"
+  log_level: "DEBUG"
+
+notifications:
+  - email_recipients:
+      - "developer@company.com"
+    on_failure: true
+
+---
+# Example: Streaming Real-Time Pipeline Configuration
+
+name: "realtime_events_pipeline"
+target: "streaming_events_db"
+storage: "/mnt/dlt/realtime_events"
+
+# Enable continuous processing for real-time
+continuous: true
+development: false
+edition: "advanced"
+
+clusters:
+  - label: "default"
+    autoscale:
+      min_workers: 2
+      max_workers: 20
+      mode: "ENHANCED"
+    node_type_id: "i3.2xlarge"
+
+    spark_conf:
+      "spark.databricks.delta.preview.enabled": "true"
+      "spark.sql.streaming.stateStore.providerClass": "com.databricks.sql.streaming.state.RocksDBStateStoreProvider"
+
+libraries:
+  - notebook:
+      path: "/Workspace/pipelines/streaming/ingest_events"
+  - notebook:
+      path: "/Workspace/pipelines/streaming/process_events"
+  - notebook:
+      path: "/Workspace/pipelines/streaming/aggregate_metrics"
+
+configuration:
+  events_source_path: "/mnt/streaming/events"
+  watermark_delay: "5 minutes"
+  processing_time: "30 seconds"
+  checkpoint_location: "/mnt/checkpoints/streaming"
+
+notifications:
+  - email_recipients:
+      - "platform-team@company.com"
+    on_failure: true

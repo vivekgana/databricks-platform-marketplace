@@ -1,0 +1,48 @@
+# MLflow Project Configuration
+
+name: customer-churn-prediction
+
+conda_env: conda.yaml
+
+entry_points:
+  main:
+    parameters:
+      training_data: {type: string, default: "main.ml.training_data"}
+      feature_table: {type: string, default: "main.features.customer_features"}
+      experiment_name: {type: string, default: "/Shared/customer-churn"}
+      model_name: {type: string, default: "customer_churn_model"}
+      n_estimators: {type: int, default: 100}
+      max_depth: {type: int, default: 10}
+    command: "python src/model_training.py \
+              --training-data {training_data} \
+              --feature-table {feature_table} \
+              --experiment-name {experiment_name} \
+              --model-name {model_name} \
+              --n-estimators {n_estimators} \
+              --max-depth {max_depth}"
+
+  feature_engineering:
+    parameters:
+      source_table: {type: string}
+      feature_table: {type: string}
+    command: "python src/feature_engineering.py \
+              --source-table {source_table} \
+              --feature-table {feature_table}"
+
+  batch_inference:
+    parameters:
+      model_uri: {type: string}
+      input_table: {type: string}
+      output_table: {type: string}
+    command: "python src/model_serving.py \
+              --model-uri {model_uri} \
+              --input-table {input_table} \
+              --output-table {output_table}"
+
+  monitoring:
+    parameters:
+      model_name: {type: string}
+      serving_endpoint: {type: string}
+    command: "python src/monitoring.py \
+              --model-name {model_name} \
+              --serving-endpoint {serving_endpoint}"
