@@ -1,0 +1,189 @@
+# SLA Definition for Data Product
+
+sla_version: "1.0"
+product_name: "customer_360"
+effective_date: "2026-01-01"
+
+# Data Freshness SLA
+freshness:
+  description: "Data must be refreshed within specified timeframe"
+  metric_name: "data_age_minutes"
+  measurement_query: |
+    SELECT MAX(TIMESTAMPDIFF(MINUTE, updated_at, CURRENT_TIMESTAMP())) as data_age_minutes
+    FROM {catalog}.{schema}.{table}
+  threshold: 60
+  unit: "minutes"
+  severity: "critical"
+  alert_on_violation: true
+
+# Data Quality SLA
+quality:
+  description: "Minimum percentage of records meeting quality standards"
+  metric_name: "quality_score_percent"
+  measurement_query: |
+    SELECT
+      (COUNT(*) FILTER (WHERE quality_flag = 'PASS') * 100.0 / COUNT(*)) as quality_score_percent
+    FROM {catalog}.{schema}.{table}
+  threshold: 95.0
+  unit: "percent"
+  severity: "high"
+  alert_on_violation: true
+
+  quality_dimensions:
+    completeness:
+      threshold: 98.0
+      description: "Required fields must be populated"
+      checks:
+        - "customer_id IS NOT NULL"
+        - "email IS NOT NULL"
+        - "country IS NOT NULL"
+
+    accuracy:
+      threshold: 95.0
+      description: "Data must meet validation rules"
+      checks:
+        - "email LIKE '%@%.%'"
+        - "lifetime_value >= 0"
+        - "total_orders >= 0"
+
+    consistency:
+      threshold: 100.0
+      description: "Cross-field validations must pass"
+      checks:
+        - "last_order_date >= signup_date OR last_order_date IS NULL"
+        - "total_orders = 0 OR last_order_date IS NOT NULL"
+
+    uniqueness:
+      threshold: 100.0
+      description: "Primary key must be unique"
+      checks:
+        - "COUNT(DISTINCT customer_id) = COUNT(*)"
+
+# Service Availability SLA
+availability:
+  description: "Service uptime percentage"
+  metric_name: "uptime_percent"
+  threshold: 99.9
+  unit: "percent"
+  measurement_period: "monthly"
+  severity: "critical"
+  alert_on_violation: true
+
+  downtime_allowance:
+    monthly_minutes: 43.2  # 0.1% of month
+    annual_hours: 8.76  # 0.1% of year
+
+# Data Completeness SLA
+completeness:
+  description: "Percentage of expected records present"
+  metric_name: "completeness_percent"
+  measurement_query: |
+    SELECT
+      (actual_count * 100.0 / expected_count) as completeness_percent
+    FROM (
+      SELECT
+        COUNT(*) as actual_count,
+        (SELECT COUNT(*) FROM {source_table}) as expected_count
+      FROM {catalog}.{schema}.{table}
+    )
+  threshold: 98.0
+  unit: "percent"
+  severity: "high"
+  alert_on_violation: true
+
+# Processing Time SLA
+processing_time:
+  description: "Maximum time for pipeline execution"
+  metric_name: "processing_time_minutes"
+  threshold: 30
+  unit: "minutes"
+  severity: "medium"
+  alert_on_violation: true
+
+# Data Latency SLA
+latency:
+  description: "Maximum delay between source update and availability"
+  metric_name: "latency_minutes"
+  threshold: 15
+  unit: "minutes"
+  severity: "high"
+  alert_on_violation: true
+
+# Monitoring Configuration
+monitoring:
+  check_frequency: "5 minutes"
+  retention_days: 90
+
+  alert_channels:
+    critical:
+      - type: "pagerduty"
+        escalation_policy: "data-platform-oncall"
+      - type: "email"
+        recipients:
+          - "data-platform@company.com"
+          - "oncall@company.com"
+
+    high:
+      - type: "slack"
+        channel: "#data-alerts"
+      - type: "email"
+        recipients:
+          - "data-platform@company.com"
+
+    medium:
+      - type: "slack"
+        channel: "#data-monitoring"
+
+  escalation:
+    - level: 1
+      after_minutes: 5
+      action: "notify_team"
+    - level: 2
+      after_minutes: 15
+      action: "notify_manager"
+    - level: 3
+      after_minutes: 30
+      action: "notify_executive"
+
+# Reporting
+reporting:
+  daily_summary:
+    enabled: true
+    recipients:
+      - "data-platform@company.com"
+    include_metrics:
+      - "freshness"
+      - "quality"
+      - "completeness"
+
+  weekly_report:
+    enabled: true
+    recipients:
+      - "data-platform@company.com"
+      - "leadership@company.com"
+    include_metrics: "all"
+
+  monthly_sla_report:
+    enabled: true
+    recipients:
+      - "data-platform@company.com"
+      - "leadership@company.com"
+      - "stakeholders@company.com"
+
+# SLA Violation Response
+violation_response:
+  automatic_actions:
+    - condition: "freshness_violation"
+      action: "trigger_pipeline_refresh"
+
+    - condition: "quality_violation > 2_consecutive"
+      action: "pause_downstream_consumers"
+
+    - condition: "availability_violation"
+      action: "failover_to_backup"
+
+  remediation_sla:
+    critical: "1 hour"
+    high: "4 hours"
+    medium: "8 hours"
+    low: "24 hours"

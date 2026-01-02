@@ -1,0 +1,123 @@
+databricks-mlops/
+│
+├── .claude-plugin/
+│   └── plugin.json                                  (Plugin configuration)
+│
+├── commands/                                        (10 Commands)
+│   ├── train-model.md                              (Train ML models with MLflow)
+│   ├── register-model.md                           (Register to Model Registry)
+│   ├── deploy-model.md                             (Deploy to serving endpoints)
+│   ├── create-feature-table.md                     (Create Feature Store tables)
+│   ├── setup-monitoring.md                         (Model drift & monitoring)
+│   ├── run-hyperparameter-tuning.md                (Distributed hyperparameter optimization)
+│   ├── create-ml-pipeline.md                       (End-to-end ML pipelines)
+│   ├── validate-model.md                           (Model validation & testing)
+│   ├── promote-model.md                            (Promote across environments)
+│   └── batch-inference.md                          (Batch inference jobs)
+│
+├── agents/                                          (8 Agents)
+│   ├── mlflow-expert.md                            (MLflow best practices)
+│   ├── feature-store-specialist.md                 (Feature Store patterns)
+│   ├── model-monitoring-expert.md                  (Drift detection & monitoring)
+│   ├── hyperparameter-optimizer.md                 (Tuning strategies)
+│   ├── ml-pipeline-architect.md                    (Pipeline design)
+│   ├── model-serving-specialist.md                 (Deployment patterns)
+│   ├── ml-security-guardian.md                     (ML security & governance)
+│   └── automl-expert.md                            (AutoML guidance)
+│
+├── skills/                                          (4 Skills - 16 files total)
+│   │
+│   ├── mlflow-tracking/                            (Skill 1)
+│   │   ├── SKILL.md                                (Comprehensive guide)
+│   │   ├── README.md                               (Quick start)
+│   │   ├── templates/
+│   │   │   └── experiment_tracking_template.py     (Training template)
+│   │   └── examples/
+│   │       └── sklearn_classification.py           (Working example)
+│   │
+│   ├── feature-engineering/                        (Skill 2)
+│   │   ├── SKILL.md                                (Feature Store guide)
+│   │   ├── README.md                               (Quick start)
+│   │   ├── templates/
+│   │   │   └── feature_table_template.py           (Feature table template)
+│   │   └── examples/
+│   │       └── time_series_features.py             (Time-series example)
+│   │
+│   ├── model-serving/                              (Skill 3)
+│   │   ├── SKILL.md                                (Deployment guide)
+│   │   ├── README.md                               (Quick start)
+│   │   ├── templates/
+│   │   │   └── endpoint_deployment_template.py     (Deployment template)
+│   │   └── examples/
+│   │       └── ab_testing_deployment.py            (A/B testing example)
+│   │
+│   └── ml-monitoring/                              (Skill 4)
+│       ├── SKILL.md                                (Monitoring guide)
+│       ├── README.md                               (Quick start)
+│       ├── templates/
+│       │   └── monitoring_setup_template.py        (Monitoring template)
+│       └── examples/
+│           └── drift_detection.py                  (Drift detection example)
+│
+├── mcp-servers/                                     (2 MCP Servers)
+│   ├── mlflow-registry.json                        (MLflow Registry API integration)
+│   └── feature-store.json                          (Feature Store metadata access)
+│
+└── documentation/                                   (3 Documentation files)
+    ├── README.md                                    (Complete plugin overview)
+    ├── PLUGIN_SUMMARY.md                           (File inventory & descriptions)
+    └── FILE_STRUCTURE.txt                          (This file - visual tree)
+
+
+TOTAL FILE COUNT: 39 files
+
+BREAKDOWN:
+- Configuration:     1 file   (.claude-plugin/plugin.json)
+- Commands:         10 files  (commands/*.md)
+- Agents:            8 files  (agents/*.md)
+- Skills:           16 files  (4 skills × 4 files each)
+- MCP Servers:       2 files  (mcp-servers/*.json)
+- Documentation:     2 files  (README.md, PLUGIN_SUMMARY.md, FILE_STRUCTURE.txt)
+
+CATEGORIES:
+Commands (Training & Dev):
+  ✓ train-model
+  ✓ run-hyperparameter-tuning
+  ✓ create-feature-table
+
+Commands (Lifecycle):
+  ✓ register-model
+  ✓ validate-model
+  ✓ promote-model
+
+Commands (Deployment):
+  ✓ deploy-model
+  ✓ batch-inference
+
+Commands (Infrastructure):
+  ✓ create-ml-pipeline
+  ✓ setup-monitoring
+
+Agents (Core):
+  ✓ mlflow-expert
+  ✓ feature-store-specialist
+  ✓ model-monitoring-expert
+
+Agents (Optimization):
+  ✓ hyperparameter-optimizer
+  ✓ ml-pipeline-architect
+  ✓ model-serving-specialist
+
+Agents (Governance):
+  ✓ ml-security-guardian
+  ✓ automl-expert
+
+Skills:
+  ✓ mlflow-tracking      (experiment tracking patterns)
+  ✓ feature-engineering  (Feature Store usage)
+  ✓ model-serving        (deployment strategies)
+  ✓ ml-monitoring        (drift detection & monitoring)
+
+MCP Servers:
+  ✓ mlflow-registry      (Model Registry API)
+  ✓ feature-store        (Feature Store metadata)

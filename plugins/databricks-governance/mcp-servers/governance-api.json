@@ -1,0 +1,439 @@
+{
+  "name": "governance-api",
+  "version": "1.0.0",
+  "description": "Unity Catalog governance API integration for permissions, policies, tags, and compliance automation.",
+  "type": "http",
+  "baseUrl": "${DATABRICKS_HOST}/api/2.1/unity-catalog",
+  "authentication": {
+    "type": "bearer",
+    "token": "${DATABRICKS_TOKEN}"
+  },
+  "endpoints": [
+    {
+      "name": "get_effective_permissions",
+      "description": "Get effective permissions on a securable object",
+      "method": "GET",
+      "path": "/permissions/{securable_type}/{full_name}",
+      "parameters": {
+        "securable_type": {
+          "type": "string",
+          "required": true,
+          "enum": ["catalog", "schema", "table", "volume", "function", "external_location"],
+          "description": "Type of securable object"
+        },
+        "full_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full name of the object (e.g., catalog.schema.table)"
+        }
+      }
+    },
+    {
+      "name": "list_grants",
+      "description": "List all grants on a securable object",
+      "method": "GET",
+      "path": "/grants/{securable_type}/{full_name}",
+      "parameters": {
+        "securable_type": {
+          "type": "string",
+          "required": true,
+          "enum": ["catalog", "schema", "table", "volume", "function"]
+        },
+        "full_name": {
+          "type": "string",
+          "required": true
+        },
+        "principal": {
+          "type": "string",
+          "description": "Filter by principal"
+        }
+      }
+    },
+    {
+      "name": "grant_privilege",
+      "description": "Grant privilege on securable object",
+      "method": "POST",
+      "path": "/grants",
+      "body": {
+        "securable_type": {
+          "type": "string",
+          "required": true
+        },
+        "full_name": {
+          "type": "string",
+          "required": true
+        },
+        "principal": {
+          "type": "string",
+          "required": true,
+          "description": "User email or group name"
+        },
+        "privilege": {
+          "type": "string",
+          "required": true,
+          "enum": ["ALL PRIVILEGES", "SELECT", "MODIFY", "CREATE", "USE CATALOG", "USE SCHEMA", "EXECUTE", "READ FILES", "WRITE FILES"]
+        }
+      }
+    },
+    {
+      "name": "revoke_privilege",
+      "description": "Revoke privilege on securable object",
+      "method": "DELETE",
+      "path": "/grants",
+      "body": {
+        "securable_type": {
+          "type": "string",
+          "required": true
+        },
+        "full_name": {
+          "type": "string",
+          "required": true
+        },
+        "principal": {
+          "type": "string",
+          "required": true
+        },
+        "privilege": {
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "create_tag",
+      "description": "Create a new tag",
+      "method": "POST",
+      "path": "/tags",
+      "body": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "schema_name": {
+          "type": "string",
+          "required": true
+        },
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "comment": {
+          "type": "string",
+          "description": "Tag description"
+        }
+      }
+    },
+    {
+      "name": "list_tags",
+      "description": "List all tags",
+      "method": "GET",
+      "path": "/tags",
+      "parameters": {
+        "catalog_name": {
+          "type": "string"
+        },
+        "schema_name": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "name": "get_tag",
+      "description": "Get tag details",
+      "method": "GET",
+      "path": "/tags/{full_name}",
+      "parameters": {
+        "full_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full tag name (catalog.schema.tag)"
+        }
+      }
+    },
+    {
+      "name": "set_table_tags",
+      "description": "Set tags on a table",
+      "method": "PUT",
+      "path": "/tables/{full_name}/tags",
+      "parameters": {
+        "full_name": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "body": {
+        "tags": {
+          "type": "object",
+          "required": true,
+          "description": "Map of tag names to values"
+        }
+      }
+    },
+    {
+      "name": "set_column_tags",
+      "description": "Set tags on a column",
+      "method": "PUT",
+      "path": "/tables/{table_full_name}/columns/{column_name}/tags",
+      "parameters": {
+        "table_full_name": {
+          "type": "string",
+          "required": true
+        },
+        "column_name": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "body": {
+        "tags": {
+          "type": "object",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "get_table_tags",
+      "description": "Get all tags on a table",
+      "method": "GET",
+      "path": "/tables/{full_name}/tags",
+      "parameters": {
+        "full_name": {
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "create_row_filter",
+      "description": "Create row filter function",
+      "method": "POST",
+      "path": "/functions",
+      "body": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "schema_name": {
+          "type": "string",
+          "required": true
+        },
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "data_type": {
+          "type": "string",
+          "required": true,
+          "default": "BOOLEAN"
+        },
+        "routine_body": {
+          "type": "string",
+          "required": true,
+          "description": "SQL function body"
+        }
+      }
+    },
+    {
+      "name": "apply_row_filter",
+      "description": "Apply row filter to table",
+      "method": "PUT",
+      "path": "/tables/{full_name}/row-filter",
+      "parameters": {
+        "full_name": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "body": {
+        "function_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full name of filter function"
+        }
+      }
+    },
+    {
+      "name": "apply_column_mask",
+      "description": "Apply masking function to column",
+      "method": "PUT",
+      "path": "/tables/{table_full_name}/columns/{column_name}/mask",
+      "parameters": {
+        "table_full_name": {
+          "type": "string",
+          "required": true
+        },
+        "column_name": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "body": {
+        "function_name": {
+          "type": "string",
+          "required": true,
+          "description": "Full name of masking function"
+        }
+      }
+    }
+  ],
+  "tools": [
+    {
+      "name": "audit_catalog_permissions",
+      "description": "Comprehensive permission audit for catalog",
+      "implementation": "custom",
+      "handler": "audit_catalog_permissions_handler",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "include_inherited": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    {
+      "name": "find_excessive_permissions",
+      "description": "Identify overly permissive grants",
+      "implementation": "custom",
+      "handler": "find_excessive_permissions_handler",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "threshold": {
+          "type": "string",
+          "enum": ["strict", "moderate", "permissive"],
+          "default": "moderate"
+        }
+      }
+    },
+    {
+      "name": "classify_and_tag_catalog",
+      "description": "Automatically classify and tag all objects in catalog",
+      "implementation": "custom",
+      "handler": "classify_and_tag_handler",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "auto_apply": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically apply tags"
+        },
+        "classification_rules": {
+          "type": "string",
+          "description": "Path to classification rules file"
+        }
+      }
+    },
+    {
+      "name": "scan_pii_columns",
+      "description": "Scan catalog for PII columns",
+      "implementation": "custom",
+      "handler": "scan_pii_handler",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "deep_scan": {
+          "type": "boolean",
+          "default": false,
+          "description": "Sample data content for PII detection"
+        },
+        "sample_rate": {
+          "type": "number",
+          "default": 0.01,
+          "description": "Data sampling percentage for deep scan"
+        }
+      }
+    },
+    {
+      "name": "generate_compliance_report",
+      "description": "Generate compliance report for regulatory standard",
+      "implementation": "custom",
+      "handler": "compliance_report_handler",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "standard": {
+          "type": "string",
+          "required": true,
+          "enum": ["gdpr", "hipaa", "soc2", "ccpa", "pci_dss"]
+        },
+        "include_evidence": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    {
+      "name": "enforce_least_privilege",
+      "description": "Analyze and enforce least privilege access",
+      "implementation": "custom",
+      "handler": "enforce_least_privilege_handler",
+      "parameters": {
+        "catalog_name": {
+          "type": "string",
+          "required": true
+        },
+        "dry_run": {
+          "type": "boolean",
+          "default": true,
+          "description": "Preview changes without applying"
+        },
+        "auto_fix": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically revoke excessive permissions"
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "retries": 3,
+    "timeout": 30000,
+    "rate_limit": {
+      "requests_per_minute": 100
+    },
+    "cache": {
+      "enabled": true,
+      "ttl": 300
+    }
+  },
+  "examples": [
+    {
+      "name": "Audit catalog permissions",
+      "tool": "audit_catalog_permissions",
+      "parameters": {
+        "catalog_name": "production",
+        "include_inherited": true
+      }
+    },
+    {
+      "name": "Scan for PII",
+      "tool": "scan_pii_columns",
+      "parameters": {
+        "catalog_name": "production",
+        "deep_scan": true,
+        "sample_rate": 0.01
+      }
+    },
+    {
+      "name": "Generate GDPR compliance report",
+      "tool": "generate_compliance_report",
+      "parameters": {
+        "catalog_name": "production",
+        "standard": "gdpr",
+        "include_evidence": true
+      }
+    }
+  ]
+}

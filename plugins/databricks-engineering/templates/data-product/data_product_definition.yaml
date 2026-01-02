@@ -1,0 +1,116 @@
+# Data Product Definition
+
+product:
+  name: "customer_360"
+  version: "1.0.0"
+  owner: "data-platform-team"
+  owner_email: "data-platform@company.com"
+  description: "Unified 360-degree customer view combining transactions, interactions, and demographics"
+  domain: "customer"
+  classification: "confidential"
+
+  metadata:
+    created_date: "2026-01-01"
+    last_updated: "2026-01-01"
+    tags:
+      - customer
+      - analytics
+      - product
+
+  source_tables:
+    - catalog: "bronze"
+      schema: "crm"
+      table: "customers"
+    - catalog: "bronze"
+      schema: "transactions"
+      table: "orders"
+    - catalog: "bronze"
+      schema: "marketing"
+      table: "interactions"
+
+  target:
+    catalog: "products"
+    schema: "customer"
+    table: "customer_360"
+    format: "delta"
+    partition_by:
+      - "country"
+      - "signup_year"
+
+sla:
+  freshness:
+    metric: "data_age_minutes"
+    threshold: 60
+    description: "Data must be refreshed within 1 hour"
+
+  quality:
+    metric: "quality_score_percent"
+    threshold: 95
+    description: "95% of records must pass all quality checks"
+
+  availability:
+    metric: "uptime_percent"
+    threshold: 99.9
+    description: "Service availability 99.9%"
+
+  completeness:
+    metric: "completeness_percent"
+    threshold: 98
+    description: "98% of expected records must be present"
+
+consumers:
+  - name: "marketing-analytics"
+    team: "Marketing"
+    access_level: "read"
+    contact: "marketing@company.com"
+    use_case: "Customer segmentation and campaign targeting"
+
+  - name: "sales-intelligence"
+    team: "Sales"
+    access_level: "read"
+    contact: "sales@company.com"
+    use_case: "Customer insights and account planning"
+
+  - name: "data-science"
+    team: "Data Science"
+    access_level: "read"
+    contact: "datascience@company.com"
+    use_case: "ML model training and prediction"
+
+governance:
+  data_classification: "confidential"
+  retention_days: 2555  # 7 years
+  pii_fields:
+    - email
+    - phone_number
+    - address
+  encryption: "enabled"
+  audit_logging: "enabled"
+
+monitoring:
+  metrics:
+    - name: "record_count"
+      type: "gauge"
+      alert_threshold: "< 100000"
+
+    - name: "null_rate"
+      type: "percentage"
+      alert_threshold: "> 5%"
+
+    - name: "processing_time_minutes"
+      type: "gauge"
+      alert_threshold: "> 30"
+
+  alerts:
+    - type: "sla_violation"
+      channels:
+        - "email"
+        - "slack"
+      recipients:
+        - "data-platform@company.com"
+
+    - type: "quality_failure"
+      channels:
+        - "pagerduty"
+      recipients:
+        - "oncall@company.com"

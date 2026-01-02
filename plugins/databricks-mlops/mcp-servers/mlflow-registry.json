@@ -1,0 +1,193 @@
+{
+  "name": "mlflow-registry",
+  "version": "1.0.0",
+  "description": "MLflow Model Registry API integration for accessing models, versions, and metadata",
+  "type": "http",
+  "base_url": "${DATABRICKS_HOST}/api/2.0/mlflow",
+  "authentication": {
+    "type": "bearer",
+    "token": "${DATABRICKS_TOKEN}"
+  },
+  "endpoints": [
+    {
+      "name": "list_registered_models",
+      "method": "GET",
+      "path": "/registered-models/list",
+      "description": "List all registered models",
+      "parameters": {
+        "max_results": {
+          "type": "integer",
+          "description": "Maximum number of models to return",
+          "default": 100
+        },
+        "page_token": {
+          "type": "string",
+          "description": "Token for pagination"
+        }
+      }
+    },
+    {
+      "name": "get_registered_model",
+      "method": "GET",
+      "path": "/registered-models/get",
+      "description": "Get details of a registered model",
+      "parameters": {
+        "name": {
+          "type": "string",
+          "description": "Registered model name",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "search_model_versions",
+      "method": "GET",
+      "path": "/model-versions/search",
+      "description": "Search model versions",
+      "parameters": {
+        "filter": {
+          "type": "string",
+          "description": "Search filter (e.g., \"name='model_name'\")"
+        },
+        "max_results": {
+          "type": "integer",
+          "default": 100
+        },
+        "order_by": {
+          "type": "array",
+          "description": "Order by fields"
+        }
+      }
+    },
+    {
+      "name": "get_model_version",
+      "method": "GET",
+      "path": "/model-versions/get",
+      "description": "Get specific model version details",
+      "parameters": {
+        "name": {
+          "type": "string",
+          "description": "Model name",
+          "required": true
+        },
+        "version": {
+          "type": "string",
+          "description": "Model version",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "transition_model_version_stage",
+      "method": "POST",
+      "path": "/model-versions/transition-stage",
+      "description": "Transition model version stage (None/Staging/Production/Archived)",
+      "parameters": {
+        "name": {
+          "type": "string",
+          "description": "Model name",
+          "required": true
+        },
+        "version": {
+          "type": "string",
+          "description": "Model version",
+          "required": true
+        },
+        "stage": {
+          "type": "string",
+          "description": "Target stage",
+          "required": true,
+          "enum": ["None", "Staging", "Production", "Archived"]
+        },
+        "archive_existing_versions": {
+          "type": "boolean",
+          "description": "Archive existing versions in target stage",
+          "default": false
+        }
+      }
+    },
+    {
+      "name": "set_model_version_tag",
+      "method": "POST",
+      "path": "/model-versions/set-tag",
+      "description": "Set tag on model version",
+      "parameters": {
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "version": {
+          "type": "string",
+          "required": true
+        },
+        "key": {
+          "type": "string",
+          "required": true
+        },
+        "value": {
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "get_run",
+      "method": "GET",
+      "path": "/runs/get",
+      "description": "Get MLflow run details",
+      "parameters": {
+        "run_id": {
+          "type": "string",
+          "description": "Run UUID",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "search_runs",
+      "method": "POST",
+      "path": "/runs/search",
+      "description": "Search MLflow runs",
+      "parameters": {
+        "experiment_ids": {
+          "type": "array",
+          "description": "List of experiment IDs"
+        },
+        "filter": {
+          "type": "string",
+          "description": "Search filter"
+        },
+        "max_results": {
+          "type": "integer",
+          "default": 1000
+        },
+        "order_by": {
+          "type": "array",
+          "description": "Order by fields"
+        }
+      }
+    }
+  ],
+  "usage_examples": [
+    {
+      "name": "List all production models",
+      "description": "Get all models in production stage",
+      "code": "search_model_versions(filter=\"current_stage='Production'\")"
+    },
+    {
+      "name": "Promote model to production",
+      "description": "Move model version to production",
+      "code": "transition_model_version_stage(name='my_model', version='1', stage='Production', archive_existing_versions=True)"
+    },
+    {
+      "name": "Get model lineage",
+      "description": "Trace model back to training run",
+      "code": "get_model_version(name='my_model', version='1') -> get_run(run_id=model.run_id)"
+    }
+  ],
+  "error_handling": {
+    "retry_on_status": [429, 500, 502, 503, 504],
+    "max_retries": 3,
+    "backoff_factor": 2
+  }
+}

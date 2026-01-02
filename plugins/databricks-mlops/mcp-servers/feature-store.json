@@ -1,0 +1,174 @@
+{
+  "name": "feature-store",
+  "version": "1.0.0",
+  "description": "Databricks Feature Store API for accessing feature tables, metadata, and lineage",
+  "type": "http",
+  "base_url": "${DATABRICKS_HOST}/api/2.0/feature-store",
+  "authentication": {
+    "type": "bearer",
+    "token": "${DATABRICKS_TOKEN}"
+  },
+  "endpoints": [
+    {
+      "name": "list_feature_tables",
+      "method": "GET",
+      "path": "/feature-tables/list",
+      "description": "List all feature tables",
+      "parameters": {
+        "max_results": {
+          "type": "integer",
+          "description": "Maximum number of tables to return",
+          "default": 100
+        },
+        "page_token": {
+          "type": "string",
+          "description": "Token for pagination"
+        }
+      }
+    },
+    {
+      "name": "get_feature_table",
+      "method": "GET",
+      "path": "/feature-tables/get",
+      "description": "Get feature table details",
+      "parameters": {
+        "name": {
+          "type": "string",
+          "description": "Feature table name (catalog.schema.table)",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "search_features",
+      "method": "POST",
+      "path": "/features/search",
+      "description": "Search for features across all tables",
+      "parameters": {
+        "filter": {
+          "type": "string",
+          "description": "Search filter (e.g., name, description)"
+        },
+        "max_results": {
+          "type": "integer",
+          "default": 100
+        }
+      }
+    },
+    {
+      "name": "get_feature",
+      "method": "GET",
+      "path": "/features/get",
+      "description": "Get feature details including lineage",
+      "parameters": {
+        "table_name": {
+          "type": "string",
+          "description": "Feature table name",
+          "required": true
+        },
+        "feature_name": {
+          "type": "string",
+          "description": "Feature column name",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "get_feature_lineage",
+      "method": "GET",
+      "path": "/features/lineage",
+      "description": "Get feature lineage (upstream sources and downstream models)",
+      "parameters": {
+        "table_name": {
+          "type": "string",
+          "description": "Feature table name",
+          "required": true
+        },
+        "feature_name": {
+          "type": "string",
+          "description": "Feature column name",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "get_online_store_status",
+      "method": "GET",
+      "path": "/online-stores/status",
+      "description": "Get online store publication status",
+      "parameters": {
+        "table_name": {
+          "type": "string",
+          "description": "Feature table name",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "list_feature_consumers",
+      "method": "GET",
+      "path": "/features/consumers",
+      "description": "List models consuming a feature table",
+      "parameters": {
+        "table_name": {
+          "type": "string",
+          "description": "Feature table name",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "get_table_statistics",
+      "method": "GET",
+      "path": "/feature-tables/statistics",
+      "description": "Get feature table statistics (row count, freshness, etc.)",
+      "parameters": {
+        "name": {
+          "type": "string",
+          "description": "Feature table name",
+          "required": true
+        }
+      }
+    }
+  ],
+  "usage_examples": [
+    {
+      "name": "Find all customer features",
+      "description": "Search for features related to customers",
+      "code": "search_features(filter=\"description LIKE '%customer%'\")"
+    },
+    {
+      "name": "Get feature lineage",
+      "description": "Trace feature from source to models",
+      "code": "get_feature_lineage(table_name='main.features.customer_features', feature_name='avg_purchase_amount')"
+    },
+    {
+      "name": "Check online store status",
+      "description": "Verify feature table is published online",
+      "code": "get_online_store_status(table_name='main.features.customer_features')"
+    },
+    {
+      "name": "List feature consumers",
+      "description": "See which models use this feature table",
+      "code": "list_feature_consumers(table_name='main.features.customer_features')"
+    }
+  ],
+  "capabilities": [
+    "Feature discovery across workspace",
+    "Feature lineage tracking",
+    "Online store monitoring",
+    "Feature reuse identification",
+    "Model-feature dependency mapping"
+  ],
+  "integration_points": [
+    "MLflow Model Registry (feature lineage)",
+    "Unity Catalog (governance)",
+    "Model Serving (online features)",
+    "Workflows (feature pipelines)"
+  ],
+  "error_handling": {
+    "retry_on_status": [429, 500, 502, 503, 504],
+    "max_retries": 3,
+    "backoff_factor": 2
+  }
+}

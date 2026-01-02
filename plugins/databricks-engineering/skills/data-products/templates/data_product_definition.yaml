@@ -1,0 +1,33 @@
+# Data Product Definition Template
+product:
+  name: customer-360
+  version: 1.0.0
+  description: Complete customer view with demographics and behavior
+  owner: data-platform-team
+
+domain: customer-data
+
+interfaces:
+  - name: customer_profile
+    type: table
+    format: delta
+    location: /mnt/data/products/customer-360/profile
+    schema:
+      - name: customer_id
+        type: string
+        required: true
+      - name: email
+        type: string
+        required: true
+
+contracts:
+  sla:
+    freshness: 1 hour
+    availability: 99.9%
+    completeness: 99%
+
+quality:
+  - rule: customer_id IS NOT NULL
+    severity: critical
+  - rule: email matches pattern
+    severity: high

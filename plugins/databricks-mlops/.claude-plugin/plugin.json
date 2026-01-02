@@ -1,0 +1,195 @@
+{
+  "name": "databricks-mlops",
+  "version": "1.0.0",
+  "description": "Comprehensive Databricks MLOps toolkit for production ML workflows. Includes 10 commands for model training/deployment, 8 specialized agents for ML best practices, 4 skills for MLOps patterns, and 2 MCP servers for MLflow/Feature Store integration. Build production-grade ML pipelines with experiment tracking, model registry, feature engineering, and monitoring.",
+  "author": {
+    "name": "Databricks MLOps Team",
+    "email": "mlops@yourcompany.com",
+    "url": "https://github.com/yourcompany"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourcompany/databricks-platform-marketplace"
+  },
+  "license": "MIT",
+  "keywords": [
+    "databricks",
+    "mlops",
+    "mlflow",
+    "feature-store",
+    "model-serving",
+    "machine-learning",
+    "model-monitoring"
+  ],
+  "commands": [
+    {
+      "name": "train-model",
+      "description": "Train ML model with MLflow experiment tracking and auto-logging",
+      "path": "./commands/train-model.md",
+      "category": "training"
+    },
+    {
+      "name": "register-model",
+      "description": "Register trained model to MLflow Model Registry with versioning",
+      "path": "./commands/register-model.md",
+      "category": "registry"
+    },
+    {
+      "name": "deploy-model",
+      "description": "Deploy model to Databricks Model Serving endpoints",
+      "path": "./commands/deploy-model.md",
+      "category": "deployment"
+    },
+    {
+      "name": "create-feature-table",
+      "description": "Create Feature Store table with online/offline support",
+      "path": "./commands/create-feature-table.md",
+      "category": "feature-store"
+    },
+    {
+      "name": "setup-monitoring",
+      "description": "Set up model drift detection and performance monitoring",
+      "path": "./commands/setup-monitoring.md",
+      "category": "monitoring"
+    },
+    {
+      "name": "run-hyperparameter-tuning",
+      "description": "Hyperparameter optimization with Hyperopt and parallel trials",
+      "path": "./commands/run-hyperparameter-tuning.md",
+      "category": "optimization"
+    },
+    {
+      "name": "create-ml-pipeline",
+      "description": "Create end-to-end ML pipeline with orchestration",
+      "path": "./commands/create-ml-pipeline.md",
+      "category": "pipeline"
+    },
+    {
+      "name": "validate-model",
+      "description": "Model validation, testing, and performance benchmarking",
+      "path": "./commands/validate-model.md",
+      "category": "validation"
+    },
+    {
+      "name": "promote-model",
+      "description": "Promote model across environments (dev/staging/production)",
+      "path": "./commands/promote-model.md",
+      "category": "lifecycle"
+    },
+    {
+      "name": "batch-inference",
+      "description": "Run batch inference jobs with feature lookup and monitoring",
+      "path": "./commands/batch-inference.md",
+      "category": "inference"
+    }
+  ],
+  "agents": [
+    {
+      "name": "mlflow-expert",
+      "description": "MLflow experiment tracking, model registry, and best practices",
+      "path": "./agents/mlflow-expert.md",
+      "category": "mlflow"
+    },
+    {
+      "name": "feature-store-specialist",
+      "description": "Feature Store design patterns and online/offline serving",
+      "path": "./agents/feature-store-specialist.md",
+      "category": "feature-engineering"
+    },
+    {
+      "name": "model-monitoring-expert",
+      "description": "Model drift detection, data quality, and alerting",
+      "path": "./agents/model-monitoring-expert.md",
+      "category": "monitoring"
+    },
+    {
+      "name": "hyperparameter-optimizer",
+      "description": "Hyperparameter tuning strategies and distributed optimization",
+      "path": "./agents/hyperparameter-optimizer.md",
+      "category": "optimization"
+    },
+    {
+      "name": "ml-pipeline-architect",
+      "description": "End-to-end ML pipeline design and orchestration",
+      "path": "./agents/ml-pipeline-architect.md",
+      "category": "architecture"
+    },
+    {
+      "name": "model-serving-specialist",
+      "description": "Model deployment patterns, scaling, and performance",
+      "path": "./agents/model-serving-specialist.md",
+      "category": "serving"
+    },
+    {
+      "name": "ml-security-guardian",
+      "description": "ML security, model governance, and compliance",
+      "path": "./agents/ml-security-guardian.md",
+      "category": "security"
+    },
+    {
+      "name": "automl-expert",
+      "description": "AutoML patterns and Databricks AutoML integration",
+      "path": "./agents/automl-expert.md",
+      "category": "automl"
+    }
+  ],
+  "skills": [
+    {
+      "name": "mlflow-tracking",
+      "description": "MLflow experiment tracking patterns and auto-logging",
+      "path": "./skills/mlflow-tracking",
+      "category": "tracking"
+    },
+    {
+      "name": "feature-engineering",
+      "description": "Feature Store usage patterns and feature pipelines",
+      "path": "./skills/feature-engineering",
+      "category": "features"
+    },
+    {
+      "name": "model-serving",
+      "description": "Model deployment strategies and serving patterns",
+      "path": "./skills/model-serving",
+      "category": "deployment"
+    },
+    {
+      "name": "ml-monitoring",
+      "description": "Model drift detection and performance monitoring",
+      "path": "./skills/ml-monitoring",
+      "category": "monitoring"
+    }
+  ],
+  "mcp_servers": [
+    {
+      "name": "mlflow-registry",
+      "description": "MLflow Model Registry API integration",
+      "config_path": "./mcp-servers/mlflow-registry.json",
+      "type": "http",
+      "url": "${DATABRICKS_HOST}/api/2.0/mlflow"
+    },
+    {
+      "name": "feature-store",
+      "description": "Feature Store metadata and lineage access",
+      "config_path": "./mcp-servers/feature-store.json",
+      "type": "http",
+      "url": "${DATABRICKS_HOST}/api/2.0/feature-store"
+    }
+  ],
+  "templates": [
+    {
+      "name": "ml-pipeline-project",
+      "description": "Complete MLOps project with training, serving, and monitoring",
+      "path": "./templates/ml-pipeline-project"
+    },
+    {
+      "name": "feature-store-pipeline",
+      "description": "Feature Store pipeline with online/offline serving",
+      "path": "./templates/feature-store-pipeline"
+    }
+  ],
+  "configuration": {
+    "schema": "./config-schema.json",
+    "default_config": "./.databricks-mlops-config.yaml",
+    "env_prefix": "DATABRICKS_"
+  }
+}

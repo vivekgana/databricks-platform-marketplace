@@ -1,0 +1,17 @@
+# Production Environment Configuration
+workspace:
+  host: https://prod-workspace.databricks.com
+
+variables:
+  catalog_name: prod_catalog
+  storage_path: /mnt/prod/data
+  cluster_size: large
+
+resources:
+  jobs:
+    daily_pipeline:
+      max_concurrent_runs: 3
+      timeout_seconds: 7200
+      email_notifications:
+        on_failure:
+          - data-team@company.com

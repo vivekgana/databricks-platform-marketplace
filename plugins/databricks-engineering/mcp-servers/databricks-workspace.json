@@ -1,0 +1,267 @@
+{
+  "name": "databricks-workspace",
+  "version": "1.0.0",
+  "description": "Databricks Workspace API integration for MCP. Provides access to workspace objects, notebooks, jobs, clusters, and workspace management.",
+  "type": "http",
+  "baseUrl": "${DATABRICKS_HOST}/api/2.0",
+  "authentication": {
+    "type": "bearer",
+    "token": "${DATABRICKS_TOKEN}"
+  },
+  "endpoints": [
+    {
+      "name": "list_jobs",
+      "description": "List all jobs in the workspace",
+      "method": "GET",
+      "path": "/jobs/list",
+      "parameters": {
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of jobs to return",
+          "default": 25
+        },
+        "offset": {
+          "type": "integer",
+          "description": "Offset for pagination",
+          "default": 0
+        },
+        "expand_tasks": {
+          "type": "boolean",
+          "description": "Whether to include task specifications",
+          "default": false
+        }
+      },
+      "response": {
+        "type": "object",
+        "properties": {
+          "jobs": {
+            "type": "array",
+            "description": "List of jobs"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "Whether there are more results"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_job",
+      "description": "Get details of a specific job",
+      "method": "GET",
+      "path": "/jobs/get",
+      "parameters": {
+        "job_id": {
+          "type": "integer",
+          "required": true,
+          "description": "The canonical identifier of the job"
+        }
+      }
+    },
+    {
+      "name": "list_clusters",
+      "description": "List all clusters in the workspace",
+      "method": "GET",
+      "path": "/clusters/list"
+    },
+    {
+      "name": "get_cluster",
+      "description": "Get details of a specific cluster",
+      "method": "GET",
+      "path": "/clusters/get",
+      "parameters": {
+        "cluster_id": {
+          "type": "string",
+          "required": true,
+          "description": "The cluster's unique identifier"
+        }
+      }
+    },
+    {
+      "name": "list_notebooks",
+      "description": "List contents of a workspace directory",
+      "method": "GET",
+      "path": "/workspace/list",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "required": true,
+          "description": "The absolute path of the notebook or directory"
+        }
+      }
+    },
+    {
+      "name": "export_notebook",
+      "description": "Export a notebook from the workspace",
+      "method": "GET",
+      "path": "/workspace/export",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "required": true,
+          "description": "The absolute path of the notebook"
+        },
+        "format": {
+          "type": "string",
+          "enum": ["SOURCE", "HTML", "JUPYTER", "DBC"],
+          "default": "SOURCE",
+          "description": "Export format"
+        }
+      }
+    },
+    {
+      "name": "list_dbfs",
+      "description": "List contents of DBFS directory",
+      "method": "GET",
+      "path": "/dbfs/list",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "required": true,
+          "description": "The path of the directory in DBFS"
+        }
+      }
+    },
+    {
+      "name": "get_job_runs",
+      "description": "List runs for a specific job",
+      "method": "GET",
+      "path": "/jobs/runs/list",
+      "parameters": {
+        "job_id": {
+          "type": "integer",
+          "description": "Filter by job ID"
+        },
+        "active_only": {
+          "type": "boolean",
+          "default": false,
+          "description": "Only return active runs"
+        },
+        "completed_only": {
+          "type": "boolean",
+          "default": false,
+          "description": "Only return completed runs"
+        },
+        "limit": {
+          "type": "integer",
+          "default": 25,
+          "description": "Maximum number of runs to return"
+        }
+      }
+    },
+    {
+      "name": "get_run_output",
+      "description": "Get the output of a job run",
+      "method": "GET",
+      "path": "/jobs/runs/get-output",
+      "parameters": {
+        "run_id": {
+          "type": "integer",
+          "required": true,
+          "description": "The canonical identifier of the run"
+        }
+      }
+    },
+    {
+      "name": "list_warehouses",
+      "description": "List SQL warehouses in the workspace",
+      "method": "GET",
+      "path": "/sql/warehouses"
+    },
+    {
+      "name": "get_warehouse",
+      "description": "Get details of a SQL warehouse",
+      "method": "GET",
+      "path": "/sql/warehouses/{id}",
+      "parameters": {
+        "id": {
+          "type": "string",
+          "required": true,
+          "description": "Warehouse ID"
+        }
+      }
+    },
+    {
+      "name": "list_pipelines",
+      "description": "List Delta Live Tables pipelines",
+      "method": "GET",
+      "path": "/pipelines",
+      "parameters": {
+        "max_results": {
+          "type": "integer",
+          "default": 25,
+          "description": "Maximum number of pipelines to return"
+        }
+      }
+    },
+    {
+      "name": "get_pipeline",
+      "description": "Get details of a DLT pipeline",
+      "method": "GET",
+      "path": "/pipelines/{pipeline_id}",
+      "parameters": {
+        "pipeline_id": {
+          "type": "string",
+          "required": true,
+          "description": "Pipeline ID"
+        }
+      }
+    }
+  ],
+  "tools": [
+    {
+      "name": "workspace_search",
+      "description": "Search for workspace objects by name or path pattern",
+      "implementation": "custom",
+      "handler": "workspace_search_handler"
+    },
+    {
+      "name": "job_status_summary",
+      "description": "Get summary of job statuses across workspace",
+      "implementation": "custom",
+      "handler": "job_status_summary_handler"
+    },
+    {
+      "name": "cluster_cost_analysis",
+      "description": "Analyze cluster costs and utilization",
+      "implementation": "custom",
+      "handler": "cluster_cost_analysis_handler"
+    }
+  ],
+  "configuration": {
+    "retries": 3,
+    "timeout": 30000,
+    "rate_limit": {
+      "requests_per_minute": 60
+    },
+    "cache": {
+      "enabled": true,
+      "ttl": 300
+    }
+  },
+  "examples": [
+    {
+      "name": "List all jobs",
+      "tool": "list_jobs",
+      "parameters": {
+        "limit": 10
+      }
+    },
+    {
+      "name": "Export notebook as Jupyter",
+      "tool": "export_notebook",
+      "parameters": {
+        "path": "/Users/user@company.com/my-notebook",
+        "format": "JUPYTER"
+      }
+    },
+    {
+      "name": "Get recent job runs",
+      "tool": "get_job_runs",
+      "parameters": {
+        "job_id": 12345,
+        "limit": 5
+      }
+    }
+  ]
+}
