@@ -1,0 +1,354 @@
+name: DevOps Integrations CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'plugins/databricks-devops-integrations/**'
+      - '.github/workflows/devops-integrations-ci-cd.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'plugins/databricks-devops-integrations/**'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.10'
+  PLUGIN_PATH: plugins/databricks-devops-integrations
+
+jobs:
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          pip install -r requirements-dev.txt
+
+      - name: Run Black (format check)
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          black --check --diff .
+
+      - name: Run isort (import order check)
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          isort --check-only --diff .
+
+      - name: Run Flake8 (linting)
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Run Pylint (static analysis)
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          pylint sdk integrations examples --exit-zero
+
+      - name: Run MyPy (type checking)
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          mypy sdk integrations examples --ignore-missing-imports
+
+  security-scan:
+    name: Security Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          pip install -r requirements-dev.txt
+
+      - name: Run Bandit (security issues)
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          bandit -r sdk integrations examples -f json -o bandit-report.json
+          bandit -r sdk integrations examples
+
+      - name: Run Safety (dependency vulnerabilities)
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          safety check --json --output safety-report.json || true
+          safety check
+
+      - name: Upload security reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            ${{ env.PLUGIN_PATH }}/bandit-report.json
+            ${{ env.PLUGIN_PATH }}/safety-report.json
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          pip install -r requirements-dev.txt
+
+      - name: Run pytest (unit tests)
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          pytest tests/ -v \
+            --cov=sdk \
+            --cov=integrations \
+            --cov=examples \
+            --cov-report=xml \
+            --cov-report=html \
+            --cov-report=term \
+            --junitxml=junit-results.xml \
+            -m "unit"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ${{ env.PLUGIN_PATH }}/coverage.xml
+          flags: unittests
+          name: codecov-${{ matrix.python-version }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.python-version }}
+          path: |
+            ${{ env.PLUGIN_PATH }}/junit-results.xml
+            ${{ env.PLUGIN_PATH }}/htmlcov/
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    needs: [code-quality, unit-tests]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          pip install -r requirements-dev.txt
+
+      - name: Run integration tests (JIRA)
+        if: ${{ secrets.JIRA_API_TOKEN != '' }}
+        env:
+          JIRA_URL: ${{ secrets.JIRA_URL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_PROJECT: ${{ secrets.JIRA_PROJECT }}
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          pytest tests/ -v --run-integration -m "integration"
+
+      - name: Run integration tests (Azure DevOps)
+        if: ${{ secrets.AZURE_DEVOPS_PAT != '' }}
+        env:
+          AZURE_DEVOPS_ORG_URL: ${{ secrets.AZURE_DEVOPS_ORG_URL }}
+          AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+          AZURE_DEVOPS_PROJECT: ${{ secrets.AZURE_DEVOPS_PROJECT }}
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          pytest tests/ -v --run-integration -m "integration"
+
+  build-package:
+    name: Build Plugin Package
+    runs-on: ubuntu-latest
+    needs: [code-quality, security-scan, unit-tests]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install build dependencies
+        run: |
+          pip install build twine
+
+      - name: Build package
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          python -m build
+
+      - name: Check package
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          twine check dist/*
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-package
+          path: ${{ env.PLUGIN_PATH }}/dist/
+
+  deploy-dev:
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    needs: [build-package]
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    environment:
+      name: development
+      url: https://dev-plugins.yourcompany.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download package
+        uses: actions/download-artifact@v4
+        with:
+          name: plugin-package
+          path: dist/
+
+      - name: Deploy to development
+        run: |
+          echo "Deploying to development environment..."
+          # Add deployment commands here
+          # Example: scp dist/* dev-server:/plugins/
+          # Or: Upload to internal package repository
+
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests..."
+          # Add smoke test commands
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-package, integration-tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: staging
+      url: https://staging-plugins.yourcompany.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download package
+        uses: actions/download-artifact@v4
+        with:
+          name: plugin-package
+          path: dist/
+
+      - name: Deploy to staging
+        run: |
+          echo "Deploying to staging environment..."
+          # Add deployment commands
+
+      - name: Run E2E tests
+        run: |
+          echo "Running end-to-end tests..."
+          # Add E2E test commands
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [deploy-staging]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://plugins.yourcompany.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download package
+        uses: actions/download-artifact@v4
+        with:
+          name: plugin-package
+          path: dist/
+
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production environment..."
+          # Add production deployment commands
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+          generate_release_notes: true
+
+      - name: Notify Slack
+        if: always()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "DevOps Integrations Plugin deployed to production",
+              "status": "${{ job.status }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  documentation:
+    name: Build and Deploy Documentation
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          cd ${{ env.PLUGIN_PATH }}
+          pip install -r requirements-dev.txt
+
+      - name: Build documentation
+        run: |
+          cd ${{ env.PLUGIN_PATH }}/docs
+          make html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ env.PLUGIN_PATH }}/docs/_build/html
+          destination_dir: devops-integrations
