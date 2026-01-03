@@ -1,0 +1,28 @@
+# DevOps Integration Plugins - Production Dependencies
+# Last Updated: January 2, 2026
+
+# JIRA Integration
+jira==3.5.2
+requests==2.31.0
+
+# Azure DevOps Integration
+azure-devops==7.1.0b4
+msrest==0.7.1
+
+# Core Dependencies
+pydantic==2.5.3
+pyyaml==6.0.1
+python-dateutil==2.8.2
+typing-extensions==4.9.0
+
+# Logging and Monitoring
+structlog==24.1.0
+
+# HTTP Client
+httpx==0.26.0
+
+# Configuration Management
+python-dotenv==1.0.0
+
+# Validation
+jsonschema==4.20.0

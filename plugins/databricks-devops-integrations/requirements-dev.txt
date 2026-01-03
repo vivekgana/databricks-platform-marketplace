@@ -1,0 +1,39 @@
+# DevOps Integration Plugins - Development Dependencies
+# Last Updated: January 2, 2026
+
+# Include production dependencies
+-r requirements.txt
+
+# Testing
+pytest==7.4.4
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+pytest-asyncio==0.23.3
+coverage==7.4.0
+
+# Code Quality
+black==23.12.1
+pylint==3.0.3
+flake8==7.0.0
+mypy==1.8.0
+isort==5.13.2
+
+# Type Stubs
+types-requests==2.31.0.20240106
+types-PyYAML==6.0.12.12
+
+# Security Scanning
+bandit==1.7.6
+safety==3.0.1
+
+# Documentation
+sphinx==7.2.6
+sphinx-rtd-theme==2.0.0
+sphinx-autodoc-typehints==1.25.2
+
+# Development Tools
+ipython==8.20.0
+ipdb==0.13.13
+
+# Pre-commit Hooks
+pre-commit==3.6.0
