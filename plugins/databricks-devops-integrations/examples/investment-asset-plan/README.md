@@ -280,7 +280,7 @@ python src/metrics.py --incidents --days 90
 
 - Issues: https://github.com/yourcompany/databricks-platform-marketplace/issues
 - Slack: #devops-integrations
-- Email: platform-team@yourcompany.com
+- Email: platform-team@vivekgana.com
 
 ## License
 

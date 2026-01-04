@@ -578,7 +578,7 @@ python -m agents.test_llm
 - **Examples**: Sample code in `examples/` directory
 - **Issues**: Report at https://github.com/vivekgana/databricks-platform-marketplace/issues
 - **Slack**: #devops-integrations
-- **Email**: platform-team@yourcompany.com
+- **Email**: platform-team@vivekgana.com
 
 ---
 

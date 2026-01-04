@@ -1,0 +1,122 @@
+name: "AI-SDLC Requirement"
+description: "Structured requirement intake for AI-driven SDLC (with ACs + demo evidence)."
+title: "REQ: <short title>"
+labels: ["ai-sdlc:req", "needs-triage"]
+body:
+  - type: input
+    id: req_id
+    attributes:
+      label: Requirement ID
+      description: "Use REQ-### (or leave blank if auto-assigned by triage)."
+      placeholder: "REQ-101"
+    validations:
+      required: false
+
+  - type: input
+    id: title
+    attributes:
+      label: Short title
+      placeholder: "Add data quality checks for sales pipeline"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: "What problem are we solving and why?"
+      placeholder: "Today we..., impact is..., success means..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope (in / out)
+      placeholder: |
+        In scope:
+        - ...
+
+        Out of scope:
+        - ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria (AC)
+      description: "One per line. Prefer Given/When/Then. Prefix as AC-1, AC-2..."
+      placeholder: |
+        AC-1: Given ... When ... Then ...
+        AC-2: Given ... When ... Then ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification mapping (how each AC is proven)
+      description: "Map AC → tests/jobs/queries and the expected evidence files."
+      placeholder: |
+        AC-1 Verify: tests/integration/test_sales.py::test_schema
+        AC-1 Evidence: AC-1.png
+        AC-2 Verify: bundle_run: smoke_job
+        AC-2 Evidence: AC-2.html
+    validations:
+      required: true
+
+  - type: textarea
+    id: repos
+    attributes:
+      label: Repo targets (default base branch = develop)
+      description: "List repo(s) impacted. If blank, the AI router uses ai_sdlc/project.yml."
+      placeholder: |
+        - vivekgana/databricks-platform-marketplace (base: develop)
+        - your-org/another-repo (base: develop)
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P1 (high)
+        - P2 (medium)
+        - P3 (low)
+    validations:
+      required: true
+
+  - type: input
+    id: target_release
+    attributes:
+      label: Target release
+      placeholder: "v0.4.0 or 2026-01-20"
+    validations:
+      required: false
+
+  - type: textarea
+    id: databricks_objects
+    attributes:
+      label: Databricks objects impacted
+      placeholder: |
+        - Catalog/Schema:
+        - Tables:
+        - Jobs:
+        - DLT:
+        - Notebooks:
+    validations:
+      required: false
+
+  - type: textarea
+    id: demo_evidence
+    attributes:
+      label: Demo evidence required
+      description: "What should be captured automatically for the demo?"
+      placeholder: |
+        - AC-1.png (plot)
+        - AC-2.html (report)
+        - summary.md (demo narrative)
+    validations:
+      required: true

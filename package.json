@@ -1,5 +1,5 @@
 {
-  "name": "@yourcompany/databricks-platform-marketplace",
+  "name": "@vivekgana/databricks-platform-marketplace",
   "version": "1.0.0",
   "description": "Enterprise Databricks data platform plugins for Claude Code",
   "main": ".claude-plugin/marketplace.json",

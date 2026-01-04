@@ -690,7 +690,7 @@ update_config $NEW_TOKEN
 ### Support
 - **Issues**: https://github.com/yourcompany/databricks-platform-marketplace/issues
 - **Slack**: #devops-integrations
-- **Email**: platform-team@yourcompany.com
+- **Email**: platform-team@vivekgana.com
 
 ---
 

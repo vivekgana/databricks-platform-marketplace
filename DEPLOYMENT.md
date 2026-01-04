@@ -99,7 +99,7 @@ git push origin v1.0.0
 
 ```bash
 # Install from NPM
-npx claude-plugins install @yourcompany/databricks-platform-marketplace/databricks-engineering
+npx claude-plugins install @vivekgana/databricks-platform-marketplace/databricks-engineering
 
 # Verify installation
 claude /plugin list
@@ -154,7 +154,7 @@ Documentation will be available at:
 
 ### NPM Download Statistics
 
-Monitor at: https://npm-stat.com/charts.html?package=@yourcompany/databricks-platform-marketplace
+Monitor at: https://npm-stat.com/charts.html?package=@vivekgana/databricks-platform-marketplace
 
 ### GitHub Insights
 
@@ -177,7 +177,7 @@ jobs:
     steps:
       - name: Get download stats
         run: |
-          curl -s https://api.npmjs.org/downloads/point/last-week/@yourcompany/databricks-platform-marketplace
+          curl -s https://api.npmjs.org/downloads/point/last-week/@vivekgana/databricks-platform-marketplace
       
       - name: Post to Slack
         uses: slackapi/slack-github-action@v1
@@ -220,8 +220,8 @@ Already included in `.github/ISSUE_TEMPLATE/`
 ### Add Badges to README
 
 ```markdown
-[![NPM Version](https://img.shields.io/npm/v/@yourcompany/databricks-platform-marketplace.svg)](https://www.npmjs.com/package/@yourcompany/databricks-platform-marketplace)
-[![Downloads](https://img.shields.io/npm/dt/@yourcompany/databricks-platform-marketplace.svg)](https://www.npmjs.com/package/@yourcompany/databricks-platform-marketplace)
+[![NPM Version](https://img.shields.io/npm/v/@vivekgana/databricks-platform-marketplace.svg)](https://www.npmjs.com/package/@vivekgana/databricks-platform-marketplace)
+[![Downloads](https://img.shields.io/npm/dt/@vivekgana/databricks-platform-marketplace.svg)](https://www.npmjs.com/package/@vivekgana/databricks-platform-marketplace)
 [![GitHub Stars](https://img.shields.io/github/stars/yourcompany/databricks-platform-marketplace.svg)](https://github.com/yourcompany/databricks-platform-marketplace/stargazers)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ```
@@ -283,7 +283,7 @@ Topics to cover:
 npm whoami
 
 # Verify package name is available
-npm view @yourcompany/databricks-platform-marketplace
+npm view @vivekgana/databricks-platform-marketplace
 
 # Check for errors in package.json
 npm pack --dry-run
@@ -317,7 +317,7 @@ If a release has issues:
 ### 1. Deprecate NPM Version
 
 ```bash
-npm deprecate @yourcompany/databricks-platform-marketplace@1.0.1 "Use version 1.0.0 instead"
+npm deprecate @vivekgana/databricks-platform-marketplace@1.0.1 "Use version 1.0.0 instead"
 ```
 
 ### 2. Revert GitHub Release

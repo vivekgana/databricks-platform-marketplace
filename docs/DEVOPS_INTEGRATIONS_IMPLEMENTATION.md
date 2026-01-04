@@ -768,6 +768,6 @@ The system is ready for deployment and will deliver immediate value to customers
 ---
 
 **For questions or support, contact:**
-- Technical Lead: platform-team@yourcompany.com
+- Technical Lead: platform-team@vivekgana.com
 - Slack Channel: #devops-integrations
 - Documentation: https://docs.yourcompany.com/plugins/devops-integrations

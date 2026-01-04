@@ -1,0 +1,77 @@
+name: demo-evidence
+
+on:
+  workflow_dispatch:
+    inputs:
+      req_id:
+        description: "Requirement ID (e.g., REQ-101)"
+        required: true
+      target:
+        description: "Databricks bundle target (dev/stage)"
+        required: true
+        default: "dev"
+      demo_job:
+        description: "Bundle job name to run (defined in databricks.yml)"
+        required: true
+        default: "smoke_job"
+      ref:
+        description: "Git ref to run from (default: develop)"
+        required: false
+        default: "develop"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target }}
+
+    steps:
+      - name: Checkout (develop by default)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Setup Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Run demo job (bundle)
+        env:
+          DATABRICKS_AUTH_TYPE: github-oidc
+          DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+        run: |
+          databricks bundle run "${{ inputs.demo_job }}" --target "${{ inputs.target }}" \
+            --var "REQ_ID=${{ inputs.req_id }}"
+
+      - name: Export evidence from DBFS
+        env:
+          DATABRICKS_AUTH_TYPE: github-oidc
+          DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+        run: |
+          REQ="${{ inputs.req_id }}"
+          OUT="demo_evidence/${REQ}"
+          mkdir -p "${OUT}"
+          DBFS_PATH="dbfs:/tmp/demo/${REQ}"
+          databricks fs cp --recursive "${DBFS_PATH}" "${OUT}" || true
+          find "${OUT}" -type f -maxdepth 4 -print || true
+
+      - name: Fail if no evidence produced
+        run: |
+          REQ="${{ inputs.req_id }}"
+          OUT="demo_evidence/${REQ}"
+          COUNT=$(find "${OUT}" -type f | wc -l | tr -d ' ')
+          if [ "${COUNT}" -lt 1 ]; then
+            echo "No evidence produced. Ensure demo job writes to /dbfs/tmp/demo/${REQ}/"
+            exit 1
+          fi
+
+      - name: Upload evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-evidence-${{ inputs.req_id }}
+          path: demo_evidence/${{ inputs.req_id }}
+          if-no-files-found: error

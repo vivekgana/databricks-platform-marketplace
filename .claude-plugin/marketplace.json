@@ -4,7 +4,7 @@
   "owner": {
     "name": "Your Company Data Platform Team",
     "url": "https://github.com/yourcompany/databricks-platform-marketplace",
-    "email": "data-platform@yourcompany.com",
+    "email": "data-platform@vivekgana.com",
     "logo_url": "https://yourcompany.com/assets/databricks-logo.png"
   },
   "metadata": {
@@ -75,7 +75,7 @@
     }
   ],
   "installation": {
-    "quick_start": "npx claude-plugins install @yourcompany/databricks-platform/databricks-engineering",
+    "quick_start": "npx claude-plugins install @vivekgana/databricks-platform/databricks-engineering",
     "manual_install": [
       "/plugin marketplace add https://github.com/yourcompany/databricks-platform-marketplace",
       "/plugin install databricks-engineering"
@@ -99,7 +99,7 @@
     "enterprise_support": "https://yourcompany.com/enterprise-support"
   },
   "social": {
-    "twitter": "@yourcompany_data",
+    "twitter": "@vivekgana_data",
     "linkedin": "https://linkedin.com/company/yourcompany",
     "slack_community": "https://yourcompany.slack.com/data-platform"
   }

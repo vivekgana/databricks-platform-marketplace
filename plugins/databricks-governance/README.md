@@ -326,7 +326,7 @@ claude /databricks-governance:audit-permissions \
 
 - Documentation: [Plugin Documentation](./docs/)
 - Issues: [GitHub Issues](https://github.com/yourcompany/databricks-platform-marketplace/issues)
-- Email: data-platform@yourcompany.com
+- Email: data-platform@vivekgana.com
 - Slack: #databricks-governance
 
 ## Contributing
