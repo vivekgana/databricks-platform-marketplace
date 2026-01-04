@@ -106,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ```bash
 # NPM (recommended)
-npx claude-plugins install @yourcompany/databricks-platform-marketplace/databricks-engineering
+npx claude-plugins install @vivekgana/databricks-platform-marketplace/databricks-engineering
 
 # Claude Code native
 /plugin marketplace add https://github.com/yourcompany/databricks-platform-marketplace
@@ -128,7 +128,7 @@ claude /plugin update databricks-engineering
 - 📖 [Documentation](https://docs.yourcompany.com/databricks-plugins)
 - 💬 [Slack Community](https://yourcompany.slack.com/data-platform)
 - 🐛 [Issue Tracker](https://github.com/yourcompany/databricks-platform-marketplace/issues)
-- 📧 [Email Support](mailto:data-platform@yourcompany.com)
+- 📧 [Email Support](mailto:data-platform@vivekgana.com)
 
 ## Contributors
 

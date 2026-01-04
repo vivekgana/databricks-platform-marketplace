@@ -401,7 +401,7 @@ work_item.custom_fields = {
 - **Documentation**: [https://docs.yourcompany.com/plugins/devops-integrations](https://docs.yourcompany.com/plugins/devops-integrations)
 - **Issues**: [https://github.com/yourcompany/databricks-platform-marketplace/issues](https://github.com/yourcompany/databricks-platform-marketplace/issues)
 - **Slack**: #devops-integrations
-- **Email**: platform-team@yourcompany.com
+- **Email**: platform-team@vivekgana.com
 
 ## Roadmap
 

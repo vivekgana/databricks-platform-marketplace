@@ -32,7 +32,7 @@ Welcome! This guide will help you get up and running with the Databricks Platfor
 ### Method 1: NPX (Recommended)
 
 ```bash
-npx claude-plugins install @yourcompany/databricks-platform-marketplace/databricks-engineering
+npx claude-plugins install @vivekgana/databricks-platform-marketplace/databricks-engineering
 ```
 
 ### Method 2: Claude Code Native
@@ -331,7 +331,7 @@ pip install --force-reinstall pyspark delta-spark
 - 📖 **Documentation**: Full docs in `/docs` directory
 - 💬 **Slack**: [Join our community](https://yourcompany.slack.com/data-platform)
 - 🐛 **Issues**: [GitHub Issues](https://github.com/yourcompany/databricks-platform-marketplace/issues)
-- 📧 **Email**: data-platform@yourcompany.com
+- 📧 **Email**: data-platform@vivekgana.com
 
 ### Debug Mode
 

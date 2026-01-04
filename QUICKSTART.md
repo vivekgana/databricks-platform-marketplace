@@ -316,7 +316,7 @@ git push origin v1.0.0
 ### Check NPM Stats
 
 ```bash
-npm view @yourcompany/databricks-platform-marketplace
+npm view @vivekgana/databricks-platform-marketplace
 ```
 
 ### Monitor CI/CD

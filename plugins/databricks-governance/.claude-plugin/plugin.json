@@ -4,7 +4,7 @@
   "description": "Comprehensive data governance toolkit for Databricks Unity Catalog. Includes 10 commands for compliance and security, 8 specialized agents for governance, 4 skills for regulatory patterns, and 2 MCP servers for governance automation. Implement GDPR, HIPAA, SOC2 compliance with automated auditing, data classification, PII detection, access control, and lineage tracking.",
   "author": {
     "name": "Your Company Data Platform Team",
-    "email": "data-platform@yourcompany.com",
+    "email": "data-platform@vivekgana.com",
     "url": "https://github.com/yourcompany"
   },
   "repository": {

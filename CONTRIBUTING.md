@@ -314,7 +314,7 @@ docs/
 ## Need Help?
 
 - 💬 [Slack Community](https://yourcompany.slack.com/data-platform)
-- 📧 [Email](mailto:data-platform@yourcompany.com)
+- 📧 [Email](mailto:data-platform@vivekgana.com)
 - 🐛 [GitHub Issues](https://github.com/yourcompany/databricks-platform-marketplace/issues)
 
 ## Recognition

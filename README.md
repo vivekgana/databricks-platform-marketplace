@@ -35,7 +35,7 @@ Build production-grade data platforms on Databricks with AI-powered automation. 
 
 ```bash
 # Recommended: Install via npx
-npx claude-plugins install @yourcompany/databricks-platform-marketplace/databricks-engineering
+npx claude-plugins install @vivekgana/databricks-platform-marketplace/databricks-engineering
 
 # Or add marketplace in Claude
 /plugin marketplace add https://github.com/yourcompany/databricks-platform-marketplace
@@ -197,7 +197,7 @@ npm run docs
 - 📖 [Documentation](https://docs.yourcompany.com/databricks-plugins)
 - 💬 [Slack Community](https://yourcompany.slack.com/data-platform)
 - 🐛 [Issue Tracker](https://github.com/yourcompany/databricks-platform-marketplace/issues)
-- 📧 [Email Support](mailto:data-platform@yourcompany.com)
+- 📧 [Email Support](mailto:data-platform@vivekgana.com)
 
 ## 🔄 Updates
 

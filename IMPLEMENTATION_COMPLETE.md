@@ -318,7 +318,7 @@ The system is ready for deployment and will deliver immediate value to customers
 ---
 
 **Contact:**
-- Technical Lead: platform-team@yourcompany.com
+- Technical Lead: platform-team@vivekgana.com
 - Slack: #devops-integrations
 - GitHub: https://github.com/vivekgana/databricks-platform-marketplace
 
