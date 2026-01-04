@@ -10,6 +10,98 @@
 
 This document outlines the Large Language Model (LLM) requirements for running DevOps integration agents, including the defect management agent. The agents leverage AI/LLM capabilities for intelligent analysis, classification, and recommendations.
 
+## Prerequisites - Environment Variables Setup
+
+After obtaining API keys from your chosen LLM provider(s), you'll need to configure environment variables:
+
+### Quick Setup (All Providers)
+
+**Windows (PowerShell):**
+```powershell
+# Claude (Anthropic) - Recommended
+[System.Environment]::SetEnvironmentVariable('ANTHROPIC_API_KEY', 'sk-ant-api03-your-key-here', 'User')
+
+# OpenAI
+[System.Environment]::SetEnvironmentVariable('OPENAI_API_KEY', 'sk-your-key-here', 'User')
+
+# Azure OpenAI
+[System.Environment]::SetEnvironmentVariable('AZURE_OPENAI_API_KEY', 'your-azure-key-here', 'User')
+[System.Environment]::SetEnvironmentVariable('AZURE_OPENAI_ENDPOINT', 'https://your-resource.openai.azure.com/', 'User')
+
+# Databricks Foundation Models
+[System.Environment]::SetEnvironmentVariable('DATABRICKS_HOST', 'https://your-workspace.cloud.databricks.com', 'User')
+[System.Environment]::SetEnvironmentVariable('DATABRICKS_TOKEN', 'dapi-your-token-here', 'User')
+
+# LLM Provider Selection
+[System.Environment]::SetEnvironmentVariable('LLM_PROVIDER', 'anthropic', 'User')
+[System.Environment]::SetEnvironmentVariable('LLM_MODEL', 'claude-sonnet-4-5', 'User')
+```
+
+**Linux/Mac (Bash/Zsh):**
+```bash
+# Claude (Anthropic) - Recommended
+export ANTHROPIC_API_KEY="sk-ant-api03-your-key-here"
+
+# OpenAI
+export OPENAI_API_KEY="sk-your-key-here"
+
+# Azure OpenAI
+export AZURE_OPENAI_API_KEY="your-azure-key-here"
+export AZURE_OPENAI_ENDPOINT="https://your-resource.openai.azure.com/"
+
+# Databricks Foundation Models
+export DATABRICKS_HOST="https://your-workspace.cloud.databricks.com"
+export DATABRICKS_TOKEN="dapi-your-token-here"
+
+# LLM Provider Selection
+export LLM_PROVIDER="anthropic"
+export LLM_MODEL="claude-sonnet-4-5"
+
+# Add to ~/.bashrc or ~/.zshrc for persistence
+echo 'export ANTHROPIC_API_KEY="sk-ant-api03-your-key-here"' >> ~/.bashrc
+echo 'export LLM_PROVIDER="anthropic"' >> ~/.bashrc
+echo 'export LLM_MODEL="claude-sonnet-4-5"' >> ~/.bashrc
+```
+
+**Docker/Container Environment (.env file):**
+```bash
+# Claude (Anthropic) - Recommended
+ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
+
+# OpenAI
+OPENAI_API_KEY=sk-your-key-here
+
+# Azure OpenAI
+AZURE_OPENAI_API_KEY=your-azure-key-here
+AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
+
+# Databricks Foundation Models
+DATABRICKS_HOST=https://your-workspace.cloud.databricks.com
+DATABRICKS_TOKEN=dapi-your-token-here
+
+# LLM Provider Selection
+LLM_PROVIDER=anthropic
+LLM_MODEL=claude-sonnet-4-5
+```
+
+**Environment Variable Descriptions:**
+- `ANTHROPIC_API_KEY`: Your Claude API key from console.anthropic.com
+- `OPENAI_API_KEY`: Your OpenAI API key from platform.openai.com
+- `AZURE_OPENAI_API_KEY`: Your Azure OpenAI resource key
+- `AZURE_OPENAI_ENDPOINT`: Your Azure OpenAI endpoint URL
+- `DATABRICKS_HOST`: Your Databricks workspace URL
+- `DATABRICKS_TOKEN`: Your Databricks personal access token
+- `LLM_PROVIDER`: Which provider to use (anthropic, openai, azure_openai, databricks)
+- `LLM_MODEL`: Specific model to use
+
+**Security Note:** Never commit API keys to version control. Use `.env` files in `.gitignore` or secure secret management systems like:
+- Azure Key Vault
+- AWS Secrets Manager
+- HashiCorp Vault
+- Databricks Secrets
+
+---
+
 ## Supported LLM Providers
 
 ### 1. Claude (Anthropic) - Recommended ⭐
