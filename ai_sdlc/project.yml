@@ -1,0 +1,57 @@
+project:
+  name: "Databricks Platform Marketplace"
+  # develop is the default everywhere (PR base branch, CI base)
+  default_branch: "develop"
+  release_branch: "main"
+
+codegen:
+  pr_policy:
+    default_base_branch: "develop"
+    allow_main_direct_pr: false
+    hotfix_label_allows_main: "ai-sdlc:hotfix"
+  policy:
+    max_prs_per_run: 3
+    require_plan_review: true
+    require_tests: true
+    allowed_change_zones:
+      - "src/"
+      - "notebooks/"
+      - "tests/"
+      - "databricks.yml"
+      - "requirements/"
+
+repos:
+  - id: "marketplace"
+    url: "https://github.com/vivekgana/databricks-platform-marketplace.git"
+    default_branch: "develop"
+    release_branch: "main"
+    scopes:
+      - "src/"
+      - "notebooks/"
+      - "tests/"
+      - "databricks.yml"
+      - "requirements/"
+    signals:
+      bundling: "databricks_asset_bundles"
+      runtime: "databricks"
+    ci:
+      provider: "github_actions"
+      pr_base_branch: "develop"
+      workflows: ["ci.yml", "demo-evidence.yml"]
+    deploy:
+      method: "dab"
+      targets: ["dev", "stage", "prod"]
+
+routing:
+  # Lightweight heuristics; requirement frontmatter can override.
+  rules:
+    - if_contains: ["databricks.yml", "bundle", "job", "notebook", "dlt", "delta live tables"]
+      prefer_repos: ["marketplace"]
+    - if_contains: ["tests", "pytest", "ruff", "lint"]
+      prefer_repos: ["marketplace"]
+
+pr_linking:
+  base_branch: "develop"
+  branch_prefix: "ai/"
+  commit_prefix: "[AI-SDLC]"
+  issue_labels: ["ai-sdlc:req", "ai-sdlc:defect"]
