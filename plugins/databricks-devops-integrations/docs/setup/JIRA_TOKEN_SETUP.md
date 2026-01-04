@@ -55,6 +55,51 @@ Minimum JIRA permissions needed:
 - Verified email associated with JIRA account
 - Used for authentication with API token
 
+### 4. Environment Variables Setup
+
+After creating your API token, you'll need to configure these environment variables:
+
+**Windows (PowerShell):**
+```powershell
+# JIRA Configuration
+[System.Environment]::SetEnvironmentVariable('JIRA_URL', 'https://your-company.atlassian.net', 'User')
+[System.Environment]::SetEnvironmentVariable('JIRA_API_TOKEN', 'your-24-character-api-token', 'User')
+[System.Environment]::SetEnvironmentVariable('JIRA_EMAIL', 'your-email@company.com', 'User')
+[System.Environment]::SetEnvironmentVariable('JIRA_PROJECT', 'PROJ', 'User')
+```
+
+**Linux/Mac (Bash/Zsh):**
+```bash
+# JIRA Configuration
+export JIRA_URL="https://your-company.atlassian.net"
+export JIRA_API_TOKEN="your-24-character-api-token"
+export JIRA_EMAIL="your-email@company.com"
+export JIRA_PROJECT="PROJ"
+
+# Add to ~/.bashrc or ~/.zshrc for persistence
+echo 'export JIRA_URL="https://your-company.atlassian.net"' >> ~/.bashrc
+echo 'export JIRA_API_TOKEN="your-24-character-api-token"' >> ~/.bashrc
+echo 'export JIRA_EMAIL="your-email@company.com"' >> ~/.bashrc
+echo 'export JIRA_PROJECT="PROJ"' >> ~/.bashrc
+```
+
+**Docker/Container Environment:**
+```bash
+# In docker-compose.yml or .env file
+JIRA_URL=https://your-company.atlassian.net
+JIRA_API_TOKEN=your-24-character-api-token
+JIRA_EMAIL=your-email@company.com
+JIRA_PROJECT=PROJ
+```
+
+**Environment Variable Descriptions:**
+- `JIRA_URL`: Your JIRA Cloud instance URL (no trailing slash)
+- `JIRA_API_TOKEN`: The API token you'll create (24 characters)
+- `JIRA_EMAIL`: Your email address associated with the JIRA account
+- `JIRA_PROJECT`: The project key (e.g., PROJ, DEV, TEST)
+
+**Security Note:** Never commit these values to version control. Use `.env` files that are in `.gitignore` or secure secret management systems.
+
 ---
 
 ## Creating an API Token

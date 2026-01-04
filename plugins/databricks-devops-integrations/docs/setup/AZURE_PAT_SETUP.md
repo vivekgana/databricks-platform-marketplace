@@ -56,6 +56,46 @@ Before creating a PAT, ensure you have:
    - Modern browser (Chrome, Firefox, Edge, Safari)
    - Logged into Azure DevOps
 
+4. **Environment Variables Setup**
+
+   After creating your PAT, you'll need to configure these environment variables:
+
+   **Windows (PowerShell):**
+   ```powershell
+   # Azure DevOps Configuration
+   [System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_ORG_URL', 'https://dev.azure.com/your-org', 'User')
+   [System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PAT', 'your-52-character-pat-token', 'User')
+   [System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PROJECT', 'YourProject', 'User')
+   ```
+
+   **Linux/Mac (Bash/Zsh):**
+   ```bash
+   # Azure DevOps Configuration
+   export AZURE_DEVOPS_ORG_URL="https://dev.azure.com/your-org"
+   export AZURE_DEVOPS_PAT="your-52-character-pat-token"
+   export AZURE_DEVOPS_PROJECT="YourProject"
+
+   # Add to ~/.bashrc or ~/.zshrc for persistence
+   echo 'export AZURE_DEVOPS_ORG_URL="https://dev.azure.com/your-org"' >> ~/.bashrc
+   echo 'export AZURE_DEVOPS_PAT="your-52-character-pat-token"' >> ~/.bashrc
+   echo 'export AZURE_DEVOPS_PROJECT="YourProject"' >> ~/.bashrc
+   ```
+
+   **Docker/Container Environment:**
+   ```bash
+   # In docker-compose.yml or .env file
+   AZURE_DEVOPS_ORG_URL=https://dev.azure.com/your-org
+   AZURE_DEVOPS_PAT=your-52-character-pat-token
+   AZURE_DEVOPS_PROJECT=YourProject
+   ```
+
+   **Environment Variable Descriptions:**
+   - `AZURE_DEVOPS_ORG_URL`: Your Azure DevOps organization URL
+   - `AZURE_DEVOPS_PAT`: The Personal Access Token you'll create (52 characters)
+   - `AZURE_DEVOPS_PROJECT`: The project name you want to access
+
+   **Security Note:** Never commit these values to version control. Use `.env` files that are in `.gitignore` or secure secret management systems.
+
 ---
 
 ## Creating a Personal Access Token
