@@ -2,7 +2,7 @@
 
 **Document Version:** 1.0
 **Last Updated:** 2026-01-17 22:43:33
-**Prepared by:** Data Platform Team
+**Prepared by:** Ganapathi Ekambaram
 **Feature:** Azure DevOps Persistent Artifacts Support
 
 ---
@@ -680,7 +680,7 @@ artifact_version = "1.0.1"  # or "1.1.0", "2.0.0"
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2026-01-17 | Data Platform Team | Initial implementation documentation |
+| 1.0 | 2026-01-17 | Ganapathi Ekambaram | Initial implementation documentation |
 
 ---
 

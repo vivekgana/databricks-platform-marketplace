@@ -1,7 +1,7 @@
 # Integration Configuration Guide
 
 **Document Version:** 1.0
-**Prepared by:** Data Platform Team
+**Prepared by:** Ganapathi Ekambaram
 **Last Updated:** 2026-01-19 14:52:00
 **Contact:** data-platform@vivekgana.com
 
@@ -1678,7 +1678,7 @@ GIT_CURL_VERBOSE=1 git push
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2026-01-19 | Data Platform Team | Initial comprehensive integration configuration guide created |
+| 1.0 | 2026-01-19 | Ganapathi Ekambaram | Initial comprehensive integration configuration guide created |
 
 ---
 

@@ -61,7 +61,7 @@
     "type": "git",
     "url": "https://github.com/vivekgana/databricks-platform-marketplace.git"
   },
-  "author": "VivekGana Data Platform Team",
+  "author": "Ganapathi Ekambaram",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/vivekgana/databricks-platform-marketplace/issues"

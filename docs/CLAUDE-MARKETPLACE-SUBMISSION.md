@@ -1,7 +1,7 @@
 # Claude Marketplace Submission Guide
 
 **Document Version:** 1.0
-**Prepared by:** Data Platform Team
+**Prepared by:** Ganapathi Ekambaram
 **Last Updated:** 2026-01-19 17:45:00
 **Contact:** support@vivekgana.com
 
@@ -472,7 +472,7 @@ When submitting to Claude marketplace, provide:
 
 **Contact**:
 - Email: support@vivekgana.com
-- Maintainer: VivekGana Data Platform Team
+- Maintainer: Ganapathi Ekambaram
 
 **Keywords** (submit all 159 keywords from marketplace.json)
 
@@ -595,7 +595,7 @@ Monitor:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2026-01-19 | Data Platform Team | Initial marketplace submission guide |
+| 1.0 | 2026-01-19 | Ganapathi Ekambaram | Initial marketplace submission guide |
 
 ---
 

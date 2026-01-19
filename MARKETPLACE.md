@@ -168,4 +168,4 @@ If you find this plugin useful, please:
 
 ---
 
-**Built for Claude Code by VivekGana Data Platform Team**
+**Built for Claude Code by Ganapathi Ekambaram**
