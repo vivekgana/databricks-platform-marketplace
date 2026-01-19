@@ -1,0 +1,11 @@
+<svg width="320" height="80" viewBox="0 0 320 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">VivekGana</title>
+  <desc id="desc">Simple wordmark logo for VivekGana</desc>
+  <rect width="320" height="80" rx="12" fill="#0f172a" />
+  <path d="M24 22h12l12 28 12-28h12l-18 36h-12z" fill="#38bdf8" />
+  <path d="M96 22h12v36H96z" fill="#38bdf8" />
+  <path d="M126 22h11.5l10.5 20 10.5-20H170l-16 31h-11z" fill="#38bdf8" />
+  <path d="M184 22h12v36h-12z" fill="#38bdf8" />
+  <path d="M206 22h12l10 18 10-18h12l-22 38z" fill="#38bdf8" />
+  <path d="M266 22h34v10h-22v6h20v10h-20v10h-12z" fill="#38bdf8" />
+</svg>

@@ -1,0 +1,59 @@
+{
+  "name": "databricks-devops-integrations",
+  "version": "1.0.0",
+  "description": "DevOps and CI/CD integrations for Databricks, including pipeline templates, release governance, and deployment automation patterns.",
+  "author": {
+    "name": "VivekGana Data Platform Team",
+    "email": "support@vivekgana.com",
+    "url": "https://github.com/vivekgana/databricks-platform-marketplace"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vivekgana/databricks-platform-marketplace"
+  },
+  "license": "MIT",
+  "keywords": [
+    "devops",
+    "ci-cd",
+    "github-actions",
+    "azure-devops",
+    "databricks",
+    "deployment"
+  ],
+  "commands": [
+    {
+      "name": "setup-jira-integration",
+      "description": "Configure JIRA connectivity and write settings to the devops config",
+      "path": "./commands/setup-jira-integration.md",
+      "category": "configuration"
+    },
+    {
+      "name": "setup-azure-devops-integration",
+      "description": "Configure Azure DevOps Boards connectivity and write settings to the devops config",
+      "path": "./commands/setup-azure-devops-integration.md",
+      "category": "configuration"
+    },
+    {
+      "name": "deploy-marketplace",
+      "description": "Install the DevOps integrations plugin from the Claude marketplace",
+      "path": "./commands/deploy-marketplace.md",
+      "category": "deployment"
+    }
+  ],
+  "agents": [
+    {
+      "name": "defect-management-agent",
+      "description": "Routes incidents to JIRA or Azure DevOps and tracks resolution SLAs",
+      "path": "./agents/defect-management-agent.md",
+      "category": "incident-management"
+    }
+  ],
+  "skills": [],
+  "mcp_servers": [],
+  "templates": [],
+  "configuration": {
+    "schema": "./config-schema.json",
+    "default_config": "./.databricks-devops-config.yaml",
+    "env_prefix": "DATABRICKS_"
+  }
+}

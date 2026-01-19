@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "Comprehensive Databricks MLOps toolkit for production ML workflows. Includes 10 commands for model training/deployment, 8 specialized agents for ML best practices, 4 skills for MLOps patterns, and 2 MCP servers for MLflow/Feature Store integration. Build production-grade ML pipelines with experiment tracking, model registry, feature engineering, and monitoring.",
   "author": {
-    "name": "Databricks MLOps Team",
-    "email": "mlops@vivekgana.com",
-    "url": "https://github.com/yourcompany"
+    "name": "VivekGana Data Platform Team",
+    "email": "support@vivekgana.com",
+    "url": "https://github.com/vivekgana/databricks-platform-marketplace"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourcompany/databricks-platform-marketplace"
+    "url": "https://github.com/vivekgana/databricks-platform-marketplace"
   },
   "license": "MIT",
   "keywords": [

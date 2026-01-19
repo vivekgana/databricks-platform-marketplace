@@ -1,0 +1,83 @@
+# AI-SDLC Configuration Template - Multi-Tool Setup
+# Example: JIRA for planning + GitHub for code + Azure for cloud
+# Copy this file to .aisdlc/config.yaml and customize with your settings
+
+# Active plugins configuration
+active_plugins:
+  agile: jira                   # JIRA for work items and planning
+  source_control: github        # GitHub for source control and PRs
+  artifact: azure               # Azure Artifacts for packages
+  pipeline: github              # GitHub Actions for CI/CD
+  cloud_storage: azure          # Azure Blob Storage for evidence
+  secrets: azure                # Azure Key Vault for secrets
+
+# Plugin configurations
+plugins:
+  # JIRA Plugin
+  jira:
+    enabled: true
+    type: jira
+    config:
+      url: ${JIRA_URL}
+      project_key: ${JIRA_PROJECT_KEY}
+      email: ${JIRA_EMAIL}
+      api_token: ${JIRA_API_TOKEN}
+
+  # GitHub Plugin
+  github:
+    enabled: true
+    type: github
+    config:
+      owner: ${GITHUB_OWNER}
+      repository: ${GITHUB_REPOSITORY}
+      token: ${GITHUB_TOKEN}
+
+  # Azure Services Plugin
+  azure:
+    enabled: true
+    type: azure
+    config:
+      storage_account: ${AZURE_STORAGE_ACCOUNT}
+      container_name: ${AZURE_CONTAINER_NAME}
+      storage_key: ${AZURE_STORAGE_KEY}
+      key_vault_url: ${AZURE_KEY_VAULT_URL}
+
+  # AWS Plugin (optional, if you need AWS services too)
+  aws:
+    enabled: false
+    type: aws
+    config:
+      bucket: ${AWS_S3_BUCKET}
+      region: ${AWS_REGION}
+      access_key_id: ${AWS_ACCESS_KEY_ID}
+      secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+
+  # GCP Plugin (optional)
+  gcp:
+    enabled: false
+    type: gcp
+    config:
+      project_id: ${GCP_PROJECT_ID}
+      credentials_file: ${GOOGLE_APPLICATION_CREDENTIALS}
+      bucket: ${GCS_BUCKET}
+
+# Workflow settings
+workflow:
+  evidence_base_path: "azure://audit-cortex-evidence"
+  checkpoint_dir: "./.workflow_checkpoints"
+  default_timeout_seconds: 1800
+  stop_on_failure: true
+
+# LLM configuration
+llm:
+  provider: "anthropic"
+  model: "databricks-claude-sonnet-4-5"
+  temperature: 0.2
+  max_tokens: 8000
+  api_key: ${ANTHROPIC_API_KEY}
+
+# Evaluation thresholds
+evaluations:
+  min_code_quality_score: 0.7
+  min_test_coverage: 0.8
+  min_performance_score: 0.85

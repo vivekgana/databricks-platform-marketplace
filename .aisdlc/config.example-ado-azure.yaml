@@ -1,0 +1,56 @@
+# AI-SDLC Configuration Template - Azure DevOps + Azure Cloud
+# Copy this file to .aisdlc/config.yaml and customize with your settings
+
+# Active plugins configuration
+active_plugins:
+  agile: ado                    # Azure DevOps for work items
+  source_control: ado           # Azure Repos for source control
+  artifact: ado                 # Azure Artifacts for packages
+  pipeline: ado                 # Azure Pipelines for CI/CD
+  cloud_storage: azure          # Azure Blob Storage
+  secrets: azure                # Azure Key Vault
+
+# Plugin configurations
+plugins:
+  # Azure DevOps Plugin
+  ado:
+    enabled: true
+    type: ado
+    config:
+      organization: ${ADO_ORGANIZATION}  # e.g., "mycompany"
+      project: ${ADO_PROJECT}            # e.g., "MyProject"
+      pat: ${ADO_PAT}                    # Personal Access Token
+      repository: ${ADO_REPOSITORY}      # Optional: for Azure Repos
+
+  # Azure Cloud Services Plugin
+  azure:
+    enabled: true
+    type: azure
+    config:
+      storage_account: ${AZURE_STORAGE_ACCOUNT}
+      container_name: ${AZURE_CONTAINER_NAME}
+      storage_key: ${AZURE_STORAGE_KEY}
+
+      # Azure Key Vault configuration
+      key_vault_url: ${AZURE_KEY_VAULT_URL}  # e.g., "https://myvault.vault.azure.net/"
+
+# Workflow settings
+workflow:
+  evidence_base_path: "azure://audit-cortex-evidence"
+  checkpoint_dir: "./.workflow_checkpoints"
+  default_timeout_seconds: 1800
+  stop_on_failure: true
+
+# LLM configuration
+llm:
+  provider: "anthropic"
+  model: "databricks-claude-sonnet-4-5"
+  temperature: 0.2
+  max_tokens: 8000
+  api_key: ${ANTHROPIC_API_KEY}
+
+# Evaluation thresholds
+evaluations:
+  min_code_quality_score: 0.7
+  min_test_coverage: 0.8
+  min_performance_score: 0.85

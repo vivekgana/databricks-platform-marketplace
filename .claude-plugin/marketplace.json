@@ -2,10 +2,10 @@
   "name": "databricks-platform",
   "version": "1.0.0",
   "owner": {
-    "name": "Your Company Data Platform Team",
-    "url": "https://github.com/yourcompany/databricks-platform-marketplace",
-    "email": "data-platform@vivekgana.com",
-    "logo_url": "https://yourcompany.com/assets/databricks-logo.png"
+    "name": "VivekGana",
+    "url": "https://github.com/vivekgana/databricks-platform-marketplace",
+    "email": "support@vivekgana.com",
+    "logo_url": "https://raw.githubusercontent.com/vivekgana/databricks-platform-marketplace/main/assets/vivekgana-logo.svg"
   },
   "metadata": {
     "display_name": "Databricks Data Platform Suite",
@@ -24,10 +24,12 @@
       "pipeline-automation",
       "data-quality"
     ],
-    "homepage": "https://yourcompany.com/databricks-platform-marketplace",
-    "documentation": "https://docs.yourcompany.com/databricks-plugins",
-    "support_url": "https://support.yourcompany.com/databricks-plugins",
-    "repository": "https://github.com/yourcompany/databricks-platform-marketplace",
+    "homepage": "https://github.com/vivekgana/databricks-platform-marketplace#readme",
+    "documentation": "https://github.com/vivekgana/databricks-platform-marketplace/tree/main/docs",
+    "support_url": "https://github.com/vivekgana/databricks-platform-marketplace/issues",
+    "privacy_url": "https://github.com/vivekgana/databricks-platform-marketplace/blob/main/docs/PRIVACY.md",
+    "terms_url": "https://github.com/vivekgana/databricks-platform-marketplace/blob/main/docs/TERMS.md",
+    "repository": "https://github.com/vivekgana/databricks-platform-marketplace",
     "license": "MIT",
     "keywords": [
       "data engineering",
@@ -77,7 +79,7 @@
   "installation": {
     "quick_start": "npx claude-plugins install @vivekgana/databricks-platform/databricks-engineering",
     "manual_install": [
-      "/plugin marketplace add https://github.com/yourcompany/databricks-platform-marketplace",
+      "/plugin marketplace add https://github.com/vivekgana/databricks-platform-marketplace",
       "/plugin install databricks-engineering"
     ]
   },
@@ -92,15 +94,15 @@
     ],
     "config_file": ".databricks-plugin-config.yaml"
   },
-  "changelog_url": "https://github.com/yourcompany/databricks-platform-marketplace/blob/main/CHANGELOG.md",
+  "changelog_url": "https://github.com/vivekgana/databricks-platform-marketplace/blob/main/CHANGELOG.md",
   "pricing": {
     "model": "free",
     "commercial_license_available": true,
-    "enterprise_support": "https://yourcompany.com/enterprise-support"
+    "enterprise_support": "https://github.com/vivekgana/databricks-platform-marketplace/discussions"
   },
   "social": {
-    "twitter": "@vivekgana_data",
-    "linkedin": "https://linkedin.com/company/yourcompany",
-    "slack_community": "https://yourcompany.slack.com/data-platform"
+    "twitter": "https://twitter.com/vivekgana",
+    "linkedin": "https://linkedin.com/company/vivekgana",
+    "slack_community": "https://github.com/vivekgana/databricks-platform-marketplace/discussions"
   }
 }
