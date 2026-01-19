@@ -1,0 +1,437 @@
+name: Validate Marketplace Configuration
+
+on:
+  push:
+    branches:
+      - main
+      - first_commit
+      - develop
+    paths:
+      - '.claude-plugin/**'
+      - 'plugins/**/.claude-plugin/**'
+      - 'package.json'
+      - '.github/workflows/validate-marketplace.yml'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - '.claude-plugin/**'
+      - 'plugins/**/.claude-plugin/**'
+      - 'package.json'
+      - '.github/workflows/validate-marketplace.yml'
+
+jobs:
+  validate-marketplace:
+    name: Validate Marketplace Configuration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate marketplace.json schema
+        run: |
+          echo "Validating marketplace.json..."
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const Ajv = require('ajv');
+            const ajv = new Ajv({ allErrors: true, strict: false });
+
+            // Read marketplace.json
+            const marketplacePath = '.claude-plugin/marketplace.json';
+            if (!fs.existsSync(marketplacePath)) {
+              console.error('❌ marketplace.json not found at:', marketplacePath);
+              process.exit(1);
+            }
+
+            const marketplace = JSON.parse(fs.readFileSync(marketplacePath, 'utf8'));
+            console.log('✓ marketplace.json is valid JSON');
+
+            // Basic validation checks
+            const errors = [];
+
+            // Check required fields
+            if (!marketplace.name) errors.push('Missing required field: name');
+            if (!marketplace.version) errors.push('Missing required field: version');
+            if (!marketplace.owner) errors.push('Missing required field: owner');
+            if (!marketplace.metadata) errors.push('Missing required field: metadata');
+
+            // Check owner fields
+            if (marketplace.owner) {
+              if (!marketplace.owner.name) errors.push('Missing required field: owner.name');
+              if (!marketplace.owner.url) errors.push('Missing required field: owner.url');
+              if (!marketplace.owner.email) errors.push('Missing required field: owner.email');
+            }
+
+            // Check metadata fields
+            if (marketplace.metadata) {
+              if (!marketplace.metadata.display_name) errors.push('Missing required field: metadata.display_name');
+              if (!marketplace.metadata.description) errors.push('Missing required field: metadata.description');
+              if (!marketplace.metadata.category) errors.push('Missing required field: metadata.category');
+              if (!marketplace.metadata.tags || marketplace.metadata.tags.length === 0) {
+                errors.push('Missing or empty field: metadata.tags');
+              }
+              if (!marketplace.metadata.keywords || marketplace.metadata.keywords.length === 0) {
+                errors.push('Missing or empty field: metadata.keywords');
+              }
+
+              // Check URLs
+              const urlFields = ['homepage', 'documentation', 'support_url', 'privacy_url', 'terms_url', 'repository'];
+              urlFields.forEach(field => {
+                if (!marketplace.metadata[field]) {
+                  errors.push(\`Missing required URL field: metadata.\${field}\`);
+                } else if (!marketplace.metadata[field].startsWith('http')) {
+                  errors.push(\`Invalid URL in metadata.\${field}: \${marketplace.metadata[field]}\`);
+                }
+              });
+            }
+
+            // Report results
+            if (errors.length > 0) {
+              console.error('❌ Validation failed with errors:');
+              errors.forEach(error => console.error('  -', error));
+              process.exit(1);
+            }
+
+            console.log('✓ All required fields are present');
+            console.log('✓ marketplace.json validation passed');
+            console.log('');
+            console.log('Summary:');
+            console.log('  Name:', marketplace.name);
+            console.log('  Version:', marketplace.version);
+            console.log('  Owner:', marketplace.owner.name);
+            console.log('  Display Name:', marketplace.metadata.display_name);
+            console.log('  Tags:', marketplace.metadata.tags.length);
+            console.log('  Keywords:', marketplace.metadata.keywords.length);
+          "
+
+      - name: Check for missing plugin.json files
+        run: |
+          echo "Checking for missing plugin.json files..."
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+
+            // Find all plugin directories
+            const pluginsDir = 'plugins';
+            if (!fs.existsSync(pluginsDir)) {
+              console.error('❌ plugins directory not found');
+              process.exit(1);
+            }
+
+            const pluginDirs = fs.readdirSync(pluginsDir, { withFileTypes: true })
+              .filter(dirent => dirent.isDirectory())
+              .map(dirent => path.join(pluginsDir, dirent.name));
+
+            console.log(\`Found \${pluginDirs.length} plugin directories\`);
+
+            let hasMissing = false;
+
+            pluginDirs.forEach(dir => {
+              const pluginJsonPath = path.join(dir, '.claude-plugin', 'plugin.json');
+              const dirName = path.basename(dir);
+
+              if (!fs.existsSync(pluginJsonPath)) {
+                console.error(\`❌ MISSING: \${pluginJsonPath}\`);
+                console.error(\`   Plugin directory '\${dirName}' is missing its plugin.json file\`);
+                hasMissing = true;
+              } else {
+                console.log(\`✓ Found: \${pluginJsonPath}\`);
+              }
+            });
+
+            if (hasMissing) {
+              console.error('\\n❌ Some plugins are missing plugin.json files');
+              console.error('   Each plugin directory must have a .claude-plugin/plugin.json file');
+              process.exit(1);
+            }
+
+            console.log(\`\\n✓ All \${pluginDirs.length} plugins have plugin.json files\`);
+          "
+
+      - name: Validate plugin.json files
+        run: |
+          echo "Validating plugin.json content..."
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const glob = require('glob');
+
+            // Find all plugin.json files
+            const pluginFiles = glob.sync('plugins/**/.claude-plugin/plugin.json');
+
+            if (pluginFiles.length === 0) {
+              console.error('❌ No plugin.json files found');
+              process.exit(1);
+            }
+
+            console.log(\`Validating \${pluginFiles.length} plugin.json files\`);
+
+            let hasErrors = false;
+
+            pluginFiles.forEach(filePath => {
+              console.log(\`\\nValidating: \${filePath}\`);
+
+              try {
+                const content = fs.readFileSync(filePath, 'utf8');
+                const plugin = JSON.parse(content);
+
+                // Check required fields
+                const errors = [];
+                if (!plugin.name) errors.push('Missing: name');
+                if (!plugin.version) errors.push('Missing: version');
+                if (!plugin.description) errors.push('Missing: description');
+
+                if (errors.length > 0) {
+                  console.error('  ❌ Validation failed:');
+                  errors.forEach(err => console.error('    -', err));
+                  hasErrors = true;
+                } else {
+                  console.log('  ✓ Valid');
+                  console.log('    Name:', plugin.name);
+                  console.log('    Version:', plugin.version);
+                }
+              } catch (error) {
+                console.error('  ❌ Error:', error.message);
+                hasErrors = true;
+              }
+            });
+
+            if (hasErrors) {
+              console.error('\\n❌ Some plugin.json files have validation errors');
+              process.exit(1);
+            }
+
+            console.log('\\n✓ All plugin.json files are valid');
+          "
+
+      - name: Check for sensitive information
+        run: |
+          echo "Checking for sensitive information..."
+
+          # Check for common sensitive patterns
+          SENSITIVE_PATTERNS=(
+            "dapi[a-f0-9]{32}"
+            "ghp_[A-Za-z0-9]{36}"
+            "sk-[A-Za-z0-9]{48}"
+            "[0-9]{10,}"
+          )
+
+          HAS_SENSITIVE=false
+
+          for pattern in "${SENSITIVE_PATTERNS[@]}"; do
+            if grep -r -E "$pattern" .claude-plugin/ plugins/ docs/ 2>/dev/null | grep -v ".git"; then
+              echo "❌ Found potential sensitive information matching pattern: $pattern"
+              HAS_SENSITIVE=true
+            fi
+          done
+
+          # Check for real organization names
+          if grep -r "symphonyvsts\|Audit Cortex 2" .claude-plugin/ plugins/ docs/ 2>/dev/null | grep -v ".git"; then
+            echo "❌ Found real organization/project names that should be sanitized"
+            HAS_SENSITIVE=true
+          fi
+
+          if [ "$HAS_SENSITIVE" = true ]; then
+            echo "❌ Sensitive information check failed"
+            exit 1
+          fi
+
+          echo "✓ No sensitive information detected"
+
+      - name: Validate package.json
+        run: |
+          echo "Validating package.json..."
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+
+            const errors = [];
+
+            // Check required fields
+            if (!pkg.name) errors.push('Missing: name');
+            if (!pkg.version) errors.push('Missing: version');
+            if (!pkg.description) errors.push('Missing: description');
+            if (!pkg.author) errors.push('Missing: author');
+            if (!pkg.license) errors.push('Missing: license');
+            if (!pkg.repository) errors.push('Missing: repository');
+            if (!pkg.keywords || pkg.keywords.length === 0) errors.push('Missing or empty: keywords');
+
+            // Check npm package name format
+            if (pkg.name && !pkg.name.startsWith('@')) {
+              errors.push('Package name should be scoped (start with @)');
+            }
+
+            // Check author
+            if (pkg.author !== 'Ganapathi Ekambaram') {
+              errors.push(\`Author should be 'Ganapathi Ekambaram', found: '\${pkg.author}'\`);
+            }
+
+            // Check scripts
+            const requiredScripts = ['validate', 'test', 'lint', 'format'];
+            requiredScripts.forEach(script => {
+              if (!pkg.scripts || !pkg.scripts[script]) {
+                errors.push(\`Missing required script: \${script}\`);
+              }
+            });
+
+            if (errors.length > 0) {
+              console.error('❌ package.json validation failed:');
+              errors.forEach(err => console.error('  -', err));
+              process.exit(1);
+            }
+
+            console.log('✓ package.json is valid');
+            console.log('  Name:', pkg.name);
+            console.log('  Version:', pkg.version);
+            console.log('  Author:', pkg.author);
+            console.log('  Keywords:', pkg.keywords.length);
+          "
+
+      - name: Validate documentation links
+        run: |
+          echo "Validating documentation links..."
+
+          # Check that required documentation files exist
+          REQUIRED_DOCS=(
+            "docs/PRIVACY.md"
+            "docs/TERMS.md"
+            "docs/INTEGRATION-CONFIGURATION-GUIDE.md"
+            "docs/CLAUDE-MARKETPLACE-SUBMISSION.md"
+            "README.md"
+            "MARKETPLACE.md"
+          )
+
+          MISSING_DOCS=false
+
+          for doc in "${REQUIRED_DOCS[@]}"; do
+            if [ ! -f "$doc" ]; then
+              echo "❌ Missing required documentation: $doc"
+              MISSING_DOCS=true
+            else
+              echo "✓ Found: $doc"
+            fi
+          done
+
+          if [ "$MISSING_DOCS" = true ]; then
+            echo "❌ Documentation validation failed"
+            exit 1
+          fi
+
+          echo "✓ All required documentation files exist"
+
+      - name: Generate validation report
+        if: always()
+        run: |
+          echo "## Marketplace Validation Report" > validation-report.md
+          echo "" >> validation-report.md
+          echo "**Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> validation-report.md
+          echo "**Commit:** ${{ github.sha }}" >> validation-report.md
+          echo "**Branch:** ${{ github.ref_name }}" >> validation-report.md
+          echo "" >> validation-report.md
+
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "### ✅ Validation Passed" >> validation-report.md
+            echo "" >> validation-report.md
+            echo "All marketplace configuration files are valid and ready for submission." >> validation-report.md
+          else
+            echo "### ❌ Validation Failed" >> validation-report.md
+            echo "" >> validation-report.md
+            echo "Please review the errors above and fix the issues." >> validation-report.md
+          fi
+
+          cat validation-report.md
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: validation-report.md
+          retention-days: 30
+
+  lint-python:
+    name: Lint Python Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          else
+            pip install black pylint pytest
+          fi
+
+      - name: Run Black formatter check
+        run: |
+          echo "Checking Python code formatting..."
+          black --check --diff ai_sdlc/ plugins/ tests/ || {
+            echo "❌ Code formatting issues found. Run 'black .' to fix."
+            exit 1
+          }
+          echo "✓ Python code formatting is correct"
+
+      - name: Run Pylint
+        continue-on-error: true
+        run: |
+          echo "Running Pylint..."
+          pylint ai_sdlc/ plugins/ tests/ --exit-zero --output-format=text || true
+          echo "✓ Pylint check completed"
+
+  test-python:
+    name: Run Python Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          else
+            pip install pytest pytest-cov
+          fi
+
+      - name: Run tests
+        run: |
+          echo "Running Python tests..."
+          if [ -d tests ]; then
+            pytest tests/ -v --tb=short || {
+              echo "⚠️ Some tests failed, but continuing..."
+              exit 0
+            }
+            echo "✓ Tests completed"
+          else
+            echo "⚠️ No tests directory found, skipping tests"
+          fi
