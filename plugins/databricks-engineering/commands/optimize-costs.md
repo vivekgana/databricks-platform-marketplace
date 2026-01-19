@@ -862,4 +862,4 @@ dashboard = w.dashboards.create(
 **Last Updated**: 2024-12-31
 **Version**: 1.0.0
 **Category**: Cost Management
-**Prepared by**: gekambaram
+**Prepared by**: Data Platform Team

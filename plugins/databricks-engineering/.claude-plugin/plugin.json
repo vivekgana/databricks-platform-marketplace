@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "Comprehensive Databricks data engineering toolkit. Includes 15 commands for pipeline development, 18 specialized agents for code review, 8 skills for architecture patterns, and 3 MCP servers for Databricks integration. Build production-grade data products with medallion architecture, Delta Live Tables, data quality validation, and Delta Sharing.",
   "author": {
-    "name": "Your Company Data Platform Team",
-    "email": "data-platform@vivekgana.com",
-    "url": "https://github.com/yourcompany"
+    "name": "VivekGana Data Platform Team",
+    "email": "support@vivekgana.com",
+    "url": "https://github.com/vivekgana/databricks-platform-marketplace"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourcompany/databricks-platform-marketplace"
+    "url": "https://github.com/vivekgana/databricks-platform-marketplace"
   },
   "license": "MIT",
   "keywords": [

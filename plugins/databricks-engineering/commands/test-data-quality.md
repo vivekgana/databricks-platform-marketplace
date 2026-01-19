@@ -1026,4 +1026,4 @@ When `--continuous` flag is used, the command sets up:
 **Last Updated**: 2024-12-31
 **Version**: 1.0.0
 **Category**: Quality Assurance
-**Prepared by**: gekambaram
+**Prepared by**: Data Platform Team

@@ -5,12 +5,45 @@
   "main": ".claude-plugin/marketplace.json",
   "keywords": [
     "claude-plugin",
+    "claude-code",
     "databricks",
     "data-engineering",
     "mlops",
     "delta-lake",
     "unity-catalog",
-    "pyspark"
+    "pyspark",
+    "spark",
+    "delta-sharing",
+    "data-products",
+    "medallion-architecture",
+    "dlt",
+    "delta-live-tables",
+    "azure-devops",
+    "ado",
+    "jira",
+    "github",
+    "gitlab",
+    "ci-cd",
+    "devops-integration",
+    "ai-sdlc",
+    "code-review",
+    "automated-testing",
+    "workflow-orchestration",
+    "evidence-management",
+    "pbi-generation",
+    "epic-planning",
+    "requirement-sync",
+    "data-governance",
+    "compliance",
+    "mlflow",
+    "feature-engineering",
+    "model-deployment",
+    "data-quality",
+    "great-expectations",
+    "databricks-asset-bundles",
+    "infrastructure-as-code",
+    "lakehouse",
+    "modern-data-stack"
   ],
   "scripts": {
     "validate": "node scripts/validate-plugins.js",
@@ -26,14 +59,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourcompany/databricks-platform-marketplace.git"
+    "url": "https://github.com/vivekgana/databricks-platform-marketplace.git"
   },
-  "author": "Your Company Data Platform Team",
+  "author": "Ganapathi Ekambaram",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yourcompany/databricks-platform-marketplace/issues"
+    "url": "https://github.com/vivekgana/databricks-platform-marketplace/issues"
   },
-  "homepage": "https://github.com/yourcompany/databricks-platform-marketplace#readme",
+  "homepage": "https://github.com/vivekgana/databricks-platform-marketplace#readme",
   "dependencies": {
     "databricks-sdk": "^0.20.0",
     "ajv": "^8.12.0"

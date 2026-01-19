@@ -1,0 +1,58 @@
+# AI-SDLC Configuration Template - GitLab + GCP
+# Copy this file to .aisdlc/config.yaml and customize with your settings
+
+# Active plugins configuration
+active_plugins:
+  agile: gitlab                 # GitLab Issues for work items
+  source_control: gitlab        # GitLab for source control
+  artifact: gitlab              # GitLab Package Registry
+  pipeline: gitlab              # GitLab CI for CI/CD
+  cloud_storage: gcp            # Google Cloud Storage
+  secrets: gcp                  # Google Secret Manager
+
+# Plugin configurations
+plugins:
+  # GitLab Plugin
+  gitlab:
+    enabled: true
+    type: gitlab
+    config:
+      url: ${GITLAB_URL}                  # e.g., "https://gitlab.com" or self-hosted
+      project_id: ${GITLAB_PROJECT_ID}    # Numeric project ID
+      token: ${GITLAB_TOKEN}              # Personal Access Token or Project Token
+
+  # Google Cloud Platform Plugin
+  gcp:
+    enabled: true
+    type: gcp
+    config:
+      # GCP Project configuration
+      project_id: ${GCP_PROJECT_ID}
+      credentials_file: ${GOOGLE_APPLICATION_CREDENTIALS}  # Path to service account key
+
+      # Cloud Storage configuration
+      bucket: ${GCS_BUCKET}
+
+      # Secret Manager configuration
+      secret_project_id: ${GCP_PROJECT_ID}  # Can be different project for secrets
+
+# Workflow settings
+workflow:
+  evidence_base_path: "gs://my-evidence-bucket"
+  checkpoint_dir: "./.workflow_checkpoints"
+  default_timeout_seconds: 1800
+  stop_on_failure: true
+
+# LLM configuration
+llm:
+  provider: "anthropic"
+  model: "databricks-claude-sonnet-4-5"
+  temperature: 0.2
+  max_tokens: 8000
+  api_key: ${ANTHROPIC_API_KEY}
+
+# Evaluation thresholds
+evaluations:
+  min_code_quality_score: 0.7
+  min_test_coverage: 0.8
+  min_performance_score: 0.85

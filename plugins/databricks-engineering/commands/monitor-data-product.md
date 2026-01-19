@@ -503,4 +503,4 @@ def generate_sla_report(product_name: str, period_days: int = 30):
 **Last Updated**: 2024-12-31
 **Version**: 1.0.0
 **Category**: Monitoring
-**Prepared by**: gekambaram
+**Prepared by**: Data Platform Team

@@ -239,4 +239,4 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
-**Built with ❤️ by the Your Company Data Platform Team**
+**Built with ❤️ by Ganapathi Ekambaram**

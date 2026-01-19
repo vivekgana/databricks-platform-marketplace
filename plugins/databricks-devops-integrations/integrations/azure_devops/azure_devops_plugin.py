@@ -5,6 +5,9 @@ Implements the DevOpsIntegrationPlugin interface for Microsoft Azure DevOps.
 """
 
 import logging
+import base64
+import mimetypes
+from pathlib import Path
 from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
 from azure.devops.connection import Connection
@@ -303,7 +306,9 @@ class AzureDevOpsPlugin(DevOpsIntegrationPlugin):
         try:
             # Add commit link as a comment
             commit_url = f"{repo_url}/commit/{commit_sha}"
-            comment_text = f"Linked to commit: <a href='{commit_url}'>{commit_sha[:7]}</a>"
+            comment_text = (
+                f"Linked to commit: <a href='{commit_url}'>{commit_sha[:7]}</a>"
+            )
 
             document = [
                 JsonPatchOperation(
@@ -351,9 +356,7 @@ class AzureDevOpsPlugin(DevOpsIntegrationPlugin):
                 document=document, id=int(item_id), project=config.project
             )
 
-            self.logger.info(
-                f"Linked Azure DevOps work item {item_id} to PR {pr_url}"
-            )
+            self.logger.info(f"Linked Azure DevOps work item {item_id} to PR {pr_url}")
             return True
 
         except Exception as e:
@@ -451,9 +454,7 @@ class AzureDevOpsPlugin(DevOpsIntegrationPlugin):
 
             # Calculate metrics
             total_story_points = sum(
-                float(
-                    wi.fields.get("Microsoft.VSTS.Scheduling.StoryPoints", 0) or 0
-                )
+                float(wi.fields.get("Microsoft.VSTS.Scheduling.StoryPoints", 0) or 0)
                 for wi in work_items
             )
 
@@ -654,3 +655,657 @@ class AzureDevOpsPlugin(DevOpsIntegrationPlugin):
         pr_id = payload.get("resource", {}).get("pullRequestId")
         self.logger.info(f"Pull request created: {pr_id}")
         return {"status": "processed", "pr_id": pr_id}
+
+    # Evidence Management Methods
+    def upload_attachment(
+        self,
+        work_item_id: str,
+        file_path: str,
+        comment: Optional[str] = None,
+        config: Optional[PluginConfig] = None,
+    ) -> str:
+        """
+        Upload a file as an attachment to a work item.
+
+        Args:
+            work_item_id: Work item ID
+            file_path: Path to the file to upload
+            comment: Optional comment to add with the attachment
+            config: Plugin configuration
+
+        Returns:
+            URL of the uploaded attachment
+
+        Raises:
+            IntegrationError: If upload fails
+        """
+        if not self.work_item_client:
+            if not config:
+                raise IntegrationError("Configuration required for authentication")
+            self.authenticate(config)
+
+        try:
+            file_path_obj = Path(file_path)
+            if not file_path_obj.exists():
+                raise IntegrationError(f"File not found: {file_path}")
+
+            # Read file content
+            with open(file_path, "rb") as f:
+                file_content = f.read()
+
+            # Detect MIME type
+            mime_type, _ = mimetypes.guess_type(file_path)
+            if not mime_type:
+                mime_type = "application/octet-stream"
+
+            # Upload attachment
+            attachment = self.work_item_client.create_attachment(
+                upload_stream=file_content,
+                file_name=file_path_obj.name,
+                upload_type=mime_type,
+            )
+
+            # Link attachment to work item
+            document = [
+                JsonPatchOperation(
+                    op="add",
+                    path="/relations/-",
+                    value={
+                        "rel": "AttachedFile",
+                        "url": attachment.url,
+                        "attributes": {
+                            "comment": comment or f"Attachment: {file_path_obj.name}"
+                        },
+                    },
+                )
+            ]
+
+            self.work_item_client.update_work_item(
+                document=document, id=int(work_item_id)
+            )
+
+            self.logger.info(
+                f"Uploaded attachment {file_path_obj.name} to work item {work_item_id}"
+            )
+            return attachment.url
+
+        except Exception as e:
+            self.logger.error(f"Failed to upload attachment: {e}")
+            raise IntegrationError(f"Failed to upload attachment: {e}")
+
+    def add_comment(
+        self,
+        work_item_id: str,
+        comment: str,
+        config: Optional[PluginConfig] = None,
+    ) -> bool:
+        """
+        Add a plain text comment to a work item.
+
+        Args:
+            work_item_id: Work item ID
+            comment: Comment text
+            config: Plugin configuration
+
+        Returns:
+            True if successful
+
+        Raises:
+            IntegrationError: If adding comment fails
+        """
+        if not self.work_item_client:
+            if not config:
+                raise IntegrationError("Configuration required for authentication")
+            self.authenticate(config)
+
+        try:
+            document = [
+                JsonPatchOperation(
+                    op="add", path="/fields/System.History", value=comment
+                )
+            ]
+
+            self.work_item_client.update_work_item(
+                document=document, id=int(work_item_id)
+            )
+
+            self.logger.info(f"Added comment to work item {work_item_id}")
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Failed to add comment: {e}")
+            raise IntegrationError(f"Failed to add comment: {e}")
+
+    def add_rich_comment(
+        self,
+        work_item_id: str,
+        html_content: str,
+        plain_text: Optional[str] = None,
+        config: Optional[PluginConfig] = None,
+    ) -> bool:
+        """
+        Add a rich HTML comment to a work item.
+
+        Azure DevOps supports HTML in the System.History field.
+
+        Args:
+            work_item_id: Work item ID
+            html_content: HTML formatted comment
+            plain_text: Optional plain text fallback (not used in ADO but kept for API compatibility)
+            config: Plugin configuration
+
+        Returns:
+            True if successful
+
+        Raises:
+            IntegrationError: If adding comment fails
+        """
+        if not self.work_item_client:
+            if not config:
+                raise IntegrationError("Configuration required for authentication")
+            self.authenticate(config)
+
+        try:
+            # Azure DevOps System.History field supports HTML directly
+            document = [
+                JsonPatchOperation(
+                    op="add", path="/fields/System.History", value=html_content
+                )
+            ]
+
+            self.work_item_client.update_work_item(
+                document=document, id=int(work_item_id)
+            )
+
+            self.logger.info(f"Added rich comment to work item {work_item_id}")
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Failed to add rich comment: {e}")
+            raise IntegrationError(f"Failed to add rich comment: {e}")
+
+    def update_work_item_with_evidence(
+        self,
+        work_item_id: str,
+        evidence_summary: Dict[str, Any],
+        stage: str,
+        status: str,
+        config: Optional[PluginConfig] = None,
+    ) -> bool:
+        """
+        Update work item with evidence from a workflow stage.
+
+        This is a convenience method that combines multiple operations:
+        - Adds a rich comment with stage results
+        - Updates work item description with evidence summary
+        - Updates custom fields for workflow tracking
+
+        Args:
+            work_item_id: Work item ID
+            evidence_summary: Evidence summary dictionary with:
+                - evidence_items: List of evidence items
+                - metrics: Dict of metrics
+                - duration_seconds: Stage duration
+            stage: Workflow stage name
+            status: Stage status (passed/failed)
+            config: Plugin configuration
+
+        Returns:
+            True if successful
+
+        Raises:
+            IntegrationError: If update fails
+        """
+        if not self.work_item_client:
+            if not config:
+                raise IntegrationError("Configuration required for authentication")
+            self.authenticate(config)
+
+        try:
+            # Import here to avoid circular dependency
+            from ai_sdlc.evidence import EvidenceFormatter, ADOCommentFormat
+
+            # Format stage comment
+            formatter = EvidenceFormatter(work_item_id)
+            comment_html = formatter.format_stage_comment(
+                stage=stage,
+                status=status,
+                duration_seconds=evidence_summary.get("duration_seconds", 0),
+                evidence_items=evidence_summary.get("evidence_items", []),
+                metrics=evidence_summary.get("metrics"),
+                format_type=ADOCommentFormat.HTML,
+            )
+
+            # Add rich comment
+            self.add_rich_comment(work_item_id, comment_html, config=config)
+
+            # Update custom fields for workflow tracking
+            document = [
+                JsonPatchOperation(
+                    op="add",
+                    path="/fields/Custom.LastWorkflowStage",
+                    value=stage,
+                ),
+                JsonPatchOperation(
+                    op="add",
+                    path="/fields/Custom.LastWorkflowStatus",
+                    value=status,
+                ),
+                JsonPatchOperation(
+                    op="add",
+                    path="/fields/Custom.LastWorkflowUpdate",
+                    value=datetime.now().isoformat(),
+                ),
+            ]
+
+            self.work_item_client.update_work_item(
+                document=document, id=int(work_item_id)
+            )
+
+            self.logger.info(
+                f"Updated work item {work_item_id} with evidence from stage {stage}"
+            )
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Failed to update work item with evidence: {e}")
+            # Don't raise - evidence update shouldn't fail the workflow
+            return False
+
+    def upload_evidence_package(
+        self,
+        work_item_id: str,
+        evidence_items: List[Any],  # List of EvidenceItem
+        max_attachments: int = 3,
+        config: Optional[PluginConfig] = None,
+    ) -> Dict[str, Any]:
+        """
+        Upload a package of evidence files to a work item.
+
+        This method intelligently selects the most important evidence items
+        (e.g., key screenshots, reports) to upload as attachments.
+
+        Args:
+            work_item_id: Work item ID
+            evidence_items: List of EvidenceItem objects
+            max_attachments: Maximum number of attachments to upload (default: 3)
+            config: Plugin configuration
+
+        Returns:
+            Dictionary with:
+                - uploaded_count: Number of files uploaded
+                - uploaded_urls: List of attachment URLs
+                - skipped_count: Number of files skipped
+
+        Raises:
+            IntegrationError: If upload fails
+        """
+        if not self.work_item_client:
+            if not config:
+                raise IntegrationError("Configuration required for authentication")
+            self.authenticate(config)
+
+        try:
+            # Import here to avoid circular dependency
+            from ai_sdlc.evidence import ScreenshotManager, EvidenceCategory
+
+            # Prioritize screenshots and reports
+            priority_categories = [
+                EvidenceCategory.SCREENSHOT,
+                EvidenceCategory.REPORT,
+            ]
+
+            prioritized_items = []
+            other_items = []
+
+            for item in evidence_items:
+                if item.category in priority_categories:
+                    prioritized_items.append(item)
+                else:
+                    other_items.append(item)
+
+            # For screenshots, use ScreenshotManager to select top ones
+            screenshots = [
+                item
+                for item in prioritized_items
+                if item.category == EvidenceCategory.SCREENSHOT
+            ]
+            if screenshots:
+                screenshot_manager = ScreenshotManager()
+                screenshots_dict = [
+                    {
+                        "filename": s.filename,
+                        "path": s.path,
+                        "size_bytes": s.size_bytes or 0,
+                    }
+                    for s in screenshots
+                ]
+                top_screenshots = screenshot_manager.select_top_screenshots(
+                    screenshots_dict, max_count=max_attachments
+                )
+                selected_items = [
+                    item
+                    for item in screenshots
+                    if item.filename in [s["filename"] for s in top_screenshots]
+                ]
+            else:
+                # No screenshots, select from other priority items
+                selected_items = prioritized_items[:max_attachments]
+
+            # Upload selected items
+            uploaded_urls = []
+            for item in selected_items:
+                try:
+                    url = self.upload_attachment(
+                        work_item_id=work_item_id,
+                        file_path=item.path,
+                        comment=f"{item.category.value}: {item.description or item.filename}",
+                        config=config,
+                    )
+                    uploaded_urls.append(url)
+                except Exception as e:
+                    self.logger.warning(f"Failed to upload {item.filename}: {e}")
+
+            result = {
+                "uploaded_count": len(uploaded_urls),
+                "uploaded_urls": uploaded_urls,
+                "skipped_count": len(evidence_items) - len(uploaded_urls),
+            }
+
+            self.logger.info(
+                f"Uploaded {result['uploaded_count']} evidence files to work item {work_item_id}"
+            )
+            return result
+
+        except Exception as e:
+            self.logger.error(f"Failed to upload evidence package: {e}")
+            raise IntegrationError(f"Failed to upload evidence package: {e}")
+
+    def create_artifact_package(
+        self,
+        work_item_id: str,
+        artifact_name: str,
+        artifact_version: str,
+        evidence_items: List[Any],
+        config: Optional[PluginConfig] = None,
+    ) -> Dict[str, Any]:
+        """
+        Create a persistent artifact package in Azure Artifacts (Universal Packages).
+
+        This creates a permanent artifact package that can be versioned and
+        referenced across multiple work items, unlike simple attachments.
+
+        Args:
+            work_item_id: Work item ID to link artifact to
+            artifact_name: Name of the artifact package (e.g., "pbi-6340168-evidence")
+            artifact_version: Semantic version (e.g., "1.0.0")
+            evidence_items: List of EvidenceItem objects to include
+            config: Plugin configuration
+
+        Returns:
+            Dictionary with:
+                - package_id: Universal Package ID
+                - package_url: URL to access the package
+                - version: Package version
+                - files_count: Number of files in package
+                - artifact_link: ADO artifact link URL
+
+        Raises:
+            IntegrationError: If artifact creation fails
+        """
+        if not self.connection:
+            if not config:
+                raise IntegrationError("Configuration required for authentication")
+            self.authenticate(config)
+
+        try:
+            import tarfile
+            import tempfile
+            import json
+            import requests
+            from io import BytesIO
+
+            # Get feed client for Universal Packages
+            # Note: Azure DevOps Universal Packages use REST API, not Python SDK
+            org_url = config.api_endpoint.rstrip("/")
+            project = config.project
+            pat = config.api_key
+
+            # Create a feed if it doesn't exist (or use existing "ai-sdlc-evidence" feed)
+            feed_name = "ai-sdlc-evidence"
+
+            # Create temporary directory for artifact package
+            with tempfile.TemporaryDirectory() as temp_dir:
+                temp_path = Path(temp_dir)
+                package_dir = temp_path / artifact_name
+
+                package_dir.mkdir(parents=True, exist_ok=True)
+
+                # Copy evidence files to package directory
+                files_added = []
+                for item in evidence_items:
+                    if Path(item.path).exists():
+                        try:
+                            dest_path = package_dir / item.filename
+                            # Create subdirectories if needed
+                            dest_path.parent.mkdir(parents=True, exist_ok=True)
+
+                            # Copy file
+                            import shutil
+
+                            shutil.copy2(item.path, dest_path)
+                            files_added.append(
+                                {
+                                    "filename": item.filename,
+                                    "category": item.category.value,
+                                    "stage": item.stage,
+                                    "size_bytes": item.size_bytes,
+                                }
+                            )
+                        except Exception as e:
+                            self.logger.warning(
+                                f"Failed to add {item.filename} to package: {e}"
+                            )
+
+                # Create package metadata
+                metadata = {
+                    "work_item_id": work_item_id,
+                    "created_at": datetime.now().isoformat(),
+                    "artifact_name": artifact_name,
+                    "version": artifact_version,
+                    "files": files_added,
+                    "total_files": len(files_added),
+                }
+
+                metadata_file = package_dir / "manifest.json"
+                metadata_file.write_text(json.dumps(metadata, indent=2))
+
+                # Create tar.gz package
+                package_file = temp_path / f"{artifact_name}-{artifact_version}.tar.gz"
+                with tarfile.open(package_file, "w:gz") as tar:
+                    tar.add(package_dir, arcname=artifact_name)
+
+                # Upload to Azure Artifacts Universal Package
+                # API: PUT https://pkgs.dev.azure.com/{organization}/_apis/packaging/feeds/{feedId}/upack/packages/{packageName}/versions/{packageVersion}?api-version=7.1-preview.1
+                upload_url = f"{org_url}/_apis/packaging/feeds/{feed_name}/upack/packages/{artifact_name}/versions/{artifact_version}?api-version=7.1-preview.1"
+
+                headers = {
+                    "Content-Type": "application/octet-stream",
+                }
+
+                auth = (
+                    "",
+                    pat,
+                )  # Azure DevOps PAT uses empty username with PAT as password
+
+                with open(package_file, "rb") as f:
+                    package_data = f.read()
+
+                response = requests.put(
+                    upload_url, headers=headers, auth=auth, data=package_data, timeout=300
+                )
+
+                if response.status_code == 201:
+                    package_info = response.json()
+                    package_id = package_info.get("id")
+                    package_url = f"{org_url}/{project}/_packaging?_a=package&feed={feed_name}&package={artifact_name}&version={artifact_version}&protocolType=UPack"
+
+                    # Link artifact to work item using ArtifactLink
+                    artifact_link_url = f"{org_url}/_apis/packaging/feeds/{feed_name}/packages/{package_id}"
+
+                    document = [
+                        JsonPatchOperation(
+                            op="add",
+                            path="/relations/-",
+                            value={
+                                "rel": "ArtifactLink",
+                                "url": artifact_link_url,
+                                "attributes": {
+                                    "name": f"Evidence Package {artifact_version}",
+                                    "comment": f"Persistent artifact package with {len(files_added)} evidence files",
+                                },
+                            },
+                        )
+                    ]
+
+                    self.work_item_client.update_work_item(
+                        document=document, id=int(work_item_id)
+                    )
+
+                    result = {
+                        "package_id": package_id,
+                        "package_url": package_url,
+                        "version": artifact_version,
+                        "files_count": len(files_added),
+                        "artifact_link": artifact_link_url,
+                        "files": files_added,
+                    }
+
+                    self.logger.info(
+                        f"Created persistent artifact package {artifact_name}:{artifact_version} with {len(files_added)} files"
+                    )
+                    return result
+
+                elif response.status_code == 409:
+                    # Package version already exists
+                    raise IntegrationError(
+                        f"Artifact package {artifact_name}:{artifact_version} already exists. Use a different version."
+                    )
+                else:
+                    raise IntegrationError(
+                        f"Failed to upload artifact package: HTTP {response.status_code} - {response.text}"
+                    )
+
+        except Exception as e:
+            self.logger.error(f"Failed to create artifact package: {e}")
+            raise IntegrationError(f"Failed to create artifact package: {e}")
+
+    def link_existing_artifact(
+        self,
+        work_item_id: str,
+        artifact_url: str,
+        artifact_name: str,
+        comment: Optional[str] = None,
+        config: Optional[PluginConfig] = None,
+    ) -> bool:
+        """
+        Link an existing artifact package to a work item.
+
+        Args:
+            work_item_id: Work item ID
+            artifact_url: URL of the artifact package
+            artifact_name: Display name for the artifact
+            comment: Optional comment
+            config: Plugin configuration
+
+        Returns:
+            True if successful
+
+        Raises:
+            IntegrationError: If linking fails
+        """
+        if not self.work_item_client:
+            if not config:
+                raise IntegrationError("Configuration required for authentication")
+            self.authenticate(config)
+
+        try:
+            document = [
+                JsonPatchOperation(
+                    op="add",
+                    path="/relations/-",
+                    value={
+                        "rel": "ArtifactLink",
+                        "url": artifact_url,
+                        "attributes": {
+                            "name": artifact_name,
+                            "comment": comment or f"Linked artifact: {artifact_name}",
+                        },
+                    },
+                )
+            ]
+
+            self.work_item_client.update_work_item(
+                document=document, id=int(work_item_id)
+            )
+
+            self.logger.info(
+                f"Linked artifact {artifact_name} to work item {work_item_id}"
+            )
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Failed to link artifact: {e}")
+            raise IntegrationError(f"Failed to link artifact: {e}")
+
+    def get_work_item_artifacts(
+        self, work_item_id: str, config: Optional[PluginConfig] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Get all artifacts linked to a work item.
+
+        Args:
+            work_item_id: Work item ID
+            config: Plugin configuration
+
+        Returns:
+            List of artifact dictionaries with:
+                - url: Artifact URL
+                - name: Artifact name
+                - comment: Link comment
+                - rel: Relation type
+
+        Raises:
+            IntegrationError: If retrieval fails
+        """
+        if not self.work_item_client:
+            if not config:
+                raise IntegrationError("Configuration required for authentication")
+            self.authenticate(config)
+
+        try:
+            work_item = self.work_item_client.get_work_item(
+                int(work_item_id), expand="Relations"
+            )
+
+            artifacts = []
+            if work_item.relations:
+                for relation in work_item.relations:
+                    if relation.rel == "ArtifactLink":
+                        artifacts.append(
+                            {
+                                "url": relation.url,
+                                "name": relation.attributes.get("name", "Unnamed"),
+                                "comment": relation.attributes.get("comment", ""),
+                                "rel": relation.rel,
+                            }
+                        )
+
+            self.logger.info(
+                f"Retrieved {len(artifacts)} artifacts for work item {work_item_id}"
+            )
+            return artifacts
+
+        except Exception as e:
+            self.logger.error(f"Failed to get work item artifacts: {e}")
+            raise IntegrationError(f"Failed to get work item artifacts: {e}")

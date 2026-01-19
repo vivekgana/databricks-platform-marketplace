@@ -1,0 +1,67 @@
+# AI-SDLC Configuration Template - JIRA + GitHub + AWS
+# Copy this file to .aisdlc/config.yaml and customize with your settings
+
+# Active plugins configuration
+active_plugins:
+  agile: jira                   # JIRA for work items
+  source_control: github        # GitHub for source control
+  artifact: github              # GitHub Packages for artifacts
+  pipeline: github              # GitHub Actions for CI/CD
+  cloud_storage: aws            # AWS S3 for storage
+  secrets: aws                  # AWS Secrets Manager
+
+# Plugin configurations
+plugins:
+  # JIRA Plugin
+  jira:
+    enabled: true
+    type: jira
+    config:
+      url: ${JIRA_URL}                    # e.g., "https://mycompany.atlassian.net"
+      project_key: ${JIRA_PROJECT_KEY}    # e.g., "PROJ"
+      email: ${JIRA_EMAIL}
+      api_token: ${JIRA_API_TOKEN}
+
+  # GitHub Plugin
+  github:
+    enabled: true
+    type: github
+    config:
+      owner: ${GITHUB_OWNER}              # GitHub organization or user
+      repository: ${GITHUB_REPOSITORY}    # Repository name
+      token: ${GITHUB_TOKEN}              # Personal Access Token
+
+  # AWS Services Plugin
+  aws:
+    enabled: true
+    type: aws
+    config:
+      # AWS S3 configuration
+      bucket: ${AWS_S3_BUCKET}
+      region: ${AWS_REGION}
+      access_key_id: ${AWS_ACCESS_KEY_ID}
+      secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+
+      # AWS Secrets Manager configuration
+      secrets_region: ${AWS_REGION}
+
+# Workflow settings
+workflow:
+  evidence_base_path: "s3://my-evidence-bucket"
+  checkpoint_dir: "./.workflow_checkpoints"
+  default_timeout_seconds: 1800
+  stop_on_failure: true
+
+# LLM configuration
+llm:
+  provider: "anthropic"
+  model: "databricks-claude-sonnet-4-5"
+  temperature: 0.2
+  max_tokens: 8000
+  api_key: ${ANTHROPIC_API_KEY}
+
+# Evaluation thresholds
+evaluations:
+  min_code_quality_score: 0.7
+  min_test_coverage: 0.8
+  min_performance_score: 0.85
