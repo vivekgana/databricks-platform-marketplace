@@ -17,7 +17,7 @@ from typing import Dict, List, Optional, Type, Any
 
 class ADOState(Enum):
     """
-    Azure DevOps work item states for Audit Cortex 2 custom process.
+    Azure DevOps work item states for Your Project custom process.
 
     These match the custom states configured in the Azure DevOps project.
     """

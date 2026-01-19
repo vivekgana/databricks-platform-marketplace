@@ -80,7 +80,7 @@ The AI-SDLC platform now supports **persistent artifacts** in Azure DevOps throu
 
 Universal Packages are a package format in Azure Artifacts that allows storing any set of files as a versioned package. They use:
 
-- **Package Name**: Unique identifier (e.g., "pbi-6340168-evidence")
+- **Package Name**: Unique identifier (e.g., "pbi-12345-evidence")
 - **Version**: Semantic versioning (e.g., "1.0.0", "2.1.3")
 - **Feed**: Collection/repository for packages (e.g., "ai-sdlc-evidence")
 - **Manifest**: JSON metadata describing package contents
@@ -88,7 +88,7 @@ Universal Packages are a package format in Azure Artifacts that allows storing a
 ### Package Structure
 
 ```
-pbi-6340168-evidence:1.0.0
+pbi-12345-evidence:1.0.0
 ├── manifest.json (metadata)
 ├── planning/
 │   ├── implementation-plan.md
@@ -112,9 +112,9 @@ pbi-6340168-evidence:1.0.0
 
 ```json
 {
-  "work_item_id": "6340168",
+  "work_item_id": "12345",
   "created_at": "2026-01-17T22:30:00",
-  "artifact_name": "pbi-6340168-evidence",
+  "artifact_name": "pbi-12345-evidence",
   "version": "1.0.0",
   "total_files": 23,
   "files": [
@@ -228,7 +228,7 @@ class AzureDevOpsPlugin:
    # Create feed via Azure DevOps UI or CLI
    az artifacts universal package create \
      --organization https://dev.azure.com/your-org \
-     --project "Audit Cortex 2" \
+     --project "Your Project" \
      --feed "ai-sdlc-evidence"
    ```
 
@@ -240,7 +240,7 @@ class AzureDevOpsPlugin:
    ```bash
    export AZURE_DEVOPS_ORG_URL="https://dev.azure.com/your-org"
    export AZURE_DEVOPS_PAT="your-pat-token"
-   export AZURE_DEVOPS_PROJECT="Audit Cortex 2"
+   export AZURE_DEVOPS_PROJECT="Your Project"
    ```
 
 ### Basic Usage - Workflow Integration
@@ -252,13 +252,13 @@ from ai_sdlc.orchestration import WorkflowOrchestrator
 from plugins.databricks_devops_integrations.integrations.azure_devops import AzureDevOpsPlugin
 
 # Initialize
-orchestrator = WorkflowOrchestrator(work_item_id="6340168")
+orchestrator = WorkflowOrchestrator(work_item_id="12345")
 ado_plugin = AzureDevOpsPlugin()
 ado_config = PluginConfig(...)
 
 # Run workflow with persistent artifact creation
 result = orchestrator.run_workflow(
-    work_item_id="6340168",
+    work_item_id="12345",
     create_persistent_artifact=True,  # Enable persistent artifacts
     artifact_version="1.0.0",
     ado_plugin=ado_plugin,
@@ -278,7 +278,7 @@ from ai_sdlc.agents import EvidenceCollectorAgent
 from ai_sdlc.evidence import EvidenceCollector
 
 # Collect evidence from previous stages
-agent = EvidenceCollectorAgent(work_item_id="6340168")
+agent = EvidenceCollectorAgent(work_item_id="12345")
 
 input_data = {
     "previous_stages": {
@@ -308,7 +308,7 @@ from plugins.databricks_devops_integrations.integrations.azure_devops import Azu
 from ai_sdlc.evidence import EvidenceItem, EvidenceCategory, EvidenceCollector
 
 # Collect evidence
-collector = EvidenceCollector(work_item_id="6340168", base_path="./evidence")
+collector = EvidenceCollector(work_item_id="12345", base_path="./evidence")
 
 # Add evidence items
 collector.add_evidence("./plan.md", EvidenceCategory.PLAN, "planning")
@@ -321,8 +321,8 @@ evidence_items = collector.get_all_evidence()
 # Create persistent artifact
 ado_plugin = AzureDevOpsPlugin()
 artifact_info = ado_plugin.create_artifact_package(
-    work_item_id="6340168",
-    artifact_name="pbi-6340168-evidence",
+    work_item_id="12345",
+    artifact_name="pbi-12345-evidence",
     artifact_version="1.0.0",
     evidence_items=evidence_items,
     config=ado_config
@@ -338,10 +338,10 @@ print(f"Files included: {artifact_info['files_count']}")
 ```python
 # Link same artifact to multiple work items
 ado_plugin.link_existing_artifact(
-    work_item_id="6340200",  # Different work item
+    work_item_id="12351",  # Different work item
     artifact_url=artifact_info['artifact_link'],
     artifact_name="Shared Evidence Package v1.0.0",
-    comment="Reusing evidence from PBI-6340168",
+    comment="Reusing evidence from PBI-12345",
     config=ado_config
 )
 ```
@@ -351,7 +351,7 @@ ado_plugin.link_existing_artifact(
 ```python
 # Get all artifacts linked to work item
 artifacts = ado_plugin.get_work_item_artifacts(
-    work_item_id="6340168",
+    work_item_id="12345",
     config=ado_config
 )
 
@@ -370,7 +370,7 @@ for artifact in artifacts:
 ```bash
 # Run workflow with persistent artifact creation
 python -m ai_sdlc.cli.workflow_commands run-workflow \
-  --work-item-id 6340168 \
+  --work-item-id 12345 \
   --create-persistent-artifact \
   --artifact-version 1.0.0 \
   --evidence-path "./evidence"
@@ -381,9 +381,9 @@ python -m ai_sdlc.cli.workflow_commands run-workflow \
 ```bash
 # Create artifact package from existing evidence
 python -m ai_sdlc.cli.evidence_commands create-artifact \
-  --work-item-id 6340168 \
-  --evidence-dir "./evidence/PBI-6340168" \
-  --artifact-name "pbi-6340168-evidence" \
+  --work-item-id 12345 \
+  --evidence-dir "./evidence/PBI-12345" \
+  --artifact-name "pbi-12345-evidence" \
   --version 1.0.0
 ```
 
@@ -392,7 +392,7 @@ python -m ai_sdlc.cli.evidence_commands create-artifact \
 ```bash
 # Link existing artifact to another work item
 python -m ai_sdlc.cli.evidence_commands link-artifact \
-  --work-item-id 6340200 \
+  --work-item-id 12351 \
   --artifact-url "https://dev.azure.com/org/_apis/packaging/..." \
   --artifact-name "Shared Evidence v1.0.0"
 ```
@@ -402,7 +402,7 @@ python -m ai_sdlc.cli.evidence_commands link-artifact \
 ```bash
 # List all artifacts linked to work item
 python -m ai_sdlc.cli.evidence_commands list-artifacts \
-  --work-item-id 6340168
+  --work-item-id 12345
 ```
 
 ### Download Artifact Package
@@ -411,10 +411,10 @@ python -m ai_sdlc.cli.evidence_commands list-artifacts \
 # Download artifact package for review
 az artifacts universal download \
   --organization https://dev.azure.com/your-org \
-  --project "Audit Cortex 2" \
+  --project "Your Project" \
   --scope project \
   --feed "ai-sdlc-evidence" \
-  --name "pbi-6340168-evidence" \
+  --name "pbi-12345-evidence" \
   --version "1.0.0" \
   --path "./downloaded-evidence"
 ```
@@ -441,7 +441,7 @@ def create_artifact_package(
 
 **Parameters:**
 - `work_item_id` (str): Work item ID to link artifact to
-- `artifact_name` (str): Package name (e.g., "pbi-6340168-evidence")
+- `artifact_name` (str): Package name (e.g., "pbi-12345-evidence")
 - `artifact_version` (str): Semantic version (e.g., "1.0.0", "2.1.3")
 - `evidence_items` (List[EvidenceItem]): List of evidence items to include
 - `config` (PluginConfig): Azure DevOps configuration
@@ -467,8 +467,8 @@ def create_artifact_package(
 **Example:**
 ```python
 artifact_info = ado_plugin.create_artifact_package(
-    work_item_id="6340168",
-    artifact_name="pbi-6340168-evidence",
+    work_item_id="12345",
+    artifact_name="pbi-12345-evidence",
     artifact_version="1.0.0",
     evidence_items=evidence_items,
     config=ado_config
@@ -509,10 +509,10 @@ def link_existing_artifact(
 **Example:**
 ```python
 success = ado_plugin.link_existing_artifact(
-    work_item_id="6340200",
+    work_item_id="12351",
     artifact_url="https://dev.azure.com/org/_apis/packaging/feeds/...",
     artifact_name="Shared Evidence Package v1.0.0",
-    comment="Reusing evidence from PBI-6340168",
+    comment="Reusing evidence from PBI-12345",
     config=ado_config
 )
 ```
@@ -555,7 +555,7 @@ def get_work_item_artifacts(
 **Example:**
 ```python
 artifacts = ado_plugin.get_work_item_artifacts(
-    work_item_id="6340168",
+    work_item_id="12345",
     config=ado_config
 )
 
@@ -571,7 +571,7 @@ for artifact in artifacts:
 
 **Artifact Names:**
 - Use work item prefix: `pbi-{work_item_id}-evidence`
-- For specific types: `pbi-{work_item_id}-{type}` (e.g., `pbi-6340168-screenshots`)
+- For specific types: `pbi-{work_item_id}-{type}` (e.g., `pbi-12345-screenshots`)
 - Lowercase with hyphens
 
 **Versions:**
@@ -652,7 +652,7 @@ evidence_items_filtered = [
 
 **Error:**
 ```
-IntegrationError: Artifact package pbi-6340168-evidence:1.0.0 already exists. Use a different version.
+IntegrationError: Artifact package pbi-12345-evidence:1.0.0 already exists. Use a different version.
 ```
 
 **Solution:**
@@ -807,12 +807,12 @@ from ai_sdlc.orchestration import WorkflowOrchestrator
 from plugins.databricks_devops_integrations.integrations.azure_devops import AzureDevOpsPlugin, PluginConfig
 
 # Configure
-work_item_id = "6340168"
+work_item_id = "12345"
 ado_config = PluginConfig(
-    api_endpoint="https://dev.azure.com/symphonyvsts",
+    api_endpoint="https://dev.azure.com/your-organization",
     api_key=os.getenv("AZURE_DEVOPS_PAT"),
-    organization="symphonyvsts",
-    project="Audit Cortex 2"
+    organization="your-organization",
+    project="Your Project"
 )
 ado_plugin = AzureDevOpsPlugin()
 
@@ -853,8 +853,8 @@ from ai_sdlc.evidence import EvidenceCollector, EvidenceCategory
 from plugins.databricks_devops_integrations.integrations.azure_devops import AzureDevOpsPlugin
 
 # Collect evidence from directory
-evidence_dir = Path("./evidence/PBI-6340168")
-collector = EvidenceCollector(work_item_id="6340168", base_path=str(evidence_dir))
+evidence_dir = Path("./evidence/PBI-12345")
+collector = EvidenceCollector(work_item_id="12345", base_path=str(evidence_dir))
 
 # Add all files in directory
 for file_path in evidence_dir.rglob("*"):
@@ -887,8 +887,8 @@ print(f"Collected {len(evidence_items)} evidence files")
 # Create persistent artifact
 ado_plugin = AzureDevOpsPlugin()
 artifact_info = ado_plugin.create_artifact_package(
-    work_item_id="6340168",
-    artifact_name="pbi-6340168-evidence",
+    work_item_id="12345",
+    artifact_name="pbi-12345-evidence",
     artifact_version="1.0.0",
     evidence_items=evidence_items,
     config=ado_config
@@ -931,12 +931,12 @@ def get_next_version(work_item_id: str, ado_plugin, ado_config) -> str:
     return f"{major}.{minor}.{patch + 1}"
 
 # Usage
-next_version = get_next_version("6340168", ado_plugin, ado_config)
+next_version = get_next_version("12345", ado_plugin, ado_config)
 print(f"Next version: {next_version}")
 
 artifact_info = ado_plugin.create_artifact_package(
-    work_item_id="6340168",
-    artifact_name="pbi-6340168-evidence",
+    work_item_id="12345",
+    artifact_name="pbi-12345-evidence",
     artifact_version=next_version,
     evidence_items=evidence_items,
     config=ado_config
@@ -950,24 +950,24 @@ artifact_info = ado_plugin.create_artifact_package(
 ```python
 # Create artifact for original work item
 artifact_info = ado_plugin.create_artifact_package(
-    work_item_id="6340168",
+    work_item_id="12345",
     artifact_name="audit-dashboard-evidence",
     artifact_version="1.0.0",
     evidence_items=evidence_items,
     config=ado_config
 )
 
-print(f"Created artifact for PBI-6340168")
+print(f"Created artifact for PBI-12345")
 
 # Link same artifact to related work items
-related_work_items = ["6340200", "6340201", "6340202"]
+related_work_items = ["12351", "12352", "12353"]
 
 for related_id in related_work_items:
     success = ado_plugin.link_existing_artifact(
         work_item_id=related_id,
         artifact_url=artifact_info['artifact_link'],
         artifact_name="Shared Audit Dashboard Evidence v1.0.0",
-        comment=f"Shared evidence from PBI-6340168",
+        comment=f"Shared evidence from PBI-12345",
         config=ado_config
     )
 
@@ -982,27 +982,27 @@ for related_id in related_work_items:
 ```bash
 # Download artifact package
 az artifacts universal download \
-  --organization https://dev.azure.com/symphonyvsts \
-  --project "Audit Cortex 2" \
+  --organization https://dev.azure.com/your-organization \
+  --project "Your Project" \
   --scope project \
   --feed "ai-sdlc-evidence" \
-  --name "pbi-6340168-evidence" \
+  --name "pbi-12345-evidence" \
   --version "1.0.0" \
   --path "./downloaded-evidence"
 
 # Extract and inspect
 cd downloaded-evidence
-tar -xzf pbi-6340168-evidence-1.0.0.tar.gz
+tar -xzf pbi-12345-evidence-1.0.0.tar.gz
 
 # View manifest
-cat pbi-6340168-evidence/manifest.json | jq .
+cat pbi-12345-evidence/manifest.json | jq .
 
 # View files
-tree pbi-6340168-evidence/
+tree pbi-12345-evidence/
 
 # Review evidence
-open pbi-6340168-evidence/qa_testing/screenshot-1.png
-open pbi-6340168-evidence/unit_testing/coverage-report.html
+open pbi-12345-evidence/qa_testing/screenshot-1.png
+open pbi-12345-evidence/unit_testing/coverage-report.html
 ```
 
 ---

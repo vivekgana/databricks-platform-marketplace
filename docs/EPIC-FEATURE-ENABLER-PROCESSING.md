@@ -3,7 +3,7 @@
 **Document Version:** 1.0
 **Last Updated:** 2026-01-17 14:21:02
 **Prepared by:** Databricks Platform Team
-**Project:** Audit Cortex 2
+**Project:** Your Project
 
 ---
 
@@ -23,14 +23,14 @@ Automatically process Azure DevOps Epics, Features, and Enablers to find existin
 
 ## Use Case: Wiki Design Documents
 
-Your Audit Cortex 2 team creates design documents in the wiki with references to Epics, Features, and Enablers. This tool automatically:
+Your Your Project team creates design documents in the wiki with references to Epics, Features, and Enablers. This tool automatically:
 
 1. **Parses the wiki page** to find all ADO work item references
 2. **Checks each work item** for existing child PBIs
 3. **Generates missing PBIs** based on work item description
 4. **Links everything together** in Azure DevOps
 
-**Example Wiki:** [DM-ADP automated Unit and Integration test design](https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/220464/DM-ADP-automated-Unit-and-Integration-test-design)
+**Example Wiki:** [Your Design Document](https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/100001/YourFeature-automated-Unit-and-Integration-test-design)
 
 ---
 
@@ -40,9 +40,9 @@ Your Audit Cortex 2 team creates design documents in the wiki with references to
 
 ```powershell
 # PowerShell
-[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_ORG_URL', 'https://dev.azure.com/symphonyvsts', 'User')
+[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_ORG_URL', 'https://dev.azure.com/your-organization', 'User')
 [System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PAT', 'your-pat-token', 'User')
-[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PROJECT', 'Audit Cortex 2', 'User')
+[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PROJECT', 'Your Project', 'User')
 ```
 
 ---
@@ -54,30 +54,30 @@ Your Audit Cortex 2 team creates design documents in the wiki with references to
 **Find existing and generate missing child PBIs:**
 
 ```bash
-python -m ai_sdlc.cli.epic_commands process-work-item "https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168"
+python -m ai_sdlc.cli.epic_commands process-work-item "https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345"
 ```
 
 **Output:**
 ```
 🔍 Processing ADO work item...
 
-URL: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+URL: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
 
 ✅ Processed Feature:
-   ID: 6340168
-   Title: DM-ADP automated Unit and Integration test design
+   ID: 12345
+   Title: Your Design Document
    Total Children: 5
    Existing: 2
    Generated: 3
 
 📋 Existing Child PBIs:
-   - 6340170: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340170
-   - 6340171: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340171
+   - 12346: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12346
+   - 12347: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12347
 
 🆕 Generated Child PBIs:
-   - 6340180: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340180
-   - 6340181: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340181
-   - 6340182: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340182
+   - 12348: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12348
+   - 12349: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12349
+   - 12350: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12350
 
 ✨ Generated 3 new child PBIs
 ```
@@ -85,7 +85,7 @@ URL: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/63401
 **Only find existing (no generation):**
 
 ```bash
-python -m ai_sdlc.cli.epic_commands process-work-item "https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168" --no-generate
+python -m ai_sdlc.cli.epic_commands process-work-item "https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345" --no-generate
 ```
 
 ### Process Wiki Page
@@ -93,31 +93,31 @@ python -m ai_sdlc.cli.epic_commands process-work-item "https://dev.azure.com/sym
 **Import all work items from wiki and process:**
 
 ```bash
-python -m ai_sdlc.cli.epic_commands process-wiki "https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/220464/DM-ADP-automated-Unit-and-Integration-test-design"
+python -m ai_sdlc.cli.epic_commands process-wiki "https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/100001/YourFeature-automated-Unit-and-Integration-test-design"
 ```
 
 **Output:**
 ```
 📖 Processing Wiki Page...
 
-Project: Audit Cortex 2
-Page: DM-ADP automated Unit and Integration test design
-URL: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/220464/...
+Project: Your Project
+Page: Your Design Document
+URL: https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/100001/...
 
 🔍 Found 3 work items in wiki
 
-1. Feature 6340168: DM-ADP automated Unit and Integration test design
+1. Feature 12345: Your Design Document
    Existing children: 2
    Generated children: 3
-      - Created 6340180: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340180
-      - Created 6340181: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340181
-      - Created 6340182: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340182
+      - Created 12348: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12348
+      - Created 12349: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12349
+      - Created 12350: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12350
 
-2. Enabler 6340200: Automated testing framework setup
+2. Enabler 12351: Automated testing framework setup
    Existing children: 0
    Generated children: 2
-      - Created 6340210: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340210
-      - Created 6340211: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340211
+      - Created 12355: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12355
+      - Created 12356: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12356
 
 3. Epic 6340100: Test Automation Initiative
    Existing children: 5
@@ -143,21 +143,21 @@ python -m ai_sdlc.cli.epic_commands generate-from-epic 6340100
 **List all child work items:**
 
 ```bash
-python -m ai_sdlc.cli.epic_commands list-children 6340168
+python -m ai_sdlc.cli.epic_commands list-children 12345
 ```
 
 **Output:**
 ```
-🔍 Finding child work items for 6340168...
+🔍 Finding child work items for 12345...
 
 ✅ Found 5 child work items:
 
-   - 6340170: Implement unit test framework
-     URL: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340170
+   - 12346: Implement unit test framework
+     URL: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12346
      Status: Active
 
-   - 6340171: Set up integration test environment
-     URL: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340171
+   - 12347: Set up integration test environment
+     URL: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12347
      Status: New
 
    ...
@@ -173,8 +173,8 @@ The tool recognizes multiple wiki reference formats:
 
 ```markdown
 ## Related Work Items
-- [[6340168]]
-- [[6340200]]
+- [[12345]]
+- [[12351]]
 - [[6340100]]
 ```
 
@@ -182,16 +182,16 @@ The tool recognizes multiple wiki reference formats:
 
 ```markdown
 ## Design References
-- https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
-- https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340200
+- https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
+- https://dev.azure.com/your-organization/YourProject/_workitems/edit/12351
 ```
 
 ### Format 3: Named Links
 
 ```markdown
 ## Work Items
-- [[Feature: Test Design|6340168]]
-- [[Enabler: Test Framework|6340200]]
+- [[Feature: Test Design|12345]]
+- [[Enabler: Test Framework|12351]]
 - [[Epic: Test Automation|6340100]]
 ```
 
@@ -263,12 +263,12 @@ from ai_sdlc.generators import EpicFeatureGenerator, PBIGenerator
 from plugins.databricks_devops_integrations.integrations.azure_devops.azure_devops_plugin import AzureDevOpsPlugin
 from plugins.databricks_devops_integrations.sdk.base_plugin import PluginConfig
 
-# Configure for Audit Cortex 2
+# Configure for Your Project
 config = PluginConfig(
-    api_endpoint="https://dev.azure.com/symphonyvsts",
+    api_endpoint="https://dev.azure.com/your-organization",
     api_key="your-pat-token",
-    organization="symphonyvsts",
-    project="Audit Cortex 2"
+    organization="your-organization",
+    project="Your Project"
 )
 
 # Initialize
@@ -279,7 +279,7 @@ pbi_generator = PBIGenerator(ado_plugin, config)
 epic_generator = EpicFeatureGenerator(ado_plugin, config, pbi_generator)
 
 # Process work item
-ado_url = "https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168"
+ado_url = "https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345"
 result = epic_generator.process_work_item_url(ado_url, auto_generate=True)
 
 print(f"Parent: {result.parent_type.value} {result.parent_id}")
@@ -291,7 +291,7 @@ print(f"Generated children: {len(result.generated_children)}")
 
 ```python
 # Process wiki page
-wiki_url = "https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/220464/DM-ADP-automated-Unit-and-Integration-test-design"
+wiki_url = "https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/100001/YourFeature-automated-Unit-and-Integration-test-design"
 
 results = epic_generator.process_wiki_url(wiki_url, auto_generate=True)
 
@@ -322,16 +322,16 @@ for pbi_id in pbi_ids:
 
 ```bash
 # 1. Team creates wiki page with design and ADO references
-# Wiki URL: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/220464/DM-ADP-automated-Unit-and-Integration-test-design
+# Wiki URL: https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/100001/YourFeature-automated-Unit-and-Integration-test-design
 
 # Wiki content includes:
 # ## Related Work Items
-# - [[6340168]] - Feature: Test Design
-# - [[6340200]] - Enabler: Test Framework
+# - [[12345]] - Feature: Test Design
+# - [[12351]] - Enabler: Test Framework
 # - [[6340100]] - Epic: Test Automation
 
 # 2. Process wiki to generate all child PBIs
-python -m ai_sdlc.cli.epic_commands process-wiki "https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/220464/DM-ADP-automated-Unit-and-Integration-test-design"
+python -m ai_sdlc.cli.epic_commands process-wiki "https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/100001/YourFeature-automated-Unit-and-Integration-test-design"
 
 # Output: Processes all 3 work items, generates missing PBIs, links everything
 
@@ -354,7 +354,7 @@ python -m ai_sdlc.cli.epic_commands process-wiki "https://dev.azure.com/symphony
 # - [Feature] Test reporting
 
 # 2. Generate child PBIs
-python -m ai_sdlc.cli.epic_commands process-work-item "https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340100"
+python -m ai_sdlc.cli.epic_commands process-work-item "https://dev.azure.com/your-organization/YourProject/_workitems/edit/6340100"
 
 # Output: Creates 4 PBIs linked to Epic
 
@@ -368,10 +368,10 @@ python -m ai_sdlc.cli.epic_commands generate-from-epic 6340100
 
 ```bash
 # 1. Check existing children
-python -m ai_sdlc.cli.epic_commands list-children 6340168
+python -m ai_sdlc.cli.epic_commands list-children 12345
 
 # 2. Process Feature (only generates missing PBIs)
-python -m ai_sdlc.cli.epic_commands process-work-item "https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168"
+python -m ai_sdlc.cli.epic_commands process-work-item "https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345"
 
 # Output: Finds 2 existing, generates 3 new PBIs
 ```
@@ -383,7 +383,7 @@ python -m ai_sdlc.cli.epic_commands process-work-item "https://dev.azure.com/sym
 ```bash
 # 1. Product owner creates wiki page with all Features/Enablers for sprint
 # 2. Process wiki to generate all PBIs
-python -m ai_sdlc.cli.epic_commands process-wiki "https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/220500/Sprint-4-Planning"
+python -m ai_sdlc.cli.epic_commands process-wiki "https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/100002/Sprint-4-Planning"
 
 # 3. All PBIs now exist in backlog
 # 4. Team can estimate and commit in sprint planning meeting
@@ -436,7 +436,7 @@ Build interactive dashboard for compliance team to view audit trails.
 
 ---
 
-## Integration with Audit Cortex 2 Workflows
+## Integration with Your Project Workflows
 
 ### 1. Design Phase → Wiki
 
@@ -491,8 +491,8 @@ Team estimates in sprint planning
 **Solution:** Add work item references in wiki:
 ```markdown
 ## Related Work Items
-- [[6340168]]
-- https://dev.azure.com/.../workitems/edit/6340200
+- [[12345]]
+- https://dev.azure.com/.../workitems/edit/12351
 ```
 
 ### Issue: "No child PBIs generated"
@@ -552,9 +552,9 @@ jobs:
 
       - name: Process Wiki
         env:
-          AZURE_DEVOPS_ORG_URL: https://dev.azure.com/symphonyvsts
+          AZURE_DEVOPS_ORG_URL: https://dev.azure.com/your-organization
           AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
-          AZURE_DEVOPS_PROJECT: Audit Cortex 2
+          AZURE_DEVOPS_PROJECT: Your Project
         run: |
           python -m ai_sdlc.cli.epic_commands process-wiki "${{ github.event.inputs.wiki_url }}"
 ```
@@ -580,7 +580,7 @@ Design overview...
 
 ## Work Items
 - [[Epic: Test Automation|6340100]]
-- [[Feature: Test Dashboard|6340168]]
+- [[Feature: Test Dashboard|12345]]
 ```
 
 ### 3. Check Before Generating
@@ -594,7 +594,7 @@ python -m ai_sdlc.cli.epic_commands process-work-item <URL> --no-generate
 
 Add wiki URL to work item descriptions:
 ```markdown
-Design: https://dev.azure.com/.../wiki/.../220464/Design-Doc
+Design: https://dev.azure.com/.../wiki/.../100001/Design-Doc
 ```
 
 ### 5. Use Consistent Naming
@@ -614,6 +614,6 @@ Prefix work items with type:
 
 ---
 
-**Project:** Audit Cortex 2
-**Organization:** symphonyvsts
+**Project:** Your Project
+**Organization:** your-organization
 **Contact:** data-platform@vivekgana.com

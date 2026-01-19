@@ -171,7 +171,7 @@ The AI-SDLC Workflow Orchestration system automates the entire software developm
 
 **Example Evidence:**
 ```
-evidence/PBI-6340168/planning/
+evidence/PBI-12345/planning/
 ├── implementation-plan.md
 └── requirements-analysis.json
 ```
@@ -200,7 +200,7 @@ evidence/PBI-6340168/planning/
 
 **Example Evidence:**
 ```
-evidence/PBI-6340168/code_generation/
+evidence/PBI-12345/code_generation/
 ├── audit_service.py
 ├── audit_service_spark.py
 ├── queries.sql
@@ -232,7 +232,7 @@ evidence/PBI-6340168/code_generation/
 
 **Example Evidence:**
 ```
-evidence/PBI-6340168/unit_testing/
+evidence/PBI-12345/unit_testing/
 ├── test_audit_service.py
 ├── coverage.json
 ├── pytest-report.html
@@ -264,7 +264,7 @@ evidence/PBI-6340168/unit_testing/
 
 **Example Evidence:**
 ```
-evidence/PBI-6340168/qa_testing/
+evidence/PBI-12345/qa_testing/
 ├── playwright_tests.py
 ├── screenshots/
 │   ├── dashboard-home.png
@@ -300,7 +300,7 @@ evidence/PBI-6340168/qa_testing/
 
 **Example Evidence:**
 ```
-evidence/PBI-6340168/integration_testing/
+evidence/PBI-12345/integration_testing/
 ├── integration_tests.py
 ├── api-test-results.json
 ├── db-integration-results.json
@@ -332,7 +332,7 @@ evidence/PBI-6340168/integration_testing/
 
 **Example Evidence:**
 ```
-evidence/PBI-6340168/performance_testing/
+evidence/PBI-12345/performance_testing/
 ├── load_tests.py
 ├── performance-metrics.json
 └── load-test-report.html
@@ -363,7 +363,7 @@ evidence/PBI-6340168/performance_testing/
 
 **Example Evidence:**
 ```
-evidence/PBI-6340168/evidence_collection/
+evidence/PBI-12345/evidence_collection/
 ├── summary.md
 └── metadata.json
 ```
@@ -416,7 +416,7 @@ The orchestrator saves checkpoints after each successful stage:
 **Resume Capability:**
 Workflows can be resumed from the last successful checkpoint using:
 ```bash
-python -m ai_sdlc.cli.workflow_commands resume-workflow 6340168
+python -m ai_sdlc.cli.workflow_commands resume-workflow 12345
 ```
 
 ---
@@ -429,7 +429,7 @@ python -m ai_sdlc.cli.workflow_commands resume-workflow 6340168
    ```bash
    export AZURE_DEVOPS_ORG_URL="https://dev.azure.com/your-org"
    export AZURE_DEVOPS_PAT="your-personal-access-token"
-   export AZURE_DEVOPS_PROJECT="Audit Cortex 2"
+   export AZURE_DEVOPS_PROJECT="Your Project"
    export AZURE_STORAGE_CONNECTION_STRING="your-connection-string"
    ```
 
@@ -441,7 +441,7 @@ python -m ai_sdlc.cli.workflow_commands resume-workflow 6340168
 ### Running Complete Workflow
 
 ```bash
-python -m ai_sdlc.cli.workflow_commands run-workflow 6340168 \
+python -m ai_sdlc.cli.workflow_commands run-workflow 12345 \
   --evidence-path "azure-blob://audit-cortex-evidence" \
   --checkpoint-dir "./.workflow_checkpoints"
 ```
@@ -456,7 +456,7 @@ python -m ai_sdlc.cli.workflow_commands run-workflow 6340168 \
 ### Running Single Stage
 
 ```bash
-python -m ai_sdlc.cli.workflow_commands run-stage 6340168 code_generation
+python -m ai_sdlc.cli.workflow_commands run-stage 12345 code_generation
 ```
 
 ### Validating Stage
@@ -464,7 +464,7 @@ python -m ai_sdlc.cli.workflow_commands run-stage 6340168 code_generation
 Run evaluations on a completed stage:
 
 ```bash
-python -m ai_sdlc.cli.workflow_commands validate-stage 6340168 unit_testing
+python -m ai_sdlc.cli.workflow_commands validate-stage 12345 unit_testing
 ```
 
 ### Listing Work Items
@@ -480,7 +480,7 @@ python -m ai_sdlc.cli.workflow_commands list-work-items --type "Feature"
 Resume an interrupted workflow:
 
 ```bash
-python -m ai_sdlc.cli.workflow_commands resume-workflow 6340168
+python -m ai_sdlc.cli.workflow_commands resume-workflow 12345
 ```
 
 ---
@@ -585,13 +585,13 @@ Each evidence item includes:
 ```python
 try:
     result = orchestrator.run_workflow(
-        work_item_id="6340168",
+        work_item_id="12345",
         stop_on_failure=True,  # Stop on first failure
     )
 except Exception as e:
     logger.error(f"Workflow failed: {e}")
     # Review checkpoint for last successful stage
-    checkpoint = load_checkpoint("6340168")
+    checkpoint = load_checkpoint("12345")
     logger.info(f"Last successful stage: {checkpoint['current_stage']}")
 ```
 
@@ -751,14 +751,14 @@ The orchestrator automatically updates ADO work items with:
 
 Enable verbose logging:
 ```bash
-python -m ai_sdlc.cli.workflow_commands run-workflow 6340168 -v
+python -m ai_sdlc.cli.workflow_commands run-workflow 12345 -v
 ```
 
 ### Checkpoint Inspection
 
 View checkpoint contents:
 ```bash
-cat .workflow_checkpoints/6340168/checkpoint.json
+cat .workflow_checkpoints/12345/checkpoint.json
 ```
 
 ---

@@ -126,7 +126,7 @@ All evidence is organized in Azure Blob Storage:
 
 ```
 Container: audit-cortex-evidence
-├── PBI-6340168/
+├── PBI-12345/
 │   ├── planning/
 │   │   ├── implementation-plan.md
 │   │   ├── requirements-analysis.json
@@ -178,8 +178,8 @@ Each evidence item includes metadata:
 
 ```json
 {
-  "evidence_id": "PBI-6340168/qa_testing/screenshots/dashboard-home.png",
-  "work_item_id": "6340168",
+  "evidence_id": "PBI-12345/qa_testing/screenshots/dashboard-home.png",
+  "work_item_id": "12345",
   "stage": "qa_testing",
   "category": "screenshot",
   "filename": "dashboard-home.png",
@@ -188,7 +188,7 @@ Each evidence item includes metadata:
   "mime_type": "image/png",
   "created_at": "2026-01-17T10:30:45Z",
   "uploaded_at": "2026-01-17T10:31:02Z",
-  "storage_url": "https://storage.blob.core.windows.net/audit-cortex-evidence/PBI-6340168/qa_testing/screenshots/dashboard-home.png",
+  "storage_url": "https://storage.blob.core.windows.net/audit-cortex-evidence/PBI-12345/qa_testing/screenshots/dashboard-home.png",
   "checksum": "sha256:abc123...",
   "metadata": {
     "resolution": "1920x1080",
@@ -257,7 +257,7 @@ from ai_sdlc.evidence import EvidenceCollector, EvidenceCategory
 
 # Initialize collector
 collector = EvidenceCollector(
-    work_item_id="6340168",
+    work_item_id="12345",
     base_path="azure-blob://audit-cortex-evidence"
 )
 
@@ -293,7 +293,7 @@ qa_evidence = collector.get_evidence_by_stage("qa_testing")
 # Get summary
 summary = collector.get_summary()
 # {
-#     "work_item_id": "6340168",
+#     "work_item_id": "12345",
 #     "total_items": 23,
 #     "by_category": {
 #         "screenshot": 5,
@@ -375,9 +375,9 @@ storage = AzureBlobEvidenceStorage(
 # Upload file
 url = storage.upload_file(
     local_path="/path/to/file.py",
-    remote_path="PBI-6340168/code_generation/audit_service.py",
+    remote_path="PBI-12345/code_generation/audit_service.py",
     metadata={
-        "work_item_id": "6340168",
+        "work_item_id": "12345",
         "stage": "code_generation",
         "category": "code"
     }
@@ -385,26 +385,26 @@ url = storage.upload_file(
 
 # Download file
 storage.download_file(
-    remote_path="PBI-6340168/code_generation/audit_service.py",
+    remote_path="PBI-12345/code_generation/audit_service.py",
     local_path="./downloaded_audit_service.py"
 )
 
 # List files with prefix
-files = storage.list_files(prefix="PBI-6340168/qa_testing/screenshots/")
-# ['PBI-6340168/qa_testing/screenshots/dashboard-home.png',
-#  'PBI-6340168/qa_testing/screenshots/dashboard-filters.png', ...]
+files = storage.list_files(prefix="PBI-12345/qa_testing/screenshots/")
+# ['PBI-12345/qa_testing/screenshots/dashboard-home.png',
+#  'PBI-12345/qa_testing/screenshots/dashboard-filters.png', ...]
 
 # Get file URL
-url = storage.get_file_url("PBI-6340168/code_generation/audit_service.py")
+url = storage.get_file_url("PBI-12345/code_generation/audit_service.py")
 
 # Generate SAS URL for temporary access (24 hours)
 sas_url = storage.generate_sas_url(
-    remote_path="PBI-6340168/qa_testing/screenshots/dashboard-home.png",
+    remote_path="PBI-12345/qa_testing/screenshots/dashboard-home.png",
     expiry_hours=24
 )
 
 # Delete file
-storage.delete_file("PBI-6340168/old_file.txt")
+storage.delete_file("PBI-12345/old_file.txt")
 ```
 
 ### Configuration
@@ -445,7 +445,7 @@ Formats evidence for presentation in Azure DevOps:
 from ai_sdlc.evidence import EvidenceFormatter, ADOCommentFormat
 
 # Initialize formatter
-formatter = EvidenceFormatter(work_item_id="6340168")
+formatter = EvidenceFormatter(work_item_id="12345")
 
 # Format stage comment (Markdown)
 comment_md = formatter.format_stage_comment(
@@ -642,14 +642,14 @@ ado_plugin.authenticate(config)
 
 # Add rich comment with stage results
 ado_plugin.add_rich_comment(
-    work_item_id="6340168",
+    work_item_id="12345",
     html_content=formatted_comment_html,
     config=config
 )
 
 # Update work item with evidence summary
 ado_plugin.update_work_item_with_evidence(
-    work_item_id="6340168",
+    work_item_id="12345",
     evidence_summary={
         "evidence_items": collector.get_evidence_by_stage("unit_testing"),
         "metrics": {"coverage": 85.5, "tests_passed": 42},
@@ -662,7 +662,7 @@ ado_plugin.update_work_item_with_evidence(
 
 # Upload evidence package (top 3 screenshots/reports)
 result = ado_plugin.upload_evidence_package(
-    work_item_id="6340168",
+    work_item_id="12345",
     evidence_items=collector.get_all_evidence(),
     max_attachments=3,
     config=config
@@ -697,7 +697,7 @@ result = ado_plugin.upload_evidence_package(
 **Example ADO Work Item After Workflow:**
 
 ```
-Work Item #6340168: Implement Audit Dashboard
+Work Item #12345: Implement Audit Dashboard
 
 State: Done
 Assigned To: AI-SDLC System
@@ -729,7 +729,7 @@ History:
 │
 └─ [2026-01-17 10:42] ✅ Stage: Evidence Collection (8.3s)
    Total evidence: 23 files (5.0 MB)
-   Storage: azure-blob://audit-cortex-evidence/PBI-6340168/
+   Storage: azure-blob://audit-cortex-evidence/PBI-12345/
 
 Attachments:
 📎 dashboard-home.png (245 KB)
@@ -803,7 +803,7 @@ from ai_sdlc.evidence import (
 from plugins.databricks_devops_integrations.integrations.azure_devops import AzureDevOpsPlugin
 
 # 1. Initialize components
-work_item_id = "6340168"
+work_item_id = "12345"
 collector = EvidenceCollector(
     work_item_id=work_item_id,
     base_path="azure-blob://audit-cortex-evidence"

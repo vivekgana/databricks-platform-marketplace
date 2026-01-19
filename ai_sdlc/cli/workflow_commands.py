@@ -299,7 +299,7 @@ def main():
     )
     run_workflow_parser.add_argument(
         "work_item_id",
-        help="Work item ID (e.g., 6340168)",
+        help="Work item ID (e.g., 12345)",
     )
     run_workflow_parser.add_argument(
         "--evidence-path",

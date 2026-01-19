@@ -188,24 +188,24 @@ Container: audit-cortex-evidence
 
 ```bash
 # Run complete workflow
-python -m ai_sdlc.cli.workflow_commands run-workflow 6340168 \
+python -m ai_sdlc.cli.workflow_commands run-workflow 12345 \
   --evidence-path "azure-blob://audit-cortex-evidence" \
   --checkpoint-dir "./.workflow_checkpoints"
 
 # Run single stage
-python -m ai_sdlc.cli.workflow_commands run-stage 6340168 code_generation
+python -m ai_sdlc.cli.workflow_commands run-stage 12345 code_generation
 
 # Validate stage
-python -m ai_sdlc.cli.workflow_commands validate-stage 6340168 unit_testing
+python -m ai_sdlc.cli.workflow_commands validate-stage 12345 unit_testing
 
 # Resume interrupted workflow
-python -m ai_sdlc.cli.workflow_commands resume-workflow 6340168
+python -m ai_sdlc.cli.workflow_commands resume-workflow 12345
 
 # List work items ready for workflow
 python -m ai_sdlc.cli.workflow_commands list-work-items --type "Feature"
 
 # Collect and upload evidence
-python -m ai_sdlc.cli.workflow_commands collect-evidence 6340168 --upload-to-ado
+python -m ai_sdlc.cli.workflow_commands collect-evidence 12345 --upload-to-ado
 ```
 
 ### 7. Azure DevOps Integration (✅ Completed)
@@ -391,7 +391,7 @@ pytest tests/unit/evidence/test_evidence_collector.py -v
 # Environment variables
 export AZURE_DEVOPS_ORG_URL="https://dev.azure.com/your-org"
 export AZURE_DEVOPS_PAT="your-pat"
-export AZURE_DEVOPS_PROJECT="Audit Cortex 2"
+export AZURE_DEVOPS_PROJECT="Your Project"
 export AZURE_STORAGE_CONNECTION_STRING="your-connection-string"
 
 # Python dependencies
@@ -402,7 +402,7 @@ pip install -r requirements.txt
 
 ```bash
 # 1. Run complete workflow
-python -m ai_sdlc.cli.workflow_commands run-workflow 6340168
+python -m ai_sdlc.cli.workflow_commands run-workflow 12345
 
 # 2. View results in Azure DevOps
 # - Comments added to work item
@@ -410,7 +410,7 @@ python -m ai_sdlc.cli.workflow_commands run-workflow 6340168
 # - State updated to appropriate phase
 
 # 3. Access evidence in Azure Blob Storage
-# Container: audit-cortex-evidence/PBI-6340168/
+# Container: audit-cortex-evidence/PBI-12345/
 ```
 
 ---

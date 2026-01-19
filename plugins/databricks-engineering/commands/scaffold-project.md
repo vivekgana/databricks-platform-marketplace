@@ -704,4 +704,4 @@ jobs:
 **Last Updated**: 2024-12-31
 **Version**: 1.0.0
 **Category**: Project Setup
-**Prepared by**: gekambaram
+**Prepared by**: Data Platform Team

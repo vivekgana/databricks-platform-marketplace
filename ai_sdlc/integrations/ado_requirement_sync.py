@@ -36,7 +36,7 @@ class ADOWorkItemReference:
         """
         Parse Azure DevOps work item URL.
 
-        Example: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+        Example: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
 
         Returns:
             Parsed reference or None if invalid URL

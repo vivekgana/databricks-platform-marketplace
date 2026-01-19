@@ -93,7 +93,7 @@ class AzureBlobEvidenceStorage(EvidenceStorage):
     """
     Azure Blob Storage backend for evidence.
 
-    Stores evidence artifacts in Azure Blob Storage for the Audit Cortex 2 project.
+    Stores evidence artifacts in Azure Blob Storage for the Your Project project.
     """
 
     def __init__(

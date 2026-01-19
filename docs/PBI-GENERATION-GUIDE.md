@@ -1,17 +1,17 @@
-# PBI Generation Guide for Audit Cortex 2
+# PBI Generation Guide for Your Project
 
 **Document Version:** 1.0
 **Last Updated:** 2026-01-05 11:00:00
 **Prepared by:** Databricks Platform Team
-**Project:** Audit Cortex 2
+**Project:** Your Project
 
 ---
 
 ## Overview
 
-This guide explains how to automatically generate Azure DevOps Product Backlog Items (PBIs) for **Enablers** and **Features** from requirement files for the Audit Cortex 2 project.
+This guide explains how to automatically generate Azure DevOps Product Backlog Items (PBIs) for **Enablers** and **Features** from requirement files for the Your Project project.
 
-**Reference:** [DM-ADP automated Unit and Integration test design](https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/220464/DM-ADP-automated-Unit-and-Integration-test-design)
+**Reference:** [Your Design Document](https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/100001/YourFeature-automated-Unit-and-Integration-test-design)
 
 ---
 
@@ -22,7 +22,7 @@ This guide explains how to automatically generate Azure DevOps Product Backlog I
 
 **Examples:**
 - Build REST API framework
-- Set up CI/CD pipeline for Audit Cortex 2
+- Set up CI/CD pipeline for Your Project
 - Create automated test infrastructure
 - Implement logging and monitoring system
 - Design data pipeline architecture
@@ -57,13 +57,13 @@ This guide explains how to automatically generate Azure DevOps Product Backlog I
 
 ### 1. Environment Configuration
 
-Set up Azure DevOps for Audit Cortex 2:
+Set up Azure DevOps for Your Project:
 
 ```powershell
 # PowerShell
-[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_ORG_URL', 'https://dev.azure.com/symphonyvsts', 'User')
+[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_ORG_URL', 'https://dev.azure.com/your-organization', 'User')
 [System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PAT', 'your-pat-token', 'User')
-[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PROJECT', 'Audit Cortex 2', 'User')
+[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PROJECT', 'Your Project', 'User')
 ```
 
 ### 2. Python Dependencies
@@ -120,7 +120,7 @@ python -m ai_sdlc.cli.pbi_commands batch-generate requirements/ --with-tasks --o
 
 ```bash
 python -m ai_sdlc.cli.pbi_commands generate-enabler \
-  --title "Set up automated testing framework for Audit Cortex 2" \
+  --title "Set up automated testing framework for Your Project" \
   --description "Build comprehensive test automation infrastructure" \
   --technical-details "Implement pytest framework with Databricks fixtures" \
   --acceptance-criteria "Unit tests run in CI;Integration tests with test catalog;Code coverage > 80%" \
@@ -285,9 +285,9 @@ Base: 1 point
 cat > requirements/REQ-TEST-001.md << 'EOF'
 ---
 req_id: REQ-TEST-001
-title: Automated testing framework for Audit Cortex 2
+title: Automated testing framework for Your Project
 owner: test.engineer@company.com
-product: Audit Cortex 2
+product: Your Project
 team: Platform Engineering
 priority: P1
 status: In Dev
@@ -301,7 +301,7 @@ links:
 
 ## 1. Problem statement
 
-We need a comprehensive automated testing framework for Audit Cortex 2 to ensure quality and enable CI/CD.
+We need a comprehensive automated testing framework for Your Project to ensure quality and enable CI/CD.
 
 ## 4. Functional requirements
 
@@ -334,14 +334,14 @@ python -m ai_sdlc.cli.pbi_commands generate-pbis requirements/REQ-TEST-001.md --
 
 # Output:
 # ✅ Created Enabler PBI:
-#    ID: 6340200
-#    Title: [Enabler] Automated testing framework for Audit Cortex 2
-#    URL: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340200
+#    ID: 12351
+#    Title: [Enabler] Automated testing framework for Your Project
+#    URL: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12351
 #
 #    📋 Generating child tasks...
 #    ✅ Created 2 tasks
-#       - Task 6340201: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340201
-#       - Task 6340202: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340202
+#       - Task 12352: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12352
+#       - Task 12353: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12353
 ```
 
 ### Workflow 2: Generate PBI for Audit Dashboard Feature
@@ -353,7 +353,7 @@ cat > requirements/REQ-DASH-001.md << 'EOF'
 req_id: REQ-DASH-001
 title: Audit trail dashboard for compliance team
 owner: product.manager@company.com
-product: Audit Cortex 2
+product: Your Project
 team: Data Products
 priority: P1
 status: Approved
@@ -401,9 +401,9 @@ python -m ai_sdlc.cli.pbi_commands generate-pbis requirements/REQ-DASH-001.md --
 
 # Output:
 # ✅ Created Feature PBI:
-#    ID: 6340203
+#    ID: 12354
 #    Title: [Feature] Audit trail dashboard for compliance team
-#    URL: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340203
+#    URL: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12354
 #
 #    📋 Generating child tasks...
 #    ✅ Created 3 tasks
@@ -412,21 +412,21 @@ python -m ai_sdlc.cli.pbi_commands generate-pbis requirements/REQ-DASH-001.md --
 #       - Task 6340206: Implement AC-3 (2.0 points)
 ```
 
-### Workflow 3: Batch Generate for Audit Cortex 2
+### Workflow 3: Batch Generate for Your Project
 
 ```bash
-# Generate PBIs for all requirements in Audit Cortex 2
+# Generate PBIs for all requirements in Your Project
 python -m ai_sdlc.cli.pbi_commands batch-generate requirements/ --with-tasks --output audit-cortex-pbis.md
 
 # Output:
 # 🔧 Found 15 requirement files
 #
 # 📄 Processing REQ-TEST-001: Automated testing framework
-#    ✅ Created Enabler PBI 6340200
+#    ✅ Created Enabler PBI 12351
 #       📋 Created 2 tasks
 #
 # 📄 Processing REQ-DASH-001: Audit trail dashboard
-#    ✅ Created Feature PBI 6340203
+#    ✅ Created Feature PBI 12354
 #       📋 Created 3 tasks
 #
 # 📄 Processing REQ-API-001: Audit API endpoints
@@ -441,11 +441,11 @@ python -m ai_sdlc.cli.pbi_commands batch-generate requirements/ --with-tasks --o
 
 ---
 
-## Integration with Audit Cortex 2 Wiki
+## Integration with Your Project Wiki
 
-The PBI generation system integrates with your Audit Cortex 2 wiki structure:
+The PBI generation system integrates with your Your Project wiki structure:
 
-**Wiki Reference:** [DM-ADP automated Unit and Integration test design](https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/220464/DM-ADP-automated-Unit-and-Integration-test-design)
+**Wiki Reference:** [Your Design Document](https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/100001/YourFeature-automated-Unit-and-Integration-test-design)
 
 ### Linking PBIs to Wiki Pages
 
@@ -454,8 +454,8 @@ The PBI generation system integrates with your Audit Cortex 2 wiki structure:
 3. **Add PBI link** to wiki page:
    ```markdown
    ## Related Work Items
-   - [[6340168]] - Automated Unit and Integration Test Design
-   - [[6340200]] - Automated Testing Framework
+   - [[12345]] - Automated Unit and Integration Test Design
+   - [[12351]] - Automated Testing Framework
    ```
 
 ### Referencing Wiki in PBIs
@@ -465,9 +465,9 @@ Add wiki references to PBI descriptions:
 ```python
 # In custom PBI generation
 description = f"""
-Build automated testing framework for Audit Cortex 2.
+Build automated testing framework for Your Project.
 
-Reference: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/220464/DM-ADP-automated-Unit-and-Integration-test-design
+Reference: https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/100001/YourFeature-automated-Unit-and-Integration-test-design
 """
 ```
 
@@ -483,12 +483,12 @@ from ai_sdlc.parsers.requirement_parser import RequirementParser
 from plugins.databricks_devops_integrations.integrations.azure_devops.azure_devops_plugin import AzureDevOpsPlugin
 from plugins.databricks_devops_integrations.sdk.base_plugin import PluginConfig, WorkItemPriority
 
-# Configure for Audit Cortex 2
+# Configure for Your Project
 config = PluginConfig(
-    api_endpoint="https://dev.azure.com/symphonyvsts",
+    api_endpoint="https://dev.azure.com/your-organization",
     api_key="your-pat-token",
-    organization="symphonyvsts",
-    project="Audit Cortex 2"
+    organization="your-organization",
+    project="Your Project"
 )
 
 # Initialize
@@ -512,7 +512,7 @@ for result in results:
         print(f"  Created {len(task_ids)} tasks")
 ```
 
-### Create Custom Enabler for Audit Cortex 2
+### Create Custom Enabler for Your Project
 
 ```python
 # Create custom Enabler PBI
@@ -541,7 +541,7 @@ result = pbi_generator.generate_enabler_pbi(enabler)
 print(f"Created: {result.work_item_url}")
 ```
 
-### Create Custom Feature for Audit Cortex 2
+### Create Custom Feature for Your Project
 
 ```python
 # Create custom Feature PBI
@@ -570,16 +570,16 @@ print(f"Created: {result.work_item_url}")
 
 ---
 
-## Best Practices for Audit Cortex 2
+## Best Practices for Your Project
 
 ### 1. Use Consistent Naming Convention
 
 ```
-Enablers: [Enabler] {Technical Component} for Audit Cortex 2
+Enablers: [Enabler] {Technical Component} for Your Project
 Features: [Feature] {User Capability} for compliance/auditing
 
 Examples:
-- [Enabler] Automated testing framework for Audit Cortex 2
+- [Enabler] Automated testing framework for Your Project
 - [Feature] Audit trail dashboard for compliance team
 ```
 
@@ -593,7 +593,7 @@ tags=["audit-cortex", "compliance", ...]
 
 Include wiki references in PBI descriptions:
 ```
-Reference: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/...
+Reference: https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/...
 ```
 
 ### 4. Generate Tasks for All ACs
@@ -642,10 +642,10 @@ python -m ai_sdlc.cli.pbi_commands generate-enabler --title "..." --story-points
 
 ## CI/CD Integration
 
-### GitHub Actions for Audit Cortex 2
+### GitHub Actions for Your Project
 
 ```yaml
-name: Generate PBIs - Audit Cortex 2
+name: Generate PBIs - Your Project
 
 on:
   push:
@@ -668,9 +668,9 @@ jobs:
 
       - name: Generate PBIs
         env:
-          AZURE_DEVOPS_ORG_URL: https://dev.azure.com/symphonyvsts
+          AZURE_DEVOPS_ORG_URL: https://dev.azure.com/your-organization
           AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
-          AZURE_DEVOPS_PROJECT: Audit Cortex 2
+          AZURE_DEVOPS_PROJECT: Your Project
         run: |
           git diff --name-only HEAD~1 HEAD | grep 'requirements/REQ-.*\.md' | while read req; do
             echo "Generating PBI for $req..."
@@ -689,6 +689,6 @@ jobs:
 
 ---
 
-**Project:** Audit Cortex 2
-**Organization:** symphonyvsts
+**Project:** Your Project
+**Organization:** your-organization
 **Contact:** data-platform@vivekgana.com

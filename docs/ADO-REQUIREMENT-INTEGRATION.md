@@ -41,16 +41,16 @@ Set these environment variables:
 
 ```powershell
 # PowerShell
-[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_ORG_URL', 'https://dev.azure.com/symphonyvsts', 'User')
+[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_ORG_URL', 'https://dev.azure.com/your-organization', 'User')
 [System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PAT', 'your-52-character-pat-token', 'User')
-[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PROJECT', 'Audit Cortex 2', 'User')
+[System.Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PROJECT', 'Your Project', 'User')
 ```
 
 ```bash
 # Linux/Mac
-export AZURE_DEVOPS_ORG_URL="https://dev.azure.com/symphonyvsts"
+export AZURE_DEVOPS_ORG_URL="https://dev.azure.com/your-organization"
 export AZURE_DEVOPS_PAT="your-52-character-pat-token"
-export AZURE_DEVOPS_PROJECT="Audit Cortex 2"
+export AZURE_DEVOPS_PROJECT="Your Project"
 ```
 
 ### 2. Azure DevOps PAT Token
@@ -87,7 +87,7 @@ created: 2026-01-01
 updated: 2026-01-05
 
 links:
-  ado: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+  ado: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
   jira: null
   pr: null
   docs: https://docs.company.com/req-101
@@ -117,10 +117,10 @@ python -m ai_sdlc.cli.ado_commands link-requirement requirements/REQ-101.md --cr
 **Output:**
 ```
 ✅ Requirement REQ-101 linked to ADO:
-   https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+   https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
 
 💡 Add this to your requirement frontmatter:
-   ado: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+   ado: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
 ```
 
 **Options:**
@@ -146,7 +146,7 @@ python -m ai_sdlc.cli.ado_commands sync-to-ado requirements/REQ-101.md
 **Output:**
 ```
 ✅ Synced requirement REQ-101 to ADO
-   https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+   https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
 ```
 
 ### Sync ADO to Requirement
@@ -188,12 +188,12 @@ python -m ai_sdlc.cli.ado_commands validate-link requirements/REQ-101.md
 **Output:**
 ```
 ✅ ADO link is valid:
-   https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+   https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
 
 📋 Work Item Details:
-   Organization: symphonyvsts
-   Project: Audit Cortex 2
-   Work Item ID: 6340168
+   Organization: your-organization
+   Project: Your Project
+   Work Item ID: 12345
    Title: [REQ-101] Implement user authentication
    Status: Active
    Assignee: john.doe@company.com
@@ -210,11 +210,11 @@ python -m ai_sdlc.cli.ado_commands search REQ-101
 **Output:**
 ```
 ✅ Found ADO work item for REQ-101:
-   ID: 6340168
+   ID: 12345
    Title: [REQ-101] Implement user authentication
    Status: Active
    Assignee: john.doe@company.com
-   URL: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+   URL: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
 ```
 
 ---
@@ -231,10 +231,10 @@ from plugins.databricks_devops_integrations.sdk.base_plugin import PluginConfig
 
 # Configure ADO
 config = PluginConfig(
-    api_endpoint="https://dev.azure.com/symphonyvsts",
+    api_endpoint="https://dev.azure.com/your-organization",
     api_key="your-pat-token",
-    organization="symphonyvsts",
-    project="Audit Cortex 2"
+    organization="your-organization",
+    project="Your Project"
 )
 
 # Initialize components
@@ -265,7 +265,7 @@ print(f"Valid: {is_valid}, Error: {error}")
 ```python
 from ai_sdlc.integrations.ado_requirement_sync import ADOWorkItemReference
 
-ado_url = "https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168"
+ado_url = "https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345"
 
 ado_ref = ADOWorkItemReference.parse_url(ado_url)
 print(f"Organization: {ado_ref.organization}")
@@ -273,9 +273,9 @@ print(f"Project: {ado_ref.project}")
 print(f"Work Item ID: {ado_ref.work_item_id}")
 
 # Output:
-# Organization: symphonyvsts
-# Project: Audit Cortex 2
-# Work Item ID: 6340168
+# Organization: your-organization
+# Project: Your Project
+# Work Item ID: 12345
 ```
 
 ### Search for Work Item
@@ -403,7 +403,7 @@ vim requirements/REQ-101.md
 python -m ai_sdlc.cli.ado_commands sync-to-ado requirements/REQ-101.md
 
 # 3. Verify in Azure DevOps
-# Open: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+# Open: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
 ```
 
 ### Workflow 3: Pull ADO Changes to Requirement
@@ -517,7 +517,7 @@ steps:
 
 **Solution:**
 - Ensure URL format: `https://dev.azure.com/{org}/{project}/_workitems/edit/{id}`
-- URL encode spaces in project name (e.g., "Audit Cortex 2" → "Audit%20Cortex%202")
+- URL encode spaces in project name (e.g., "Your Project" → "YourProject")
 
 ### Issue: "Organization mismatch"
 
@@ -527,10 +527,10 @@ steps:
 ```bash
 # Check environment variable
 echo $AZURE_DEVOPS_ORG_URL
-# Should be: https://dev.azure.com/symphonyvsts
+# Should be: https://dev.azure.com/your-organization
 
 # Update if needed
-export AZURE_DEVOPS_ORG_URL="https://dev.azure.com/symphonyvsts"
+export AZURE_DEVOPS_ORG_URL="https://dev.azure.com/your-organization"
 ```
 
 ### Issue: "Work item not found"
@@ -562,7 +562,7 @@ export AZURE_DEVOPS_ORG_URL="https://dev.azure.com/symphonyvsts"
 
 ```markdown
 links:
-  ado: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+  ado: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
 ```
 
 ### 2. Sync After Every Requirement Update
@@ -594,13 +594,13 @@ python -m ai_sdlc.cli.ado_commands validate-link requirements/REQ-101.md
 
 ## Example: Your ADO Work Item
 
-**URL:** https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+**URL:** https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
 
 **Parsed Details:**
 ```python
-organization: symphonyvsts
-project: Audit Cortex 2
-work_item_id: 6340168
+organization: your-organization
+project: Your Project
+work_item_id: 12345
 ```
 
 **To link this to a requirement:**
@@ -609,7 +609,7 @@ work_item_id: 6340168
 # If requirement already exists
 # Add to frontmatter:
 links:
-  ado: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_workitems/edit/6340168
+  ado: https://dev.azure.com/your-organization/YourProject/_workitems/edit/12345
 
 # Validate
 python -m ai_sdlc.cli.ado_commands validate-link requirements/REQ-101.md

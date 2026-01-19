@@ -43,7 +43,7 @@ def load_ado_config() -> PluginConfig:
         )
 
     # Extract organization from URL
-    # URL format: https://dev.azure.com/symphonyvsts
+    # URL format: https://dev.azure.com/your-organization
     org = ado_org_url.split("/")[-1]
 
     return PluginConfig(

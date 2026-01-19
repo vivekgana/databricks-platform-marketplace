@@ -104,7 +104,7 @@ class WikiReference:
         """
         Parse Azure DevOps wiki URL.
 
-        Example: https://dev.azure.com/symphonyvsts/Audit%20Cortex%202/_wiki/wikis/Audit-Cortex-2.wiki/220464/DM-ADP-automated-Unit-and-Integration-test-design
+        Example: https://dev.azure.com/your-organization/YourProject/_wiki/wikis/YourProject.wiki/100001/YourFeature-automated-Unit-and-Integration-test-design
         """
         pattern = r"https://dev\.azure\.com/([^/]+)/([^/]+)/_wiki/wikis/([^/]+)/(\d+)/(.+)"
         match = re.match(pattern, wiki_url)

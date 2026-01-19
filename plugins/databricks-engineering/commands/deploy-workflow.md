@@ -905,4 +905,4 @@ def rollback_deployment(deployment_id: str):
 **Last Updated**: 2024-12-31
 **Version**: 1.0.0
 **Category**: Deployment
-**Prepared by**: gekambaram
+**Prepared by**: Data Platform Team

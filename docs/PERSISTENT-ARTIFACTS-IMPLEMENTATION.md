@@ -2,7 +2,7 @@
 
 **Document Version:** 1.0
 **Last Updated:** 2026-01-17 22:43:33
-**Prepared by:** gekambaram
+**Prepared by:** Data Platform Team
 **Feature:** Azure DevOps Persistent Artifacts Support
 
 ---
@@ -391,14 +391,14 @@ def test_create_artifact_package_success(
 ### Package Structure
 
 ```
-pbi-6340168-evidence-1.0.0.tar.gz
+pbi-12345-evidence-1.0.0.tar.gz
 │
-└── pbi-6340168-evidence/
+└── pbi-12345-evidence/
     ├── manifest.json
     │   {
-    │     "work_item_id": "6340168",
+    │     "work_item_id": "12345",
     │     "created_at": "2026-01-17T22:30:00",
-    │     "artifact_name": "pbi-6340168-evidence",
+    │     "artifact_name": "pbi-12345-evidence",
     │     "version": "1.0.0",
     │     "total_files": 23,
     │     "files": [...]
@@ -441,10 +441,10 @@ pbi-6340168-evidence-1.0.0.tar.gz
 ```python
 from ai_sdlc.orchestration import WorkflowOrchestrator
 
-orchestrator = WorkflowOrchestrator(work_item_id="6340168")
+orchestrator = WorkflowOrchestrator(work_item_id="12345")
 
 result = orchestrator.run_workflow(
-    work_item_id="6340168",
+    work_item_id="12345",
     create_persistent_artifact=True,  # Enable persistent artifacts
     artifact_version="1.0.0",
     ado_plugin=ado_plugin,
@@ -462,7 +462,7 @@ print(f"Files: {artifact_info['files_count']}")
 ```python
 from ai_sdlc.agents import EvidenceCollectorAgent
 
-agent = EvidenceCollectorAgent(work_item_id="6340168")
+agent = EvidenceCollectorAgent(work_item_id="12345")
 
 input_data = {
     "previous_stages": {...},
@@ -484,7 +484,7 @@ if result["success"] and "artifact_package" in result["data"]:
 ```python
 # Create artifact for original PBI
 artifact_info = ado_plugin.create_artifact_package(
-    work_item_id="6340168",
+    work_item_id="12345",
     artifact_name="audit-dashboard-evidence",
     artifact_version="1.0.0",
     evidence_items=evidence_items,
@@ -498,7 +498,7 @@ for pbi_id in related_pbis:
         work_item_id=pbi_id,
         artifact_url=artifact_info['artifact_link'],
         artifact_name="Shared Evidence v1.0.0",
-        comment=f"Shared from PBI-6340168",
+        comment=f"Shared from PBI-12345",
         config=ado_config
     )
 ```
@@ -557,7 +557,7 @@ az artifacts universal package create \
 ```bash
 export AZURE_DEVOPS_ORG_URL="https://dev.azure.com/your-org"
 export AZURE_DEVOPS_PAT="your-pat-token"
-export AZURE_DEVOPS_PROJECT="Audit Cortex 2"
+export AZURE_DEVOPS_PROJECT="Your Project"
 ```
 
 ---
@@ -651,7 +651,7 @@ export AZURE_DEVOPS_PROJECT="Audit Cortex 2"
 
 ### Issue 1: Package Version Already Exists
 
-**Error:** `IntegrationError: Artifact package pbi-6340168-evidence:1.0.0 already exists`
+**Error:** `IntegrationError: Artifact package pbi-12345-evidence:1.0.0 already exists`
 
 **Solution:**
 ```python
@@ -680,7 +680,7 @@ artifact_version = "1.0.1"  # or "1.1.0", "2.0.0"
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2026-01-17 | gekambaram | Initial implementation documentation |
+| 1.0 | 2026-01-17 | Data Platform Team | Initial implementation documentation |
 
 ---
 
